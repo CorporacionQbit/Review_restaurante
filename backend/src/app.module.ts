@@ -20,7 +20,7 @@ import { AuthMiddleware } from './auth/auth.middleware';
       isGlobal: true,
     }),
 
-    // Configuración de TypeORM con PostgreSQL
+    // Configuración TypeORM con PostgreSQL
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -39,6 +39,7 @@ import { AuthMiddleware } from './auth/auth.middleware';
     UsersModule,
     AuthModule,
     RestaurantsModule,
+    
   ],
 })
 export class AppModule implements NestModule {
@@ -46,16 +47,13 @@ export class AppModule implements NestModule {
     consumer
       .apply(AuthMiddleware)
       .forRoutes(
-        // Rutas de usuarios protegidas
+        // protege /users y cualquier subruta /users/...
         { path: 'users', method: RequestMethod.ALL },
-        { path: 'users/me', method: RequestMethod.ALL },
-        { path: 'users/:id', method: RequestMethod.ALL },
+        { path: 'users/(.*)', method: RequestMethod.ALL },
 
-        // Rutas de restaurantes protegidas
+        // protege /restaurants y cualquier subruta /restaurants/...
         { path: 'restaurants', method: RequestMethod.ALL },
-        { path: 'restaurants/my-restaurants', method: RequestMethod.ALL },
-        { path: 'restaurants/:id', method: RequestMethod.ALL },
+        { path: 'restaurants/(.*)', method: RequestMethod.ALL },
       );
-   
   }
 }
