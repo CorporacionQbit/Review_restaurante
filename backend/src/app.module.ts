@@ -11,16 +11,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { RestaurantsModule } from './restaurants/restaurants.module';
+import { ReviewsModule } from './reviews/reviews.module';
+
 import { AuthMiddleware } from './auth/auth.middleware';
 
 @Module({
   imports: [
-    // Cargar variables de entorno (.env)
+    // Variables de entorno globales
     ConfigModule.forRoot({
       isGlobal: true,
     }),
 
-    // Configuración TypeORM con PostgreSQL
+    // Conexión a PostgreSQL
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -36,10 +38,11 @@ import { AuthMiddleware } from './auth/auth.middleware';
       }),
     }),
 
+    // Módulos
     UsersModule,
     AuthModule,
     RestaurantsModule,
-    
+    ReviewsModule,
   ],
 })
 export class AppModule implements NestModule {
@@ -47,13 +50,38 @@ export class AppModule implements NestModule {
     consumer
       .apply(AuthMiddleware)
       .forRoutes(
-        // protege /users y cualquier subruta /users/...
+        // ======================================================
+        // USERS PROTEGIDOS
+        // ======================================================
         { path: 'users', method: RequestMethod.ALL },
-        { path: 'users/(.*)', method: RequestMethod.ALL },
+        { path: 'users/me', method: RequestMethod.ALL },
+        { path: 'users/:id', method: RequestMethod.ALL },
 
-        // protege /restaurants y cualquier subruta /restaurants/...
+        // ======================================================
+        // RESTAURANTS PROTEGIDOS
+        // ======================================================
         { path: 'restaurants', method: RequestMethod.ALL },
-        { path: 'restaurants/(.*)', method: RequestMethod.ALL },
+        { path: 'restaurants/my-restaurants', method: RequestMethod.ALL },
+        { path: 'restaurants/:id', method: RequestMethod.ALL },
+        { path: 'restaurants/:id/images', method: RequestMethod.ALL },
+        { path: 'restaurants/:restaurantId/reviews', method: RequestMethod.ALL },
+
+        // ======================================================
+        // REVIEWS PROTEGIDOS
+        // ======================================================
+        { path: 'reviews', method: RequestMethod.ALL },
+        { path: 'reviews/:id', method: RequestMethod.ALL },
+
+        // *** IMPORTANTE: REPORTAR RESEÑA ***
+        { path: 'reviews/:id/report', method: RequestMethod.ALL },
+
+        // ======================================================
+        // ADMIN PROTEGIDOS
+        // ======================================================
+        { path: 'admin/review-reports', method: RequestMethod.ALL },
+        { path: 'admin/reviews/:id', method: RequestMethod.ALL },
+        { path: 'admin/review-reports/:id/resolve', method: RequestMethod.ALL },
       );
+    // Las rutas /auth/* son públicas (login/register)
   }
 }

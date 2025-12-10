@@ -10,7 +10,7 @@ import {
 import { User } from '../users/user.entity';
 import { Restaurant } from '../restaurants/restaurant.entity';
 
-@Entity('reviews')
+@Entity({ name: 'reviews' })
 export class Review {
   @PrimaryGeneratedColumn({ name: 'review_id' })
   reviewId: number;
@@ -18,18 +18,14 @@ export class Review {
   @Column({ name: 'user_id' })
   userId: number;
 
-  @Column({ name: 'restaurant_id' })
-  restaurantId: number;
-
-  // Relación con usuarios (sin lado inverso)
-  @ManyToOne(() => User, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(() => User, (user) => user.reviews, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  // Relación con restaurantes (sin lado inverso)
-  @ManyToOne(() => Restaurant, {
+  @Column({ name: 'restaurant_id' })
+  restaurantId: number;
+
+  @ManyToOne(() => Restaurant, (restaurant) => restaurant.reviews, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'restaurant_id' })
@@ -45,7 +41,7 @@ export class Review {
   createdAt: Date;
 
   @Column({ type: 'varchar', length: 20, default: 'Pendiente' })
-  status: string;
+  status: 'Pendiente' | 'Aprobada' | 'Rechazada';
 
   @Column({ name: 'rejection_reason', type: 'text', nullable: true })
   rejectionReason: string | null;

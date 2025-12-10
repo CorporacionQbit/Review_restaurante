@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { User } from '../users/user.entity';
 import { RestaurantImage } from './restaurant-image.entity';
+import { Review } from '../reviews/review.entity';
 
 @Entity('restaurants')
 export class Restaurant {
@@ -28,7 +29,7 @@ export class Restaurant {
   name: string;
 
   @Column({ type: 'text', nullable: true })
-  description: string;
+  description: string | null;
 
   @Column({
     name: 'phone_number',
@@ -36,25 +37,54 @@ export class Restaurant {
     length: 50,
     nullable: true,
   })
-  phoneNumber: string;
+  phoneNumber: string | null;
 
-  @Column({ length: 255, nullable: true })
-  email: string;
+  @Column({
+    name: 'email',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
+  email: string | null;
 
-  @Column({ length: 255, nullable: true })
-  address: string;
+  @Column({
+    name: 'address',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
+  address: string | null;
 
-  @Column({ length: 100, nullable: true })
-  city: string;
+  @Column({
+    name: 'city',
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+  })
+  city: string | null;
 
-  @Column({ length: 50, nullable: true })
-  zone: string;
+  @Column({
+    name: 'zone',
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
+  zone: string | null;
 
-  @Column({ name: 'maps_url', length: 500, nullable: true })
-  mapsUrl: string;
+  @Column({
+    name: 'maps_url',
+    type: 'varchar',
+    length: 500,
+    nullable: true,
+  })
+  mapsUrl: string | null;
 
-  @Column({ name: 'price_range', type: 'smallint', nullable: true })
-  priceRange: number;
+  @Column({
+    name: 'price_range',
+    type: 'smallint',
+    nullable: true,
+  })
+  priceRange: number | null;
 
   @Column({
     name: 'avg_rating',
@@ -65,13 +95,25 @@ export class Restaurant {
   })
   avgRating: number;
 
-  @Column({ name: 'total_reviews', type: 'int', default: 0 })
+  @Column({
+    name: 'total_reviews',
+    type: 'int',
+    default: 0,
+  })
   totalReviews: number;
 
-  @Column({ name: 'is_approved', type: 'boolean', default: false })
+  @Column({
+    name: 'is_approved',
+    type: 'boolean',
+    default: false,
+  })
   isApproved: boolean;
 
-  @Column({ name: 'is_premium', type: 'boolean', default: false })
+  @Column({
+    name: 'is_premium',
+    type: 'boolean',
+    default: false,
+  })
   isPremium: boolean;
 
   @Column({
@@ -82,9 +124,22 @@ export class Restaurant {
   })
   onboardingStatus: string;
 
-  @Column({ name: 'onboarding_comment', type: 'text', nullable: true })
-  onboardingComment: string|null;
+  @Column({
+    name: 'onboarding_comment',
+    type: 'text',
+    nullable: true,
+  })
+  onboardingComment: string | null;
 
+  // =========================
+  // Relación con imágenes
+  // =========================
   @OneToMany(() => RestaurantImage, (img) => img.restaurant)
   images: RestaurantImage[];
+
+  // =========================
+  // Relación con reseñas
+  // =========================
+  @OneToMany(() => Review, (review) => review.restaurant)
+  reviews: Review[];
 }

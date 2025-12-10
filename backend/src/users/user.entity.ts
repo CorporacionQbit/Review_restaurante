@@ -1,5 +1,5 @@
-// src/users/user.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Review } from '../reviews/review.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -18,7 +18,12 @@ export class User {
   @Column({ name: 'bio', type: 'text', nullable: true })
   bio?: string;
 
-  @Column({ name: 'profile_picture_url', type: 'varchar', length: 500, nullable: true })
+  @Column({
+    name: 'profile_picture_url',
+    type: 'varchar',
+    length: 500,
+    nullable: true,
+  })
   profilePictureUrl?: string;
 
   @Column({ name: 'location', type: 'varchar', length: 100, nullable: true })
@@ -27,10 +32,20 @@ export class User {
   @Column({ name: 'is_active', type: 'boolean', default: true })
   isActive: boolean;
 
-  @Column({ name: 'registration_method', type: 'varchar', length: 50, default: 'email' })
+  @Column({
+    name: 'registration_method',
+    type: 'varchar',
+    length: 50,
+    default: 'email',
+  })
   registrationMethod: string;
 
   @Column({ name: 'role', type: 'varchar', length: 20, default: 'client' })
-role: string; /* Tipo de usuario cliente, dueño o admin  */
+  role: string; // client | owner | admin
 
+  // =========================
+  // RELACIÓN CON RESEÑAS
+  // =========================
+  @OneToMany(() => Review, (review) => review.user)
+  reviews: Review[];
 }
