@@ -6,10 +6,14 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  OneToOne,
 } from 'typeorm';
 import { User } from '../users/user.entity';
 import { RestaurantImage } from './restaurant-image.entity';
 import { Review } from '../reviews/review.entity';
+import { Menu } from '../menu/menu.entity';
+import { Post } from '../post/post.entity';
+import { Subscription } from '../subscriptions/subscription.entity';
 
 @Entity('restaurants')
 export class Restaurant {
@@ -131,15 +135,24 @@ export class Restaurant {
   })
   onboardingComment: string | null;
 
-  // =========================
+  
   // Relación con imágenes
-  // =========================
+
   @OneToMany(() => RestaurantImage, (img) => img.restaurant)
   images: RestaurantImage[];
 
-  // =========================
+  @OneToMany(() => Menu, (menu) => menu.restaurant, { cascade: true })
+menus: Menu[]
+
+ 
   // Relación con reseñas
-  // =========================
+ 
   @OneToMany(() => Review, (review) => review.restaurant)
   reviews: Review[];
+  
+  @OneToMany(() => Post, (post) => post.restaurant, { cascade: true })
+posts: Post[];
+
+@OneToOne(() => Subscription, (sub) => sub.restaurant)
+subscription: Subscription;
 }

@@ -43,9 +43,9 @@ export class User {
   @Column({ name: 'role', type: 'varchar', length: 20, default: 'client' })
   role: string; // client | owner | admin
 
-  // =========================
+
   // RELACIÓN CON RESEÑAS
-  // =========================
+  
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];
 }

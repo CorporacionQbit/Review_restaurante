@@ -27,9 +27,8 @@ export class ReviewsService {
     private readonly reportRepo: Repository<ReviewReport>,
   ) {}
 
-  // ==================================================
+
   // Crear reseña (con trigger de 4 días)
-  // ==================================================
   async createReview(
     userId: number,
     restaurantId: number,
@@ -48,7 +47,7 @@ export class ReviewsService {
       restaurantId,
       rating: dto.rating,
       reviewText: dto.reviewText ?? null,
-      status: 'Pendiente', // ya no se usa para aprobación, pero queda como referencia
+      status: 'Pendiente', 
     });
 
     try {
@@ -63,9 +62,9 @@ export class ReviewsService {
     }
   }
 
-  // ==================================================
+
   // Obtener reseñas de un restaurante (por rol)
-  // ==================================================
+  
   async getRestaurantReviews(
     restaurantId: number,
     role?: string,
@@ -95,7 +94,7 @@ export class ReviewsService {
       }
     }
 
-    // Cliente → ve reseñas sin filtrar
+    // Cliente ve reseñas sin filtrar
     return this.reviewRepo.find({
       where: { restaurantId },
       relations: ['user'],
@@ -103,9 +102,9 @@ export class ReviewsService {
     });
   }
 
-  // ==================================================
+  
   // Obtener reseñas del usuario
-  // ==================================================
+  
   async getUserReviews(userId: number) {
     return this.reviewRepo.find({
       where: { userId },
@@ -114,9 +113,9 @@ export class ReviewsService {
     });
   }
 
-  // ==================================================
+  
   // Actualizar reseña (solo autor)
-  // ==================================================
+  
   async updateReview(
     reviewId: number,
     userId: number,
@@ -136,9 +135,9 @@ export class ReviewsService {
     return this.reviewRepo.save(review);
   }
 
-  // ==================================================
+
   // Eliminar reseña (solo autor)
-  // ==================================================
+  
   async deleteReview(reviewId: number, userId: number) {
     const review = await this.reviewRepo.findOne({ where: { reviewId } });
 
@@ -153,9 +152,9 @@ export class ReviewsService {
     return { success: true };
   }
 
-  // ==================================================
+
   // REPORTAR RESEÑA (dueño)
-  // ==================================================
+
   async reportReview(reviewId: number, ownerId: number, reason: string) {
     const review = await this.reviewRepo.findOne({
       where: { reviewId },
@@ -185,9 +184,9 @@ export class ReviewsService {
     return this.reportRepo.save(report);
   }
 
-  // ==================================================
+  
   // ADMIN: obtener todos los reportes
-  // ==================================================
+  
   async getReports() {
     return this.reportRepo.find({
       relations: ['review', 'user'],
@@ -195,9 +194,9 @@ export class ReviewsService {
     });
   }
 
-  // ==================================================
+  
   // ADMIN: eliminar reseña reportada
-  // ==================================================
+ 
   async adminDeleteReview(reviewId: number) {
     const review = await this.reviewRepo.findOne({ where: { reviewId } });
 
@@ -214,9 +213,9 @@ export class ReviewsService {
     return { success: true };
   }
 
-  // ==================================================
+  
   // ADMIN: resolver reporte sin borrar reseña
-  // ==================================================
+ 
   async resolveReport(reportId: number) {
     const report = await this.reportRepo.findOne({ where: { reportId } });
 

@@ -18,7 +18,12 @@ export class FilterRestaurantsDto {
   @IsString()
   zone?: string;
 
-  // Rating mínimo (ej: 4, 4.5, etc.)
+  // ejemplo nombre
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  // Rating mínimo 
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
@@ -36,13 +41,7 @@ export class FilterRestaurantsDto {
   @IsBoolean()
   isPremium?: boolean;
 
-  /**
-   * Cómo ordenar:
-   *  - "rating"  => r.avgRating DESC
-   *  - "reviews" => r.totalReviews DESC
-   *  - "price"   => r.priceRange ASC
-   *  - "name"    => r.name ASC (default)
-   */
+ 
   @IsOptional()
   @IsString()
   orderBy?: 'rating' | 'reviews' | 'price' | 'name';

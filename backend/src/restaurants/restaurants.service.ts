@@ -1,4 +1,3 @@
-// src/restaurants/restaurants.service.ts
 import {
   Injectable,
   NotFoundException,
@@ -9,10 +8,13 @@ import { Repository } from 'typeorm';
 
 import { Restaurant } from './restaurant.entity';
 import { RestaurantImage } from './restaurant-image.entity';
+
 import { CreateRestaurantDto } from './dto/create.dto';
 import { UpdateRestaurantDto } from './dto/update.dto';
 import { FilterRestaurantsDto } from './dto/filter-restaurants.dto';
 import { ValidateRestaurantDto } from './dto/validate-restaurant.dto';
+import { Subscription } from '../subscriptions/subscription.entity';
+
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -26,46 +28,46 @@ export class RestaurantsService {
     private readonly imageRepo: Repository<RestaurantImage>,
   ) {}
 
-  // ===========================
+
   // CREAR RESTAURANTE (OWNER)
-  // ===========================
+ 
   async create(ownerUserId: number, dto: CreateRestaurantDto) {
     const restaurant = this.restaurantRepo.create({
       ownerUserId,
       ...dto,
+      mapsUrl: null, // mapsUrl solo premium
     });
 
     return this.restaurantRepo.save(restaurant);
   }
 
-  // ===========================
-  // RESTAURANTES POR OWNER
-  // ===========================
+  // RESTAURANTES DEL OWNER
+ 
   async findByOwner(ownerUserId: number) {
     return this.restaurantRepo.find({
       where: { ownerUserId },
-      relations: ['images'],
+      relations: ['images', 'menus', 'posts', 'subscription'],
       order: { restaurantId: 'ASC' },
     });
   }
 
-  // ===========================
+  
   // TODOS LOS RESTAURANTES (ADMIN)
-  // ===========================
+
   async findAll() {
     return this.restaurantRepo.find({
-      relations: ['images'],
+      relations: ['images', 'menus', 'posts', 'subscription'],
       order: { restaurantId: 'ASC' },
     });
   }
 
-  // ===========================
+
   // OBTENER POR ID (PÚBLICO)
-  // ===========================
+ 
   async findOne(id: number) {
     const restaurant = await this.restaurantRepo.findOne({
       where: { restaurantId: id },
-      relations: ['images'],
+      relations: ['images', 'menus', 'posts', 'subscription'],
     });
 
     if (!restaurant) {
@@ -75,14 +77,10 @@ export class RestaurantsService {
     return restaurant;
   }
 
-  // ===========================
-  // ACTUALIZAR RESTAURANTE (OWNER)
-  // ===========================
-  async update(
-    id: number,
-    ownerUserId: number,
-    dto: UpdateRestaurantDto,
-  ) {
+
+  // ACTUALIZAR RESTAURANTE (OWNER) – VALIDACIONES DE PLAN
+  
+  async update(id: number, ownerUserId: number, dto: UpdateRestaurantDto) {
     const restaurant = await this.restaurantRepo.findOne({
       where: { restaurantId: id },
     });
@@ -92,18 +90,50 @@ export class RestaurantsService {
     }
 
     if (restaurant.ownerUserId !== ownerUserId) {
+      throw new ForbiddenException('No puedes modificar un restaurante que no es tuyo');
+    }
+
+    const isPremium = restaurant.isPremium;
+
+ 
+    // VALIDACIONES POR PLAN
+ 
+
+    // mapsUrl prohibido para plan Normal
+    if (!isPremium && dto.mapsUrl) {
       throw new ForbiddenException(
-        'No puedes modificar un restaurante que no es tuyo',
+        'Los restaurantes del plan Normal NO pueden usar ubicación (mapsUrl).'
       );
     }
 
-    Object.assign(restaurant, dto);
+    //  Menús prohibidos para plan Normal
+    if (!isPremium && (dto as any).menuUrl) {
+      throw new ForbiddenException(
+        'Solo los restaurantes Premium pueden subir un menú.'
+      );
+    }
+
+    // Social links solo Premium 
+    if (!isPremium && (dto as any).socialLinks) {
+      throw new ForbiddenException(
+        'Los restaurantes del plan Normal no pueden agregar redes sociales.'
+      );
+    }
+
+  
+    // ASIGNACIÓN FINAL
+   
+    Object.assign(restaurant, {
+      ...dto,
+      mapsUrl: isPremium ? dto.mapsUrl ?? restaurant.mapsUrl : null,
+    });
+
     return this.restaurantRepo.save(restaurant);
   }
 
-  // ===========================
-  // ELIMINAR RESTAURANTE (OWNER)
-  // ===========================
+  
+  // ELIMINAR RESTAURANTE
+ 
   async delete(id: number, ownerUserId: number) {
     const restaurant = await this.restaurantRepo.findOne({
       where: { restaurantId: id },
@@ -115,44 +145,52 @@ export class RestaurantsService {
     }
 
     if (restaurant.ownerUserId !== ownerUserId) {
-      throw new ForbiddenException(
-        'No puedes eliminar un restaurante que no es tuyo',
-      );
+      throw new ForbiddenException('No puedes eliminar este restaurante');
     }
 
-    // Borrar archivos físicos de imágenes si existen
-    if (restaurant.images && restaurant.images.length > 0) {
-      for (const img of restaurant.images) {
-        if (img.imageUrl) {
-          const fullPath = path.join(process.cwd(), img.imageUrl);
-          if (fs.existsSync(fullPath)) {
-            fs.unlinkSync(fullPath);
-          }
-        }
-      }
+    // Eliminar imágenes físicas
+    for (const img of restaurant.images ?? []) {
+      const fullPath = path.join(process.cwd(), img.imageUrl);
+      if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
     }
 
     await this.restaurantRepo.remove(restaurant);
     return { success: true };
   }
 
-  // ===========================
-  // SUBIR IMAGEN (OWNER)
-  // ===========================
+  
+  // CONTAR IMÁGENES (para validar límite)
+
+  private async countImages(restaurantId: number): Promise<number> {
+    return this.imageRepo.count({
+      where: { restaurant: { restaurantId } },
+    });
+  }
+
+
+  // SUBIR IMAGEN CON LÍMITE POR PLAN
+
   async addImage(
     restaurantId: number,
     ownerUserId: number,
-    file: any, // evitamos problemas de tipos con Express.Multer.File
+    file: any,
   ) {
     const restaurant = await this.restaurantRepo.findOne({
-      where: {
-        restaurantId,
-        ownerUserId,
-      },
+      where: { restaurantId, ownerUserId },
     });
 
     if (!restaurant) {
       throw new NotFoundException('Restaurante no encontrado');
+    }
+
+    const currentImages = await this.countImages(restaurantId);
+    const limit = restaurant.isPremium ? 5 : 2;
+
+    if (currentImages >= limit) {
+      throw new ForbiddenException(
+        `Límite de imágenes alcanzado. ` +
+        `Plan actual: ${restaurant.isPremium ? 'Premium (5 máximo)' : 'Normal (2 máximo)'}`,
+      );
     }
 
     const image = this.imageRepo.create({
@@ -165,102 +203,57 @@ export class RestaurantsService {
     return this.imageRepo.save(image);
   }
 
- // ===========================
-// BÚSQUEDA / LISTADO CON FILTROS
-// ===========================
-async findWithFilters(filters: FilterRestaurantsDto) {
-  const {
-    search,
-    city,
-    zone,
-    minRating,
-    maxPriceRange,
-    isPremium,
-    orderBy,
-  } = filters;
+  // FILTROS DE BÚSQUEDA
 
-  const qb = this.restaurantRepo
-    .createQueryBuilder('r')
-    .leftJoinAndSelect('r.images', 'img')
-    // Solo restaurantes aprobados para mostrar a los usuarios
-    .where('r.isApproved = :approved', { approved: true });
+  async findWithFilters(filters: FilterRestaurantsDto) {
+    const qb = this.restaurantRepo
+      .createQueryBuilder('r')
+      .leftJoinAndSelect('r.images', 'img')
+      .where('r.isApproved = true');
 
-  // Texto libre: busca en nombre o descripción
-  if (search) {
-    qb.andWhere(
-      '(r.name ILIKE :search OR r.description ILIKE :search)',
-      { search: `%${search}%` },
-    );
+    if (filters.name) {
+      qb.andWhere('(r.name LIKE :s OR r.description LIKE :s)', {
+        s: `%${filters.name}%`,
+      });
+    }
+
+    if (filters.city) qb.andWhere('r.city ILIKE :city', { city: `%${filters.city}%` });
+    if (filters.zone) qb.andWhere('r.zone = :zone', { zone: filters.zone });
+
+    if (filters.minRating !== undefined)
+      qb.andWhere('r.avgRating >= :rt', { rt: filters.minRating });
+
+    if (filters.maxPriceRange !== undefined)
+      qb.andWhere('r.priceRange <= :pr', { pr: filters.maxPriceRange });
+
+    if (filters.isPremium !== undefined)
+      qb.andWhere('r.isPremium = :p', { p: filters.isPremium });
+
+    qb.orderBy('r.name', 'ASC');
+
+    return qb.getMany();
   }
 
-  // Ciudad (LIKE para permitir "Guate", "Guatemala", etc.)
-  if (city) {
-    qb.andWhere('r.city ILIKE :city', { city: `%${city}%` });
-  }
-
-  // Zona exacta
-  if (zone) {
-    qb.andWhere('r.zone = :zone', { zone });
-  }
-
-  // Rating mínimo
-  if (minRating !== undefined) {
-    qb.andWhere('r.avgRating >= :minRating', { minRating });
-  }
-
-  // Precio máximo (1–5)
-  if (maxPriceRange !== undefined) {
-    qb.andWhere('r.priceRange <= :maxPriceRange', { maxPriceRange });
-  }
-
-  // ¿Solo premium?
-  if (isPremium !== undefined) {
-    qb.andWhere('r.isPremium = :isPremium', { isPremium });
-  }
-
-  // Ordenamiento
-  switch (orderBy) {
-    case 'rating':
-      qb.orderBy('r.avgRating', 'DESC');
-      break;
-    case 'reviews':
-      qb.orderBy('r.totalReviews', 'DESC');
-      break;
-    case 'price':
-      qb.orderBy('r.priceRange', 'ASC');
-      break;
-    case 'name':
-    default:
-      qb.orderBy('r.name', 'ASC');
-      break;
-  }
-
-  return qb.getMany();
-}
-async validateRestaurant(id: number, dto: ValidateRestaurantDto) {
-  const restaurant = await this.restaurantRepo.findOne({
-    where: { restaurantId: id },
-  });
-
-  if (!restaurant) {
-    throw new NotFoundException('Restaurante no encontrado');
-  }
-
-  // Actualizamos estado de aprobación
-  restaurant.isApproved = dto.isApproved;
-
-  // Estado de onboarding según aprobación
-  restaurant.onboardingStatus = dto.isApproved ? 'Aprobado' : 'Rechazado';
-
-  // Comentario opcional del admin
-  restaurant.onboardingComment = dto.onboardingComment !== undefined ? dto.onboardingComment : null;
-
-  // Si el admin envía isPremium, lo actualizamos también
-  if (dto.isPremium !== undefined) {
-    restaurant.isPremium = dto.isPremium;
-  }
-
-  return this.restaurantRepo.save(restaurant);
-}
   
+  // VALIDACIÓN DE RESTAURANTE (ADMIN)
+
+  async validateRestaurant(id: number, dto: ValidateRestaurantDto) {
+    const restaurant = await this.restaurantRepo.findOne({
+      where: { restaurantId: id },
+    });
+
+    if (!restaurant) {
+      throw new NotFoundException('Restaurante no encontrado');
+    }
+
+    restaurant.isApproved = dto.isApproved;
+    restaurant.onboardingStatus = dto.isApproved ? 'Aprobado' : 'Rechazado';
+    restaurant.onboardingComment = dto.onboardingComment ?? null;
+
+    if (dto.isPremium !== undefined) {
+      restaurant.isPremium = dto.isPremium;
+    }
+
+    return this.restaurantRepo.save(restaurant);
+  }
 }

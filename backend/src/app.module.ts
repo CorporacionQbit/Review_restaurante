@@ -12,17 +12,18 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { RestaurantsModule } from './restaurants/restaurants.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { MenusModule } from './menu/menus.module';
+import { PostsModule } from './post/posts.module';
+import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 
 import { AuthMiddleware } from './auth/auth.middleware';
 
 @Module({
   imports: [
-    // Variables de entorno globales
     ConfigModule.forRoot({
       isGlobal: true,
     }),
 
-    // Conexión a PostgreSQL
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -38,11 +39,13 @@ import { AuthMiddleware } from './auth/auth.middleware';
       }),
     }),
 
-    // Módulos
     UsersModule,
     AuthModule,
     RestaurantsModule,
     ReviewsModule,
+    MenusModule,
+    PostsModule,
+    SubscriptionsModule,
   ],
 })
 export class AppModule implements NestModule {
@@ -50,38 +53,50 @@ export class AppModule implements NestModule {
     consumer
       .apply(AuthMiddleware)
       .forRoutes(
-        // ======================================================
-        // USERS PROTEGIDOS
-        // ======================================================
+        // ================= USERS =================
         { path: 'users', method: RequestMethod.ALL },
         { path: 'users/me', method: RequestMethod.ALL },
+        { path: 'users/me/convert-to-owner', method: RequestMethod.ALL },
+        { path: 'users/me/reviews', method: RequestMethod.ALL },
         { path: 'users/:id', method: RequestMethod.ALL },
 
-        // ======================================================
-        // RESTAURANTS PROTEGIDOS
-        // ======================================================
+        // ================= RESTAURANTS =================
         { path: 'restaurants', method: RequestMethod.ALL },
         { path: 'restaurants/my-restaurants', method: RequestMethod.ALL },
+        { path: 'restaurants/search', method: RequestMethod.ALL },
         { path: 'restaurants/:id', method: RequestMethod.ALL },
         { path: 'restaurants/:id/images', method: RequestMethod.ALL },
+        { path: 'restaurants/:id/validate', method: RequestMethod.ALL },
+
+        // ================= REVIEWS =================
         { path: 'restaurants/:restaurantId/reviews', method: RequestMethod.ALL },
-
-        // ======================================================
-        // REVIEWS PROTEGIDOS
-        // ======================================================
-        { path: 'reviews', method: RequestMethod.ALL },
         { path: 'reviews/:id', method: RequestMethod.ALL },
-
-        // *** IMPORTANTE: REPORTAR RESEÑA ***
         { path: 'reviews/:id/report', method: RequestMethod.ALL },
 
-        // ======================================================
-        // ADMIN PROTEGIDOS
-        // ======================================================
+        // ================= ADMIN =================
         { path: 'admin/review-reports', method: RequestMethod.ALL },
         { path: 'admin/reviews/:id', method: RequestMethod.ALL },
         { path: 'admin/review-reports/:id/resolve', method: RequestMethod.ALL },
+
+        // ================= POSTS =================
+        { path: 'posts', method: RequestMethod.ALL },
+        { path: 'posts/:id', method: RequestMethod.ALL },
+        { path: 'posts/restaurant/:id', method: RequestMethod.ALL },
+
+        // ================= MENÚS =================
+        { path: 'restaurants/:id/menu', method: RequestMethod.ALL },
+        { path: 'menu/:menuId', method: RequestMethod.ALL },
+
+        // ================= SUBSCRIPTIONS  =================
+        { path: 'subscriptions', method: RequestMethod.ALL },
+        { path: 'subscriptions/my', method: RequestMethod.ALL },
+        { path: 'subscriptions/upgrade', method: RequestMethod.ALL },
+        { path: 'subscriptions/downgrade', method: RequestMethod.ALL },
+        { path: 'subscriptions/cancel', method: RequestMethod.ALL },
+        { path: 'subscriptions/reactivate', method: RequestMethod.ALL },
+        { path: 'subscriptions/history', method: RequestMethod.ALL },
+        { path: 'subscriptions/payments', method: RequestMethod.ALL },
+        { path: 'subscriptions/details', method: RequestMethod.ALL },
       );
-    // Las rutas /auth/* son públicas (login/register)
   }
 }

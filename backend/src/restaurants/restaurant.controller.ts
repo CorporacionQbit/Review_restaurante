@@ -29,9 +29,9 @@ import { ValidateRestaurantDto } from './dto/validate-restaurant.dto';
 export class RestaurantsController {
   constructor(private readonly restaurantsService: RestaurantsService) {}
 
-  // =========================================
+ 
   // Dueño crea restaurante
-  // =========================================
+
   @Post()
   async create(@Req() req: AuthRequest, @Body() dto: CreateRestaurantDto) {
     if (!req.user || req.user.role !== 'owner') {
@@ -41,9 +41,8 @@ export class RestaurantsController {
     return this.restaurantsService.create(req.user.userId, dto);
   }
 
-  // =========================================
   // Dueño obtiene sus restaurantes
-  // =========================================
+
   @Get('my-restaurants')
   async myRestaurants(@Req() req: AuthRequest) {
     if (!req.user || req.user.role !== 'owner') {
@@ -53,9 +52,9 @@ export class RestaurantsController {
     return this.restaurantsService.findByOwner(req.user.userId);
   }
 
-  // =========================================
+
   // Admin obtiene todos los restaurantes
-  // =========================================
+  
   @Get()
   async findAll(@Req() req: AuthRequest) {
     if (!req.user || req.user.role !== 'admin') {
@@ -65,26 +64,24 @@ export class RestaurantsController {
     return this.restaurantsService.findAll();
   }
 
-  // =========================================
   // Búsqueda con filtros (público / cliente)
-  // GET /restaurants/search?city=...&zone=...&minRating=...
-  // =========================================
+ 
+ 
   @Get('search')
   async search(@Query() filters: FilterRestaurantsDto) {
     return this.restaurantsService.findWithFilters(filters);
   }
 
-  // =========================================
   // Obtener restaurante por ID (público)
-  // =========================================
+ 
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.restaurantsService.findOne(Number(id));
   }
 
-  // =========================================
+  
   // Dueño actualiza su restaurante
-  // =========================================
+ 
   @Patch(':id')
   async update(
     @Req() req: AuthRequest,
@@ -98,9 +95,8 @@ export class RestaurantsController {
     return this.restaurantsService.update(Number(id), req.user.userId, dto);
   }
 
-  // =========================================
   // Dueño elimina su restaurante
-  // =========================================
+
   @Delete(':id')
   async delete(@Req() req: AuthRequest, @Param('id') id: string) {
     if (!req.user) {
@@ -110,11 +106,10 @@ export class RestaurantsController {
     return this.restaurantsService.delete(Number(id), req.user.userId);
   }
 
-  // =========================================
+ 
   // Subir imagen a restaurante (OWNER)
   // POST /restaurants/:id/images
-  // Body (form-data): file (File)
-  // =========================================
+
   @Post(':id/images')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -126,7 +121,7 @@ export class RestaurantsController {
         }
       },
       limits: {
-        fileSize: 10 * 1024 * 1024, // 10 MB
+        fileSize: 10 * 1024 * 1024, // maximo por imagen 10 MB
       },
     }),
   )

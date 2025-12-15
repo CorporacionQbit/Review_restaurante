@@ -24,10 +24,10 @@ import type { AuthRequest } from '../auth/auth.middleware';
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
-  // ============================================================
+
   // CREAR RESEÑA  (CLIENTE)
-  // POST /restaurants/:restaurantId/reviews
-  // ============================================================
+
+
   @Post('restaurants/:restaurantId/reviews')
   async createReview(
     @Req() req: AuthRequest,
@@ -45,10 +45,9 @@ export class ReviewsController {
     );
   }
 
-  // ============================================================
+
   // OBTENER RESEÑAS DE UN RESTAURANTE
-  // GET /restaurants/:restaurantId/reviews
-  // ============================================================
+ 
   @Get('restaurants/:restaurantId/reviews')
   async getRestaurantReviews(
     @Req() req: AuthRequest,
@@ -61,10 +60,10 @@ export class ReviewsController {
     );
   }
 
-  // ============================================================
+ 
   // OBTENER RESEÑAS DEL USUARIO LOGUEADO
-  // GET /users/me/reviews
-  // ============================================================
+ 
+
   @Get('users/me/reviews')
   async getMyReviews(@Req() req: AuthRequest) {
     if (!req.user) {
@@ -74,10 +73,10 @@ export class ReviewsController {
     return this.reviewsService.getUserReviews(req.user.userId);
   }
 
-  // ============================================================
+ 
   // ACTUALIZAR RESEÑA  (AUTOR)
-  // PATCH /reviews/:id
-  // ============================================================
+  
+ 
   @Patch('reviews/:id')
   async updateReview(
     @Req() req: AuthRequest,
@@ -95,10 +94,10 @@ export class ReviewsController {
     );
   }
 
-  // ============================================================
+ 
   // ELIMINAR RESEÑA  (AUTOR)
-  // DELETE /reviews/:id
-  // ============================================================
+
+ 
   @Delete('reviews/:id')
   async deleteReview(
     @Req() req: AuthRequest,
@@ -114,10 +113,10 @@ export class ReviewsController {
     );
   }
 
-  // ============================================================
+ 
   // REPORTAR RESEÑA (DUEÑO)
   // POST /reviews/:id/report
-  // ============================================================
+
 @Post('reviews/:id/report')
 async reportReview(
   @Req() req: AuthRequest,
@@ -137,10 +136,9 @@ async reportReview(
   );
 }
 
-  // ============================================================
   // ADMIN: OBTENER TODOS LOS REPORTES
   // GET /admin/review-reports
-  // ============================================================
+ 
   @Get('admin/review-reports')
   async getReports(@Req() req: AuthRequest) {
     if (!req.user || req.user.role !== 'admin') {
@@ -150,10 +148,9 @@ async reportReview(
     return this.reviewsService.getReports();
   }
 
-  // ============================================================
   // ADMIN: ELIMINAR RESEÑA REPORTADA
   // DELETE /admin/reviews/:id
-  // ============================================================
+ 
   @Delete('admin/reviews/:id')
   async deleteReviewAdmin(
     @Req() req: AuthRequest,
@@ -166,10 +163,10 @@ async reportReview(
     return this.reviewsService.adminDeleteReview(Number(id));
   }
 
-  // ============================================================
+ 
   // ADMIN: RESOLVER REPORTE SIN ELIMINAR RESEÑA
   // PATCH /admin/review-reports/:id/resolve
-  // ============================================================
+ 
   @Patch('admin/review-reports/:id/resolve')
   async resolveReport(
     @Req() req: AuthRequest,

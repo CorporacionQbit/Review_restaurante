@@ -14,7 +14,7 @@ import { ReviewsController } from './reviews.controller';
     TypeOrmModule.forFeature([
       Review,
       Restaurant,
-      ReviewReport,   // <-- LO QUE FALTABA
+      ReviewReport,   
     ]),
   ],
   controllers: [ReviewsController],
