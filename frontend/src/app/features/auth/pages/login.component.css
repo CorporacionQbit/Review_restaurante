@@ -1,0 +1,126 @@
+.login-bg {
+  min-height: 100vh;
+  background: #b51212;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* MODAL */
+.login-modal {
+  position: relative;
+  z-index: 10;
+  width: 1100px;
+  max-width: 95%;
+  height: 480px;
+  background: #fff;
+  display: flex;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+}
+
+/* IZQUIERDA */
+.login-form {
+  width: 40%;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.logo {
+  width: 90px;
+  margin: 0 auto 24px;
+}
+
+.login-form input {
+  margin-bottom: 14px;
+}
+
+.login-btn {
+  background: #b11212;
+  border: none;
+}
+
+.login-btn:hover {
+  background: #a50f0f;
+}
+
+/* LINKS */
+.links {
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.links a {
+  color: #b11212;
+  cursor: pointer;
+}
+
+/* DERECHA */
+.login-image {
+  width: 60%;
+  position: relative;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.login-image::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  pointer-events: none; /* 🔥 ESTO ARREGLA TODO */
+}
+
+/* SOCIAL */
+.social-divider {
+  text-align: center;
+  margin: 22px 0;
+  font-size: 12px;
+  color: #888;
+}
+
+.social-buttons {
+  margin-top: 10px;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 42px;
+  font-size: 14px;
+}
+
+.social-btn img {
+  width: 18px;
+}
+
+/* GOOGLE */
+.google-btn {
+  background: #fff;
+  border: 1px solid #ddd;
+}
+
+/* FACEBOOK */
+.facebook-btn {
+  background: #1877f2;
+  color: #fff;
+  border: none;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .login-image {
+    display: none;
+  }
+  .login-form {
+    width: 100%;
+  }
+}

@@ -1,4 +1,3 @@
-// src/restaurants/restaurant.controller.ts
 import {
   Controller,
   Post,
@@ -23,65 +22,58 @@ import { CreateRestaurantDto } from './dto/create.dto';
 import { UpdateRestaurantDto } from './dto/update.dto';
 import { FilterRestaurantsDto } from './dto/filter-restaurants.dto';
 import { ValidateRestaurantDto } from './dto/validate-restaurant.dto';
-
+import { PaginationQueryDto } from '../filters/dto/pagination-query.dto';
 
 @Controller('restaurants')
 export class RestaurantsController {
-  constructor(private readonly restaurantsService: RestaurantsService) {}
-
- 
-  // Dueño crea restaurante
+  constructor(private readonly service: RestaurantsService) {}
 
   @Post()
   async create(@Req() req: AuthRequest, @Body() dto: CreateRestaurantDto) {
     if (!req.user || req.user.role !== 'owner') {
-      throw new ForbiddenException('Solo usuarios dueños pueden crear restaurantes');
+      throw new ForbiddenException('Solo dueños pueden crear restaurantes');
     }
-
-    return this.restaurantsService.create(req.user.userId, dto);
+    return this.service.create(req.user.userId, dto);
   }
-
-  // Dueño obtiene sus restaurantes
 
   @Get('my-restaurants')
   async myRestaurants(@Req() req: AuthRequest) {
     if (!req.user || req.user.role !== 'owner') {
-      throw new ForbiddenException('Solo dueños pueden ver sus restaurantes');
+      throw new ForbiddenException('Solo dueños');
     }
-
-    return this.restaurantsService.findByOwner(req.user.userId);
+    return this.service.findByOwner(req.user.userId);
   }
 
-
-  // Admin obtiene todos los restaurantes
-  
+  // ADMIN – LISTADO PAGINADO
   @Get()
-  async findAll(@Req() req: AuthRequest) {
+  async findAll(
+    @Req() req: AuthRequest,
+    @Query() pagination: PaginationQueryDto,
+  ) {
     if (!req.user || req.user.role !== 'admin') {
-      throw new ForbiddenException('Solo administradores pueden ver todos los restaurantes');
+      throw new ForbiddenException('Solo administradores');
     }
-
-    return this.restaurantsService.findAll();
+    return this.service.findAllPaginated(pagination);
   }
 
-  // Búsqueda con filtros (público / cliente)
- 
- 
+  // SEARCH + PAGINACIÓN
   @Get('search')
-  async search(@Query() filters: FilterRestaurantsDto) {
-    return this.restaurantsService.findWithFilters(filters);
+  async search(
+    @Query() filters: FilterRestaurantsDto,
+    @Query() pagination: PaginationQueryDto,
+  ) {
+    return this.service.findWithFilters(filters, pagination);
   }
 
-  // Obtener restaurante por ID (público)
- 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return this.restaurantsService.findOne(Number(id));
+    const num = Number(id);
+    if (Number.isNaN(num)) {
+      throw new BadRequestException('ID inválido');
+    }
+    return this.service.findOne(num);
   }
 
-  
-  // Dueño actualiza su restaurante
- 
   @Patch(':id')
   async update(
     @Req() req: AuthRequest,
@@ -89,74 +81,41 @@ export class RestaurantsController {
     @Body() dto: UpdateRestaurantDto,
   ) {
     if (!req.user) {
-      throw new UnauthorizedException('Usuario no autenticado');
+      throw new UnauthorizedException();
     }
-
-    return this.restaurantsService.update(Number(id), req.user.userId, dto);
+    return this.service.update(Number(id), req.user.userId, dto);
   }
-
-  // Dueño elimina su restaurante
 
   @Delete(':id')
   async delete(@Req() req: AuthRequest, @Param('id') id: string) {
     if (!req.user) {
-      throw new UnauthorizedException('Usuario no autenticado');
+      throw new UnauthorizedException();
     }
-
-    return this.restaurantsService.delete(Number(id), req.user.userId);
+    return this.service.delete(Number(id), req.user.userId);
   }
 
- 
-  // Subir imagen a restaurante (OWNER)
-  // POST /restaurants/:id/images
-
   @Post(':id/images')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      fileFilter: (req, file, cb) => {
-        if (!file.mimetype.startsWith('image/')) {
-          cb(new BadRequestException('Solo se permiten archivos de imagen'), false);
-        } else {
-          cb(null, true);
-        }
-      },
-      limits: {
-        fileSize: 10 * 1024 * 1024, // maximo por imagen 10 MB
-      },
-    }),
-  )
+  @UseInterceptors(FileInterceptor('file'))
   async uploadImage(
     @Req() req: AuthRequest,
     @Param('id') id: string,
     @UploadedFile() file: any,
   ) {
     if (!req.user || req.user.role !== 'owner') {
-      throw new ForbiddenException('Solo dueños pueden subir imágenes');
+      throw new ForbiddenException();
     }
-
-    if (!file) {
-      throw new BadRequestException('No se recibió ningún archivo');
-    }
-
-    return this.restaurantsService.addImage(
-      Number(id),
-      req.user.userId,
-      file,
-    );
+    return this.service.addImage(Number(id), req.user.userId, file);
   }
+
   @Patch(':id/validate')
-  async validateRestaurant(
+  async validate(
     @Req() req: AuthRequest,
     @Param('id') id: string,
     @Body() dto: ValidateRestaurantDto,
   ) {
     if (!req.user || req.user.role !== 'admin') {
-      throw new ForbiddenException(
-        'Solo administradores pueden validar restaurantes',
-      );
+      throw new ForbiddenException();
     }
-
-    return this.restaurantsService.validateRestaurant(Number(id), dto);
+    return this.service.validateRestaurant(Number(id), dto);
   }
-
 }

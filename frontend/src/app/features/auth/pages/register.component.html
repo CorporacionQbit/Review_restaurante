@@ -1,0 +1,61 @@
+<div class="register-bg">
+
+  <!-- OVERLAY -->
+  <div class="overlay"></div>
+
+  <!-- CARD -->
+  <div class="register-card">
+
+    <h2>Crear cuenta</h2>
+    <p class="subtitle">Regístrate para comenzar</p>
+
+    <form nz-form [formGroup]="form" (ngSubmit)="submit()">
+
+      <input
+        nz-input
+        placeholder="Nombre completo"
+        formControlName="fullName"
+      />
+
+      <input
+        nz-input
+        placeholder="Correo electrónico"
+        formControlName="email"
+      />
+
+      <input
+        nz-input
+        type="password"
+        placeholder="Contraseña"
+        formControlName="password"
+      />
+
+      <button
+        nz-button
+        nzType="primary"
+        nzBlock
+        class="register-btn"
+        [disabled]="loading"
+      >
+        {{ loading ? 'Creando cuenta...' : 'Registrarse' }}
+      </button>
+
+      <div class="divider">
+        <span>OR</span>
+      </div>
+
+      <button nz-button nzBlock class="google-btn" type="button">
+        <img src="assets/google.png" />
+        Registrarse con Google
+      </button>
+
+    </form>
+
+    <p class="footer-text">
+      ¿Ya tienes cuenta?
+      <a routerLink="/auth/login">Inicia sesión</a>
+    </p>
+
+  </div>
+
+</div>

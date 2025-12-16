@@ -1,0 +1,58 @@
+<div class="login-bg">
+
+  <div class="login-modal">
+
+    <!-- IZQUIERDA -->
+    <div class="login-form">
+
+      <img src="assets/logo.png" class="logo" alt="Logo" />
+
+      <form nz-form [formGroup]="form" (ngSubmit)="submit()">
+
+        <input nz-input placeholder="Email" formControlName="email" />
+        <input nz-input type="password" placeholder="Password" formControlName="password" />
+
+        <button
+          nz-button
+          nzType="primary"
+          nzBlock
+          class="login-btn"
+          type="submit"
+          [disabled]="loading"
+        >
+          {{ loading ? 'Ingresando...' : 'Login' }}
+        </button>
+
+        <div class="social-divider">
+          <span>or continue with</span>
+        </div>
+
+        <div class="social-buttons">
+          <button nz-button nzBlock class="social-btn google-btn" type="button">
+            <img src="assets/google.png" />
+            <span>Continue with Google</span>
+          </button>
+
+          <button nz-button nzBlock class="social-btn facebook-btn" type="button">
+            <img src="assets/facebook.png" />
+            <span>Continue with Facebook</span>
+          </button>
+        </div>
+
+      </form>
+
+      <div class="links">
+        <a>Forgot password?</a>
+        <a routerLink="/auth/register">Register</a>
+      </div>
+
+    </div>
+
+    <!-- DERECHA -->
+    <div
+      class="login-image"
+      [ngStyle]="{ 'background-image': 'url(' + currentImage + ')' }">
+    </div>
+
+  </div>
+</div>
