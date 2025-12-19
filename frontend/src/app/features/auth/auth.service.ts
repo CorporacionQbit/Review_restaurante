@@ -42,4 +42,18 @@ register(data: {
 }) {
   return this.http.post<any>(`${this.api}/auth/register`, data);
 }
+private redirectUrl: string | null = null;
+
+setRedirectUrl(url: string) {
+  this.redirectUrl = url;
+}
+
+getRedirectUrl(): string | null {
+  return this.redirectUrl;
+}
+
+clearRedirectUrl() {
+  this.redirectUrl = null;
+}
+
 }

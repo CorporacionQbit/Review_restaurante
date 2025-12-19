@@ -1,15 +1,17 @@
 import { Routes } from '@angular/router';
 import { LayoutComponent } from './shared/components/layout/layout.component';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
 
-  {
-    path: '',
-    redirectTo: 'auth/login',
-    pathMatch: 'full',
-  },
+  // 🏠 HOME PÚBLICO
+{
+  path: '',
+  redirectTo: 'restaurants/explore',
+  pathMatch: 'full',
+},
 
-  // AUTH
+  // 🔐 AUTH
   {
     path: 'auth',
     loadChildren: () =>
@@ -17,10 +19,11 @@ export const routes: Routes = [
         .then(m => m.AUTH_ROUTES),
   },
 
-  // APP INTERNA CON LAYOUT
+  // 🔒 APP INTERNA (PROTEGIDA)
   {
     path: '',
     component: LayoutComponent,
+    
     children: [
 
       {
@@ -40,8 +43,9 @@ export const routes: Routes = [
     ],
   },
 
+  // 🚫 404 → HOME
   {
     path: '**',
-    redirectTo: 'auth/login',
+    redirectTo: '',
   },
 ];

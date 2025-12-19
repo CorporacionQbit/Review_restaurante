@@ -15,6 +15,21 @@ export const AUTH_ROUTES: Routes = [
       import('./pages/register.component')
         .then(m => m.RegisterComponent),
   },
+  
+    {
+    path: 'forgot-password',
+    loadComponent: () =>
+      import('./pages/forgot-password.component').then(
+        m => m.ForgotPasswordComponent
+      ),
+  },
+  {
+  path: 'google-success',
+  loadComponent: () =>
+    import('./pages/google-success.component')
+      .then(m => m.GoogleSuccessComponent),
+},
+
 
   {
     path: '',

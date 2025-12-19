@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
   FormGroup
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -24,6 +24,7 @@ import { AuthService } from '../auth.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    RouterModule,
     NzFormModule,
     NzInputModule,
     NzButtonModule,
@@ -49,6 +50,7 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private auth: AuthService,
     private router: Router,
+    private route: ActivatedRoute,
     private message: NzMessageService
   ) {
     this.form = this.fb.group({
@@ -72,28 +74,41 @@ export class LoginComponent implements OnInit {
     this.auth.login(this.form.value)
       .pipe(
         finalize(() => {
-          this.loading = false; // ✅ NUNCA se queda cargando
+          this.loading = false;
         })
       )
       .subscribe({
         next: (res) => {
-          this.auth.saveToken(res.accessToken);
+  this.auth.saveToken(res.accessToken);
 
-          const role = this.auth.getUserRole();
-          console.log('ROL:', role);
+  // 🔁 REDIRECCIÓN POST-LOGIN (FLUJO YELP)
+  const redirectUrl = this.auth.getRedirectUrl();
 
-          if (role === 'admin') {
-            this.router.navigate(['/admin']);
-          } else if (role === 'owner') {
-            this.router.navigate(['/restaurants']);
-          } else {
-            // 👈 CLIENTE
-            this.router.navigate(['/restaurants/explore']);
-          }
-        },
+  if (redirectUrl) {
+    this.auth.clearRedirectUrl();
+    this.router.navigateByUrl(redirectUrl);
+    return;
+  }
+
+  // 🔁 Fallback por rol
+  const role = this.auth.getUserRole();
+
+  if (role === 'admin') {
+    this.router.navigate(['/admin']);
+  } else if (role === 'owner') {
+    this.router.navigate(['/restaurants']);
+  } else {
+    this.router.navigate(['/restaurants/explore']);
+  }
+},
         error: () => {
           this.message.error('Credenciales inválidas');
         },
       });
+  }
+
+  // 🔵 GOOGLE LOGIN
+  loginWithGoogle(): void {
+    window.location.href = 'http://localhost:3000/auth/google';
   }
 }

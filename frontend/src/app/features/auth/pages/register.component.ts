@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, Validators, ReactiveFormsModule, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -20,6 +20,7 @@ import { AuthService } from '../auth.service';
     NzFormModule,
     NzInputModule,
     NzButtonModule,
+    RouterModule,
     NzCardModule,
   ],
   templateUrl: './register.component.html',

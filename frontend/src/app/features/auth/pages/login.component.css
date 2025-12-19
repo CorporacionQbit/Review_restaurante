@@ -1,9 +1,11 @@
 .login-bg {
   min-height: 100vh;
-  background: #b51212;
+  
   display: flex;
   justify-content: center;
   align-items: center;
+   background-image: url('/assets/comida.png') ;
+  
 }
 
 /* MODAL */

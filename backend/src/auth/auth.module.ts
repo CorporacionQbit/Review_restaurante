@@ -4,8 +4,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { UsersModule } from '../users/users.module';
 import { RestaurantsModule } from '../restaurants/restaurants.module';
+
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+import { GoogleStrategy } from './strategies/google.strategies';
 
 @Module({
   imports: [
@@ -22,18 +24,21 @@ import { AuthController } from './auth.controller';
         const expiresInEnv = config.get<string>('JWT_EXPIRES_IN');
         const expiresIn = expiresInEnv
           ? parseInt(expiresInEnv, 10)
-          : 86400; // token expira en  24 horas, 1dia 
+          : 86400; // 24 horas
 
         return {
           secret,
           signOptions: {
-            expiresIn, 
+            expiresIn,
           },
         };
       },
     }),
   ],
-  providers: [AuthService],
+  providers: [
+    AuthService,
+    GoogleStrategy, // ✅ AQUÍ VA, con coma correcta
+  ],
   controllers: [AuthController],
   exports: [AuthService, JwtModule],
 })

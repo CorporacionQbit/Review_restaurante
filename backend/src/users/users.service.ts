@@ -73,4 +73,7 @@ export class UsersService {
     user.role = 'owner';
     return this.usersRepo.save(user);
   }
+  async save(user: User) {
+  return this.usersRepo.save(user);
+}
 }

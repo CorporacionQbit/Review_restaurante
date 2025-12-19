@@ -9,8 +9,18 @@
 
       <form nz-form [formGroup]="form" (ngSubmit)="submit()">
 
-        <input nz-input placeholder="Email" formControlName="email" />
-        <input nz-input type="password" placeholder="Password" formControlName="password" />
+        <input
+          nz-input
+          placeholder="Email"
+          formControlName="email"
+        />
+
+        <input
+          nz-input
+          type="password"
+          placeholder="Password"
+          formControlName="password"
+        />
 
         <button
           nz-button
@@ -28,21 +38,27 @@
         </div>
 
         <div class="social-buttons">
-          <button nz-button nzBlock class="social-btn google-btn" type="button">
+
+          <!-- GOOGLE -->
+          <button
+            nz-button
+            nzBlock
+            class="social-btn google-btn"
+            type="button"
+            (click)="loginWithGoogle()"
+          >
             <img src="assets/google.png" />
             <span>Continue with Google</span>
           </button>
 
-          <button nz-button nzBlock class="social-btn facebook-btn" type="button">
-            <img src="assets/facebook.png" />
-            <span>Continue with Facebook</span>
-          </button>
+        
+
         </div>
 
       </form>
 
       <div class="links">
-        <a>Forgot password?</a>
+        <a routerLink="/auth/forgot-password">Forgot password?</a>
         <a routerLink="/auth/register">Register</a>
       </div>
 

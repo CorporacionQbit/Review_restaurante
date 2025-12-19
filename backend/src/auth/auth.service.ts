@@ -152,4 +152,46 @@ export class AuthService {
       restaurantIds: payload.restaurantIds,
     });
   }
+ async loginWithGoogle(googleUser: {
+  email: string;
+  firstName: string;
+  lastName: string;
+  googleId: string;
+}) {
+  // 1️⃣ Buscar usuario por email
+  let user = await this.usersService.findByEmail(googleUser.email);
+
+  // 2️⃣ Si NO existe, crearlo
+  if (!user) {
+    user = await this.usersService.createUser({
+      email: googleUser.email,
+      passwordHash: '', // 👈 no usa password
+      fullName: `${googleUser.firstName} ${googleUser.lastName}`,
+    });
+
+    // método de registro
+    user.registrationMethod = 'google';
+    user.role = 'client';
+
+    await this.usersService.save(user); // 👈 necesitas este método
+  }
+
+  // 3️⃣ Generar JWT
+  const token = await this.signToken({
+    userId: user.userId,
+    email: user.email,
+    role: user.role,
+    isRestaurantOwner: user.role === 'owner',
+    restaurantIds: [],
+  });
+
+  return {
+    user: {
+      id: user.userId,
+      email: user.email,
+      fullName: user.fullName,
+    },
+    accessToken: token,
+  };
+}
 }
