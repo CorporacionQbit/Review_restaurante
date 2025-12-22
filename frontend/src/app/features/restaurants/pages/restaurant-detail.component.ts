@@ -1,4 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  ViewEncapsulation,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -16,6 +22,10 @@ import { AuthService } from '../../auth/auth.service';
 @Component({
   standalone: true,
   selector: 'app-restaurant-detail',
+
+  // 🔥 CLAVE PARA QUE EL CSS SE APLIQUE
+  encapsulation: ViewEncapsulation.None,
+
   imports: [
     CommonModule,
     FormsModule,
@@ -29,6 +39,9 @@ import { AuthService } from '../../auth/auth.service';
 })
 export class RestaurantDetailComponent implements OnInit {
 
+  // =========================
+  // 📌 DATA
+  // =========================
   restaurant: any;
   reviews: any[] = [];
 
@@ -37,6 +50,17 @@ export class RestaurantDetailComponent implements OnInit {
   loading = false;
 
   safeMapUrl?: SafeResourceUrl;
+
+  // =========================
+  // 📌 SCROLL A RESEÑAS
+  // =========================
+  @ViewChild('reviewsSection')
+  reviewsSection!: ElementRef<HTMLElement>;
+
+  // =========================
+  // 🖼️ GALERÍA – LIGHTBOX
+  // =========================
+  activeImageIndex: number | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -47,6 +71,9 @@ export class RestaurantDetailComponent implements OnInit {
     private sanitizer: DomSanitizer
   ) {}
 
+  // =========================
+  // 🔄 INIT
+  // =========================
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (!id) return;
@@ -55,6 +82,9 @@ export class RestaurantDetailComponent implements OnInit {
     this.loadReviews(id);
   }
 
+  // =========================
+  // 🏪 RESTAURANTE
+  // =========================
   loadRestaurant(id: number): void {
     this.service.getRestaurantById(id).subscribe({
       next: (res) => {
@@ -71,6 +101,9 @@ export class RestaurantDetailComponent implements OnInit {
     });
   }
 
+  // =========================
+  // ⭐ RESEÑAS
+  // =========================
   loadReviews(id: number): void {
     this.service.getRestaurantReviews(id).subscribe({
       next: (res) => {
@@ -82,6 +115,9 @@ export class RestaurantDetailComponent implements OnInit {
     });
   }
 
+  // =========================
+  // ✍️ ENVIAR RESEÑA
+  // =========================
   submitReview(): void {
     if (!this.auth.isLoggedIn()) {
       this.router.navigate(['/auth/login'], {
@@ -114,10 +150,57 @@ export class RestaurantDetailComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        this.message.error(err?.error?.message || 'No se pudo enviar la reseña');
+        this.message.error(
+          err?.error?.message || 'No se pudo enviar la reseña'
+        );
         this.loading = false;
       },
     });
+  }
+
+  // =========================
+  // 🔽 SCROLL SUAVE A RESEÑAS
+  // =========================
+  scrollToReviews(): void {
+    if (this.reviewsSection) {
+      this.reviewsSection.nativeElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  }
+
+  // =========================
+  // 🖼️ GALERÍA – LIGHTBOX
+  // =========================
+  openImage(index: number): void {
+    this.activeImageIndex = index;
+  }
+
+  closeImage(): void {
+    this.activeImageIndex = null;
+  }
+
+  nextImage(): void {
+    if (this.activeImageIndex === null) return;
+
+    this.activeImageIndex =
+      (this.activeImageIndex + 1) % this.restaurant.images.length;
+  }
+
+  prevImage(): void {
+    if (this.activeImageIndex === null) return;
+
+    this.activeImageIndex =
+      (this.activeImageIndex - 1 + this.restaurant.images.length) %
+      this.restaurant.images.length;
+  }
+
+  // =========================
+  // 🧠 HELPERS
+  // =========================
+  isLoggedIn(): boolean {
+    return this.auth.isLoggedIn();
   }
 
   isPremium(): boolean {

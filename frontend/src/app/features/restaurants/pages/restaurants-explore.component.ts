@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -12,6 +12,7 @@ import { RestaurantsService } from '../services/restaurants.service';
 @Component({
   standalone: true,
   selector: 'app-restaurants-explore',
+   encapsulation: ViewEncapsulation.None,
   imports: [
     CommonModule,
     FormsModule,
@@ -20,6 +21,7 @@ import { RestaurantsService } from '../services/restaurants.service';
     NzSelectModule,
     NzButtonModule,
   ],
+  
   templateUrl: './restaurants-explore.component.html',
   styleUrls: ['./restaurants-explore.component.css'],
 })
