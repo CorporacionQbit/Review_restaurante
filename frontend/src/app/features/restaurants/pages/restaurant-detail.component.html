@@ -1,99 +1,147 @@
-<h1>{{ restaurant?.name }}</h1>
+<div class="restaurant-detail" *ngIf="restaurant">
 
-<nz-rate [ngModel]="restaurant?.avgRating" nzDisabled></nz-rate>
+  <!-- HERO -->
+  <section
+    class="hero"
+    [style.backgroundImage]="
+      restaurant.images?.length
+        ? 'url(http://localhost:3000/' + restaurant.images[0].imageUrl + ')'
+        : 'linear-gradient(135deg, #222, #444)'
+    "
+  >
+    <div class="hero-overlay"></div>
 
-<p>{{ restaurant?.description }}</p>
+    <div class="hero-content">
+      <h1>{{ restaurant.name }}</h1>
 
-<hr />
+      <div class="hero-rating">
+        <nz-rate [ngModel]="restaurant.avgRating" nzDisabled></nz-rate>
+        <span class="meta">
+          {{ restaurant.avgRating || 0 }} · {{ restaurant.totalReviews }} reseñas
+        </span>
+        <span *ngIf="restaurant.isPremium" class="badge">Premium</span>
+      </div>
 
-<!-- =========================
-     GALERÍA
-========================= -->
-<div *ngIf="restaurant?.images?.length">
-  <img
-    *ngFor="let img of restaurant.images"
-    [src]="'http://localhost:3000/' + img.imageUrl"
-    width="120"
-    style="margin-right: 8px; border-radius: 6px"
-  />
-</div>
+      <p class="hero-description">
+        {{ restaurant.description || 'Sin descripción disponible' }}
+      </p>
+    </div>
+  </section>
 
-<hr />
+  <!-- CONTENT -->
+  <section class="content">
 
-<!-- =========================
-     RESEÑAS
-========================= -->
-<h3>Reseñas</h3>
+    <!-- LEFT -->
+    <div class="left">
 
-<div *ngFor="let r of reviews" style="margin-bottom: 12px">
-  <nz-rate [ngModel]="r.rating" nzDisabled></nz-rate>
-  <p>{{ r.reviewText }}</p>
-</div>
+      <!-- GALERÍA -->
+      <nz-card nzTitle="Galería">
+        <div class="gallery-pro" *ngIf="restaurant.images?.length; else noImages">
+          <div
+            class="main-image"
+            [style.backgroundImage]="'url(http://localhost:3000/' + restaurant.images[0].imageUrl + ')'"
+          ></div>
 
-<hr />
+          <div class="thumbs">
+            <div
+              class="thumb"
+              *ngFor="let img of restaurant.images.slice(1)"
+              [style.backgroundImage]="'url(http://localhost:3000/' + img.imageUrl + ')'"
+            ></div>
+          </div>
+        </div>
 
-<!-- =========================
-     FORMULARIO RESEÑA
-========================= -->
-<h3>Escribir reseña</h3>
+        <ng-template #noImages>
+          <p class="empty">Este restaurante aún no tiene imágenes.</p>
+        </ng-template>
+      </nz-card>
 
-<div *ngIf="!isLoggedIn()" style="color: #888; margin-bottom: 8px">
-  Debes iniciar sesión como cliente para escribir una reseña.
-</div>
+      <!-- RESEÑAS -->
+      <nz-card nzTitle="Reseñas" class="mt">
+        <div *ngIf="reviews.length; else noReviews">
+          <div class="review-card" *ngFor="let r of reviews">
+            <div class="avatar">
+              {{ r.user?.fullName?.charAt(0) || 'U' }}
+            </div>
+            <div class="review-content">
+              <nz-rate [ngModel]="r.rating" nzDisabled></nz-rate>
+              <p>{{ r.reviewText }}</p>
+            </div>
+          </div>
+        </div>
 
-<nz-rate [(ngModel)]="rating"></nz-rate>
+        <ng-template #noReviews>
+          <p class="empty">Aún no hay reseñas.</p>
+        </ng-template>
+      </nz-card>
 
-<textarea
-  nz-input
-  rows="3"
-  [(ngModel)]="reviewText"
-  placeholder="Escribe tu reseña"
->
-</textarea>
+      <!-- FORMULARIO -->
+      <nz-card nzTitle="Escribir reseña" class="mt review-form">
+        <p class="hint">Comparte tu experiencia con otros usuarios.</p>
 
-<button
-  nz-button
-  nzType="primary"
-  style="margin-top: 8px"
-  (click)="submitReview()"
->
-  Enviar reseña
-</button>
+        <nz-rate [(ngModel)]="rating"></nz-rate>
 
-<hr />
+        <textarea
+          nz-input
+          rows="4"
+          [(ngModel)]="reviewText"
+          placeholder="¿Qué te gustó o no te gustó?"
+        ></textarea>
 
-<!-- =========================
-     MAPA PREMIUM
-========================= -->
-<div *ngIf="isPremium() && safeMapUrl">
-  <h3>Ubicación</h3>
-  <iframe
-    [src]="safeMapUrl"
-    width="100%"
-    height="300"
-    style="border:0"
-  ></iframe>
-</div>
+        <button
+          nz-button
+          nzType="primary"
+          class="mt"
+          [disabled]="loading"
+          (click)="submitReview()"
+        >
+          Enviar reseña
+        </button>
+      </nz-card>
 
-<!-- =========================
-     MENÚ PREMIUM
-========================= -->
-<div *ngIf="isPremium() && restaurant?.menus?.length">
-  <h3>Menú</h3>
-  <ul>
-    <li *ngFor="let m of restaurant.menus">
-      <a [href]="m.menuUrl" target="_blank">Ver menú</a>
-    </li>
-  </ul>
-</div>
+    </div>
 
-<!-- =========================
-     POSTS PREMIUM
-========================= -->
-<div *ngIf="isPremium() && restaurant?.posts?.length">
-  <h3>Publicaciones</h3>
-  <div *ngFor="let p of restaurant.posts" style="margin-bottom: 12px">
-    <h4>{{ p.title }}</h4>
-    <p>{{ p.content }}</p>
-  </div>
+    <!-- RIGHT -->
+    <div class="right">
+
+      <!-- MAPA -->
+      <nz-card nzTitle="Ubicación">
+        <div *ngIf="isPremium() && safeMapUrl; else noMap">
+          <iframe
+            [src]="safeMapUrl"
+            width="100%"
+            height="220"
+            style="border:0; border-radius: 10px;"
+            loading="lazy">
+          </iframe>
+        </div>
+
+        <ng-template #noMap>
+          <p class="empty">📍 Disponible solo para restaurantes Premium.</p>
+        </ng-template>
+      </nz-card>
+
+      <!-- MENÚ -->
+      <nz-card nzTitle="Menú" class="mt">
+        <a
+          *ngIf="restaurant.menus?.length"
+          nz-button
+          nzType="primary"
+          target="_blank"
+          [href]="restaurant.menus[0].menuUrl"
+        >
+          🍽️ Ver menú
+        </a>
+      </nz-card>
+
+      <!-- POSTS -->
+      <nz-card nzTitle="Novedades" class="mt">
+        <div *ngFor="let p of restaurant.posts" class="post">
+          <strong>{{ p.title }}</strong>
+          <p>{{ p.content }}</p>
+        </div>
+      </nz-card>
+
+    </div>
+  </section>
 </div>

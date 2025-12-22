@@ -1,0 +1,172 @@
+.restaurant-detail {
+  max-width: 1200px;
+  margin: auto;
+  padding: 24px;
+}
+
+/* HERO */
+.hero {
+  position: relative;
+  height: 280px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 16px;
+  margin-bottom: 32px;
+  overflow: hidden;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  padding: 32px;
+  max-width: 800px;
+}
+
+.hero-content h1 {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.hero-rating {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.hero-description {
+  font-size: 15px;
+  opacity: 0.9;
+}
+
+.badge {
+  background: #faad14;
+  color: #000;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* LAYOUT */
+.content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
+/* GALERÍA */
+.gallery-pro {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 8px;
+}
+
+.main-image {
+  height: 240px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 12px;
+}
+
+.thumbs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.thumb {
+  height: 116px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.thumb:hover {
+  transform: scale(1.03);
+}
+
+/* RESEÑAS */
+.review-card {
+  display: flex;
+  gap: 12px;
+  padding: 16px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.review-card:last-child {
+  border-bottom: none;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #1890ff;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.review-content p {
+  margin-top: 6px;
+  color: #444;
+}
+
+/* FORM */
+.review-form {
+  background: #fafafa;
+}
+
+.hint {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+/* SIDEBAR */
+.post {
+  padding: 8px 0;
+  border-bottom: 1px dashed #ddd;
+}
+
+.post:last-child {
+  border-bottom: none;
+}
+
+/* GLOBAL */
+nz-card {
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+}
+
+.mt {
+  margin-top: 24px;
+}
+
+.empty {
+  color: #888;
+  font-size: 14px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    height: 220px;
+  }
+}
