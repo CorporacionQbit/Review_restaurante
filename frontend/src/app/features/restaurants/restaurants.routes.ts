@@ -1,20 +1,31 @@
 import { Routes } from '@angular/router';
+import { authGuard } from '../../core/guards/auth.guard';
 
 export const RESTAURANTS_ROUTES: Routes = [
 
-  // OWNER
+  // 🔒 OWNER – dashboard
   {
     path: '',
+    canActivate: [authGuard],
+    data: { role: 'owner' },
     loadComponent: () =>
       import('./pages/restaurants-owner.component')
         .then(m => m.RestaurantsOwnerComponent),
   },
 
-  // CLIENTE
+  // 🔓 CLIENTE – LISTADO PÚBLICO
   {
     path: 'explore',
     loadComponent: () =>
       import('./pages/restaurants-explore.component')
         .then(m => m.RestaurantsExploreComponent),
+  },
+
+  // 🔓 CLIENTE – DETALLE DEL RESTAURANTE
+  {
+    path: ':id',
+    loadComponent: () =>
+      import('./pages/restaurant-detail.component')
+        .then(m => m.RestaurantDetailComponent),
   },
 ];

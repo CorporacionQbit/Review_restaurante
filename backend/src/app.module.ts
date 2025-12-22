@@ -52,6 +52,22 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
+
+      // 🔓 RUTAS PÚBLICAS (SIN TOKEN)
+      .exclude(
+        // AUTH
+        { path: 'auth/login', method: RequestMethod.POST },
+        { path: 'auth/register', method: RequestMethod.POST },
+        { path: 'auth/google', method: RequestMethod.GET },
+        { path: 'auth/google/callback', method: RequestMethod.GET },
+
+        // RESTAURANTES PÚBLICOS
+        { path: 'restaurants/search', method: RequestMethod.GET },
+        { path: 'restaurants/:id', method: RequestMethod.GET },
+        { path: 'restaurants/:restaurantId/reviews', method: RequestMethod.GET },
+      )
+
+      // 🔒 RUTAS PROTEGIDAS (CON TOKEN)
       .forRoutes(
         // ================= USERS =================
         { path: 'users', method: RequestMethod.ALL },
@@ -63,13 +79,10 @@ export class AppModule implements NestModule {
         // ================= RESTAURANTS =================
         { path: 'restaurants', method: RequestMethod.ALL },
         { path: 'restaurants/my-restaurants', method: RequestMethod.ALL },
-        { path: 'restaurants/search', method: RequestMethod.ALL },
-        { path: 'restaurants/:id', method: RequestMethod.ALL },
         { path: 'restaurants/:id/images', method: RequestMethod.ALL },
         { path: 'restaurants/:id/validate', method: RequestMethod.ALL },
 
         // ================= REVIEWS =================
-        { path: 'restaurants/:restaurantId/reviews', method: RequestMethod.ALL },
         { path: 'reviews/:id', method: RequestMethod.ALL },
         { path: 'reviews/:id/report', method: RequestMethod.ALL },
 
@@ -87,7 +100,7 @@ export class AppModule implements NestModule {
         { path: 'restaurants/:id/menu', method: RequestMethod.ALL },
         { path: 'menu/:menuId', method: RequestMethod.ALL },
 
-        // ================= SUBSCRIPTIONS  =================
+        // ================= SUBSCRIPTIONS =================
         { path: 'subscriptions', method: RequestMethod.ALL },
         { path: 'subscriptions/my', method: RequestMethod.ALL },
         { path: 'subscriptions/upgrade', method: RequestMethod.ALL },

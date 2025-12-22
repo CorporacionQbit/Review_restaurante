@@ -1,0 +1,31 @@
+<h1>{{ restaurant?.name }}</h1>
+
+<nz-rate [ngModel]="restaurant?.avgRating" nzDisabled></nz-rate>
+
+<p>{{ restaurant?.description }}</p>
+
+<hr />
+
+<h3>Reseñas</h3>
+
+<div *ngFor="let r of reviews">
+  <nz-rate [ngModel]="r.rating" nzDisabled></nz-rate>
+  <p>{{ r.reviewText }}</p>
+</div>
+
+<hr />
+
+<h3>Escribir reseña</h3>
+
+<nz-rate [(ngModel)]="rating"></nz-rate>
+
+<textarea
+  nz-input
+  rows="3"
+  [(ngModel)]="reviewText"
+  placeholder="Escribe tu reseña">
+</textarea>
+
+<button nz-button nzType="primary" (click)="submitReview()">
+  Enviar reseña
+</button>

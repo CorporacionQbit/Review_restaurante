@@ -15,6 +15,7 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { SearchRestaurantsDto } from './dto/search-restaurants.dto';
 
 import type { AuthRequest } from '../auth/auth.middleware';
 import { RestaurantsService } from './restaurants.service';
@@ -28,6 +29,9 @@ import { PaginationQueryDto } from '../filters/dto/pagination-query.dto';
 export class RestaurantsController {
   constructor(private readonly service: RestaurantsService) {}
 
+  // =========================
+  // CREAR RESTAURANTE (OWNER)
+  // =========================
   @Post()
   async create(@Req() req: AuthRequest, @Body() dto: CreateRestaurantDto) {
     if (!req.user || req.user.role !== 'owner') {
@@ -36,6 +40,9 @@ export class RestaurantsController {
     return this.service.create(req.user.userId, dto);
   }
 
+  // =========================
+  // RESTAURANTES DEL OWNER
+  // =========================
   @Get('my-restaurants')
   async myRestaurants(@Req() req: AuthRequest) {
     if (!req.user || req.user.role !== 'owner') {
@@ -44,7 +51,9 @@ export class RestaurantsController {
     return this.service.findByOwner(req.user.userId);
   }
 
+  // =========================
   // ADMIN – LISTADO PAGINADO
+  // =========================
   @Get()
   async findAll(
     @Req() req: AuthRequest,
@@ -56,15 +65,20 @@ export class RestaurantsController {
     return this.service.findAllPaginated(pagination);
   }
 
-  // SEARCH + PAGINACIÓN
-  @Get('search')
-  async search(
-    @Query() filters: FilterRestaurantsDto,
-    @Query() pagination: PaginationQueryDto,
-  ) {
-    return this.service.findWithFilters(filters, pagination);
-  }
+  // =========================
+  // SEARCH + PAGINACIÓN (PÚBLICO)
+  // =========================
+@Get('search')
+async search(@Query() query: SearchRestaurantsDto) {
+  return this.service.findWithFilters(query, {
+    page: query.page,
+    limit: query.limit,
+  });
+}
 
+  // =========================
+  // OBTENER RESTAURANTE POR ID (PÚBLICO)
+  // =========================
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const num = Number(id);
@@ -74,6 +88,9 @@ export class RestaurantsController {
     return this.service.findOne(num);
   }
 
+  // =========================
+  // ACTUALIZAR RESTAURANTE (OWNER)
+  // =========================
   @Patch(':id')
   async update(
     @Req() req: AuthRequest,
@@ -86,6 +103,9 @@ export class RestaurantsController {
     return this.service.update(Number(id), req.user.userId, dto);
   }
 
+  // =========================
+  // ELIMINAR RESTAURANTE (OWNER)
+  // =========================
   @Delete(':id')
   async delete(@Req() req: AuthRequest, @Param('id') id: string) {
     if (!req.user) {
@@ -94,6 +114,9 @@ export class RestaurantsController {
     return this.service.delete(Number(id), req.user.userId);
   }
 
+  // =========================
+  // SUBIR IMAGEN (OWNER)
+  // =========================
   @Post(':id/images')
   @UseInterceptors(FileInterceptor('file'))
   async uploadImage(
@@ -107,6 +130,9 @@ export class RestaurantsController {
     return this.service.addImage(Number(id), req.user.userId, file);
   }
 
+  // =========================
+  // VALIDAR RESTAURANTE (ADMIN)
+  // =========================
   @Patch(':id/validate')
   async validate(
     @Req() req: AuthRequest,
@@ -119,3 +145,4 @@ export class RestaurantsController {
     return this.service.validateRestaurant(Number(id), dto);
   }
 }
+

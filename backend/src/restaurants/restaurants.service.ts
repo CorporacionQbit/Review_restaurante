@@ -181,39 +181,87 @@ export class RestaurantsService {
   // BÚSQUEDA + PAGINACIÓN
   // =========================
   async findWithFilters(
-    filters: FilterRestaurantsDto,
-    pagination: PaginationQueryDto,
-  ) {
-    const page = pagination.page ?? 1;
-    const limit = pagination.limit ?? 10;
+  filters: FilterRestaurantsDto,
+  pagination: PaginationQueryDto,
+) {
+  const page = Number(pagination.page ?? 1);
+  const limit = Number(pagination.limit ?? 12);
 
-    const qb = this.restaurantRepo
-      .createQueryBuilder('r')
-      .leftJoinAndSelect('r.images', 'img')
-      .where('r.isApproved = true');
+  const qb = this.restaurantRepo
+    .createQueryBuilder('r')
+    .leftJoinAndSelect('r.images', 'img')
+    .leftJoin(
+      'restaurant_categories',
+      'rc',
+      'rc.restaurant_id = r.restaurant_id',
+    )
+    .where('r.isApproved = true');
 
-    if (filters.name) {
-      qb.andWhere('(r.name ILIKE :s OR r.description ILIKE :s)', {
-        s: `%${filters.name}%`,
-      });
-    }
-
-    if (filters.city) qb.andWhere('r.city ILIKE :city', { city: `%${filters.city}%` });
-    if (filters.zone) qb.andWhere('r.zone = :zone', { zone: filters.zone });
-    if (filters.isPremium !== undefined)
-      qb.andWhere('r.isPremium = :p', { p: filters.isPremium });
-
-    qb.orderBy('r.name', 'ASC')
-      .skip((page - 1) * limit)
-      .take(limit);
-
-    const [data, total] = await qb.getManyAndCount();
-
-    return {
-      data,
-      meta: buildPaginationMeta(total, page, limit),
-    };
+  if (filters.search) {
+    qb.andWhere('(r.name ILIKE :s OR r.description ILIKE :s)', {
+      s: `%${filters.search}%`,
+    });
   }
+
+  if (filters.city) {
+    qb.andWhere('r.city ILIKE :city', { city: `%${filters.city}%` });
+  }
+
+  if (filters.zone) {
+    qb.andWhere('r.zone = :zone', { zone: filters.zone });
+  }
+
+  if (filters.minRating) {
+    qb.andWhere('r.avgRating >= :rating', {
+      rating: filters.minRating,
+    });
+  }
+
+  // ✅ FILTRO POR CATEGORÍA (SIN CONTROLLER)
+  if (filters.categoryId) {
+    qb.andWhere('rc.category_id = :cat', {
+      cat: filters.categoryId,
+    });
+  }
+
+  if (filters.isPremium !== undefined) {
+    qb.andWhere('r.isPremium = :p', { p: filters.isPremium });
+  }
+
+  switch (filters.orderBy) {
+    case 'rating':
+      qb.orderBy('r.avgRating', 'DESC');
+      break;
+    case 'reviews':
+      qb.orderBy('r.totalReviews', 'DESC');
+      break;
+    case 'price':
+      qb.orderBy('r.priceRange', 'ASC');
+      break;
+    default:
+      qb.orderBy('r.name', 'ASC');
+  }
+
+  qb.skip((page - 1) * limit).take(limit);
+
+  const [data, total] = await qb.getManyAndCount();
+
+  return {
+    data: data.map(r => ({
+      restaurantId: r.restaurantId,
+      name: r.name,
+      description: r.description,
+      city: r.city,
+      zone: r.zone,
+      avgRating: r.avgRating,
+      totalReviews: r.totalReviews,
+      priceRange: r.priceRange,
+      imageUrl: r.images?.[0]?.imageUrl ?? null,
+      isPremium: r.isPremium,
+    })),
+    meta: buildPaginationMeta(total, page, limit),
+  };
+}
 
   // =========================
   // VALIDACIÓN (ADMIN)

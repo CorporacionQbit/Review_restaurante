@@ -1,15 +1,28 @@
 import { Routes } from '@angular/router';
 import { LayoutComponent } from './shared/components/layout/layout.component';
-import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
 
   // 🏠 HOME PÚBLICO
-{
-  path: '',
-  redirectTo: 'restaurants/explore',
-  pathMatch: 'full',
-},
+  {
+    path: '',
+    redirectTo: 'restaurants/explore',
+    pathMatch: 'full',
+  },
+
+  // 🔓 RESTAURANTS PÚBLICO (SIN SIDEBAR)
+  {
+    path: 'restaurants/explore',
+    loadComponent: () =>
+      import('./features/restaurants/pages/restaurants-explore.component')
+        .then(m => m.RestaurantsExploreComponent),
+  },
+  {
+    path: 'restaurants/:id',
+    loadComponent: () =>
+      import('./features/restaurants/pages/restaurant-detail.component')
+        .then(m => m.RestaurantDetailComponent),
+  },
 
   // 🔐 AUTH
   {
@@ -19,13 +32,13 @@ export const routes: Routes = [
         .then(m => m.AUTH_ROUTES),
   },
 
-  // 🔒 APP INTERNA (PROTEGIDA)
+  // 🔒 APP INTERNA (CON SIDEBAR)
   {
     path: '',
     component: LayoutComponent,
-    
     children: [
 
+      // SOLO DASHBOARD OWNER
       {
         path: 'restaurants',
         loadChildren: () =>
@@ -39,11 +52,10 @@ export const routes: Routes = [
           import('./features/admin/admin.routes')
             .then(m => m.ADMIN_ROUTES),
       },
-
     ],
   },
 
-  // 🚫 404 → HOME
+  // 🚫 404
   {
     path: '**',
     redirectTo: '',
