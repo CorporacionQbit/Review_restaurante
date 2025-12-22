@@ -8,6 +8,7 @@ import {
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+// ===== MÓDULOS =====
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { RestaurantsModule } from './restaurants/restaurants.module';
@@ -16,14 +17,17 @@ import { MenusModule } from './menu/menus.module';
 import { PostsModule } from './post/posts.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 
+// ===== MIDDLEWARE =====
 import { AuthMiddleware } from './auth/auth.middleware';
 
 @Module({
   imports: [
+    // ===== CONFIG =====
     ConfigModule.forRoot({
       isGlobal: true,
     }),
 
+    // ===== DATABASE =====
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -39,6 +43,7 @@ import { AuthMiddleware } from './auth/auth.middleware';
       }),
     }),
 
+    // ===== FEATURE MODULES =====
     UsersModule,
     AuthModule,
     RestaurantsModule,
@@ -53,7 +58,9 @@ export class AppModule implements NestModule {
     consumer
       .apply(AuthMiddleware)
 
+      // =========================
       // 🔓 RUTAS PÚBLICAS (SIN TOKEN)
+      // =========================
       .exclude(
         // AUTH
         { path: 'auth/login', method: RequestMethod.POST },
@@ -67,40 +74,44 @@ export class AppModule implements NestModule {
         { path: 'restaurants/:restaurantId/reviews', method: RequestMethod.GET },
       )
 
+      // =========================
       // 🔒 RUTAS PROTEGIDAS (CON TOKEN)
+      // =========================
       .forRoutes(
-        // ================= USERS =================
+        // ===== USERS =====
         { path: 'users', method: RequestMethod.ALL },
         { path: 'users/me', method: RequestMethod.ALL },
         { path: 'users/me/convert-to-owner', method: RequestMethod.ALL },
         { path: 'users/me/reviews', method: RequestMethod.ALL },
         { path: 'users/:id', method: RequestMethod.ALL },
 
-        // ================= RESTAURANTS =================
+        // ===== RESTAURANTS =====
         { path: 'restaurants', method: RequestMethod.ALL },
         { path: 'restaurants/my-restaurants', method: RequestMethod.ALL },
         { path: 'restaurants/:id/images', method: RequestMethod.ALL },
         { path: 'restaurants/:id/validate', method: RequestMethod.ALL },
 
-        // ================= REVIEWS =================
+        // ===== REVIEWS (🔥 CLAVE) =====
+        // 👉 ESTA ERA LA QUE FALTABA
+        { path: 'restaurants/:restaurantId/reviews', method: RequestMethod.POST },
         { path: 'reviews/:id', method: RequestMethod.ALL },
         { path: 'reviews/:id/report', method: RequestMethod.ALL },
 
-        // ================= ADMIN =================
+        // ===== ADMIN =====
         { path: 'admin/review-reports', method: RequestMethod.ALL },
         { path: 'admin/reviews/:id', method: RequestMethod.ALL },
         { path: 'admin/review-reports/:id/resolve', method: RequestMethod.ALL },
 
-        // ================= POSTS =================
+        // ===== POSTS =====
         { path: 'posts', method: RequestMethod.ALL },
         { path: 'posts/:id', method: RequestMethod.ALL },
         { path: 'posts/restaurant/:id', method: RequestMethod.ALL },
 
-        // ================= MENÚS =================
+        // ===== MENÚS =====
         { path: 'restaurants/:id/menu', method: RequestMethod.ALL },
         { path: 'menu/:menuId', method: RequestMethod.ALL },
 
-        // ================= SUBSCRIPTIONS =================
+        // ===== SUBSCRIPTIONS =====
         { path: 'subscriptions', method: RequestMethod.ALL },
         { path: 'subscriptions/my', method: RequestMethod.ALL },
         { path: 'subscriptions/upgrade', method: RequestMethod.ALL },

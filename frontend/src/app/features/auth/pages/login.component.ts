@@ -60,6 +60,12 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // ✅ LEER redirect DESDE URL
+    const redirect = this.route.snapshot.queryParamMap.get('redirect');
+    if (redirect) {
+      this.auth.setRedirectUrl(redirect);
+    }
+
     setInterval(() => {
       this.imageIndex = (this.imageIndex + 1) % this.images.length;
       this.currentImage = this.images[this.imageIndex];
@@ -72,42 +78,36 @@ export class LoginComponent implements OnInit {
     this.loading = true;
 
     this.auth.login(this.form.value)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
+      .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: (res) => {
-  this.auth.saveToken(res.accessToken);
+          this.auth.saveToken(res.accessToken);
 
-  // 🔁 REDIRECCIÓN POST-LOGIN (FLUJO YELP)
-  const redirectUrl = this.auth.getRedirectUrl();
+          // 🔁 REDIRECCIÓN POST-LOGIN
+          const redirectUrl = this.auth.getRedirectUrl();
+          if (redirectUrl) {
+            this.auth.clearRedirectUrl();
+            this.router.navigateByUrl(redirectUrl);
+            return;
+          }
 
-  if (redirectUrl) {
-    this.auth.clearRedirectUrl();
-    this.router.navigateByUrl(redirectUrl);
-    return;
-  }
+          // 🔁 fallback por rol
+          const role = this.auth.getUserRole();
 
-  // 🔁 Fallback por rol
-  const role = this.auth.getUserRole();
-
-  if (role === 'admin') {
-    this.router.navigate(['/admin']);
-  } else if (role === 'owner') {
-    this.router.navigate(['/restaurants']);
-  } else {
-    this.router.navigate(['/restaurants/explore']);
-  }
-},
+          if (role === 'admin') {
+            this.router.navigate(['/admin']);
+          } else if (role === 'owner') {
+            this.router.navigate(['/restaurants']);
+          } else {
+            this.router.navigate(['/restaurants/explore']);
+          }
+        },
         error: () => {
           this.message.error('Credenciales inválidas');
         },
       });
   }
 
-  // 🔵 GOOGLE LOGIN
   loginWithGoogle(): void {
     window.location.href = 'http://localhost:3000/auth/google';
   }

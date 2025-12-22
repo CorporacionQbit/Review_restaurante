@@ -3,12 +3,16 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { errorInterceptor } from './core/interceptors/error.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(
-      withInterceptors([authInterceptor])
+      withInterceptors([
+        authInterceptor,
+        errorInterceptor,
+      ])
     ),
-    provideAnimations(), // ✅ OBLIGATORIO PARA NG-ZORRO
+    provideAnimations(),
   ],
 };

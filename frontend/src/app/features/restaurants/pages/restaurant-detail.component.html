@@ -6,16 +6,40 @@
 
 <hr />
 
+<!-- =========================
+     GALERÍA
+========================= -->
+<div *ngIf="restaurant?.images?.length">
+  <img
+    *ngFor="let img of restaurant.images"
+    [src]="'http://localhost:3000/' + img.imageUrl"
+    width="120"
+    style="margin-right: 8px; border-radius: 6px"
+  />
+</div>
+
+<hr />
+
+<!-- =========================
+     RESEÑAS
+========================= -->
 <h3>Reseñas</h3>
 
-<div *ngFor="let r of reviews">
+<div *ngFor="let r of reviews" style="margin-bottom: 12px">
   <nz-rate [ngModel]="r.rating" nzDisabled></nz-rate>
   <p>{{ r.reviewText }}</p>
 </div>
 
 <hr />
 
+<!-- =========================
+     FORMULARIO RESEÑA
+========================= -->
 <h3>Escribir reseña</h3>
+
+<div *ngIf="!isLoggedIn()" style="color: #888; margin-bottom: 8px">
+  Debes iniciar sesión como cliente para escribir una reseña.
+</div>
 
 <nz-rate [(ngModel)]="rating"></nz-rate>
 
@@ -23,9 +47,53 @@
   nz-input
   rows="3"
   [(ngModel)]="reviewText"
-  placeholder="Escribe tu reseña">
+  placeholder="Escribe tu reseña"
+>
 </textarea>
 
-<button nz-button nzType="primary" (click)="submitReview()">
+<button
+  nz-button
+  nzType="primary"
+  style="margin-top: 8px"
+  (click)="submitReview()"
+>
   Enviar reseña
 </button>
+
+<hr />
+
+<!-- =========================
+     MAPA PREMIUM
+========================= -->
+<div *ngIf="isPremium() && safeMapUrl">
+  <h3>Ubicación</h3>
+  <iframe
+    [src]="safeMapUrl"
+    width="100%"
+    height="300"
+    style="border:0"
+  ></iframe>
+</div>
+
+<!-- =========================
+     MENÚ PREMIUM
+========================= -->
+<div *ngIf="isPremium() && restaurant?.menus?.length">
+  <h3>Menú</h3>
+  <ul>
+    <li *ngFor="let m of restaurant.menus">
+      <a [href]="m.menuUrl" target="_blank">Ver menú</a>
+    </li>
+  </ul>
+</div>
+
+<!-- =========================
+     POSTS PREMIUM
+========================= -->
+<div *ngIf="isPremium() && restaurant?.posts?.length">
+  <h3>Publicaciones</h3>
+  <div *ngFor="let p of restaurant.posts" style="margin-bottom: 12px">
+    <h4>{{ p.title }}</h4>
+    <p>{{ p.content }}</p>
+  </div>
+</div>
