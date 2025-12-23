@@ -1,11 +1,41 @@
 <div class="explore-container">
 
-  <!-- HEADER -->
+  <!-- ================= HEADER ================= -->
   <header class="explore-header">
-    <h1>Descubre restaurantes</h1>
-    <p>Encuentra los mejores lugares según tu gusto</p>
 
+    <!-- TOP BAR -->
+    <div class="header-top">
+
+      <!-- TITLE -->
+      <div class="header-title">
+        <h1>Descubre restaurantes</h1>
+        <p>Encuentra los mejores lugares según tu gusto</p>
+      </div>
+
+      <!-- USER ACTIONS -->
+      <div class="header-actions">
+
+        <!-- PERFIL -->
+        <div class="profile-chip" (click)="goToProfile()">
+          <div class="avatar">S</div>
+          <span>Mi perfil</span>
+        </div>
+
+        <!-- LOGOUT -->
+        <button
+          nz-button
+          nzType="default"
+          nzDanger
+          (click)="logout()">
+          Cerrar sesión
+        </button>
+
+      </div>
+    </div>
+
+    <!-- FILTERS -->
     <div class="filters">
+
       <input
         nz-input
         placeholder="Buscar restaurante..."
@@ -49,17 +79,20 @@
       <button nz-button nzType="default" (click)="clearFilters()">
         Limpiar
       </button>
+
     </div>
   </header>
 
-  <!-- GRID -->
+  <!-- ================= GRID ================= -->
   <section class="grid">
+
     <div
       class="card"
       *ngFor="let r of restaurants"
       (click)="goToDetail(r.restaurantId)"
     >
-      <!-- IMAGEN -->
+
+      <!-- IMAGE -->
       <div
         class="image"
         *ngIf="getImageUrl(r); else placeholder"
@@ -72,8 +105,9 @@
         </div>
       </ng-template>
 
-      <!-- INFO -->
+      <!-- BODY -->
       <div class="card-body">
+
         <h3>{{ r.name }}</h3>
         <p>{{ r.description || 'Sin descripción' }}</p>
 
@@ -84,21 +118,39 @@
           </span>
         </div>
 
-        <span *ngIf="r.isPremium" class="badge">Premium</span>
+        <span *ngIf="r.isPremium" class="badge">
+          Premium
+        </span>
+
       </div>
     </div>
+
   </section>
 
-  <!-- PAGINACIÓN -->
+  <!-- ================= PAGINATION ================= -->
   <div class="pagination" *ngIf="meta">
-    <button nz-button (click)="prevPage()" [disabled]="!meta.hasPrevPage">
+
+    <button
+      nz-button
+      (click)="prevPage()"
+      [disabled]="!meta.hasPrevPage"
+    >
       ← Anterior
     </button>
 
-    <span>Página {{ meta.page }} de {{ meta.totalPages }}</span>
+    <span>
+      Página {{ meta.page }} de {{ meta.totalPages }}
+    </span>
 
-    <button nz-button nzType="primary" (click)="nextPage()" [disabled]="!meta.hasNextPage">
+    <button
+      nz-button
+      nzType="primary"
+      (click)="nextPage()"
+      [disabled]="!meta.hasNextPage"
+    >
       Siguiente →
     </button>
+
   </div>
+
 </div>

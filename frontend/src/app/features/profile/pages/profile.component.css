@@ -1,0 +1,338 @@
+/* =====================================================
+   VARIABLES (LIGHT MODE)
+===================================================== */
+:host {
+  --bg-main: #f4f6fb;
+  --bg-card: #ffffff;
+  --bg-soft: #f9fafb;
+
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+
+  --primary: #1677ff;
+  --primary-light: #4096ff;
+
+  --danger-bg: #fee2e2;
+  --danger-text: #b91c1c;
+
+  --shadow-sm: 0 10px 30px rgba(0,0,0,.08);
+  --shadow-lg: 0 25px 60px rgba(0,0,0,.15);
+
+  display: block;
+  min-height: 100vh;
+  background: var(--bg-main);
+  color: var(--text-main);
+  transition: background .35s ease, color .35s ease;
+}
+
+/* =====================================================
+   DARK MODE
+===================================================== */
+:host.dark {
+  --bg-main: #0f172a;
+  --bg-card: #111827;
+  --bg-soft: #1f2937;
+
+  --text-main: #e5e7eb;
+  --text-muted: #9ca3af;
+
+  --primary: #60a5fa;
+  --primary-light: #3b82f6;
+
+  --danger-bg: #3f1d1d;
+  --danger-text: #fca5a5;
+
+  --shadow-sm: 0 10px 40px rgba(0,0,0,.6);
+  --shadow-lg: 0 30px 80px rgba(0,0,0,.7);
+}
+
+/* =====================================================
+   CONTAINER
+===================================================== */
+.profile-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 40px 20px 120px;
+  animation: fadeUp .6s ease both;
+}
+
+/* =====================================================
+   TOP BAR
+===================================================== */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--primary);
+}
+
+.back-btn:hover {
+  text-decoration: underline;
+}
+
+.dark-toggle {
+  background: var(--bg-card);
+  border: none;
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform .2s ease;
+}
+
+.dark-toggle:hover {
+  transform: scale(1.05);
+}
+
+/* =====================================================
+   PROFILE HEADER
+===================================================== */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 40px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: white;
+  box-shadow: var(--shadow-lg);
+  animation: slideDown .6s ease both;
+}
+
+/* =====================================================
+   AVATAR
+===================================================== */
+.avatar-wrapper {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: white;
+  border: 6px solid white;
+  box-shadow: var(--shadow-lg);
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-fallback {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44px;
+  font-weight: 800;
+  color: white;
+}
+
+/* =====================================================
+   PROFILE INFO
+===================================================== */
+.profile-info h1 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.email {
+  opacity: .95;
+  margin: 6px 0;
+}
+
+.member {
+  font-size: 13px;
+  opacity: .85;
+}
+
+/* =====================================================
+   STATS
+===================================================== */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  margin: 48px 0;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  padding: 36px;
+  border-radius: 28px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: transform .25s ease;
+  animation: fadeUp .7s ease both;
+}
+
+.stat-card:hover {
+  transform: translateY(-6px);
+}
+
+.stat-card h2 {
+  font-size: 42px;
+  margin: 0;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.stat-card span {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* =====================================================
+   REVIEWS SECTION
+===================================================== */
+.reviews-section {
+  background: var(--bg-soft);
+  padding: 36px;
+  border-radius: 28px;
+  box-shadow: var(--shadow-sm);
+  animation: fadeUp .8s ease both;
+}
+
+.review-card {
+  background: var(--bg-card);
+  padding: 28px;
+  border-radius: 26px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+  transition: transform .25s ease;
+}
+
+.review-card:hover {
+  transform: translateY(-4px);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.review-card p {
+  margin: 14px 0;
+  color: var(--text-main);
+}
+
+/* =====================================================
+   FOOTER ACTIONS
+===================================================== */
+.review-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.date {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.actions button {
+  border-radius: 999px;
+}
+
+/* =====================================================
+   EDIT MODE
+===================================================== */
+.edit-box textarea {
+  margin: 12px 0;
+}
+
+/* =====================================================
+   EMPTY STATE
+===================================================== */
+.empty {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 40px;
+}
+
+/* =====================================================
+   SKELETON LOADER
+===================================================== */
+.skeleton-card,
+.skeleton-line {
+  background: linear-gradient(
+    90deg,
+    var(--bg-soft) 25%,
+    var(--bg-card) 37%,
+    var(--bg-soft) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+.skeleton-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+}
+
+.skeleton-line {
+  height: 14px;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+.w-100 { width: 100%; }
+.w-80 { width: 80%; }
+.w-60 { width: 60%; }
+.w-40 { width: 40%; }
+
+/* =====================================================
+   ANIMATIONS
+===================================================== */
+@keyframes shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+@media (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .review-footer {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,151 @@
+
+<!-- ========================= -->
+<!-- ⏳ SKELETON LOADER -->
+<!-- ========================= -->
+<div class="profile-container" *ngIf="loading">
+
+  <!-- HEADER SKELETON -->
+  <section class="profile-header skeleton-card">
+    <div class="avatar skeleton-avatar"></div>
+
+    <div class="profile-info">
+      <div class="skeleton-line w-60"></div>
+      <div class="skeleton-line w-40"></div>
+      <div class="skeleton-line w-30"></div>
+    </div>
+  </section>
+
+  <!-- STATS SKELETON -->
+  <section class="stats">
+    <div class="stat-card skeleton-card"></div>
+    <div class="stat-card skeleton-card"></div>
+  </section>
+
+  <!-- REVIEWS SKELETON -->
+  <section class="reviews-section">
+    <div class="review-card skeleton-card" *ngFor="let s of [1,2,3]">
+      <div class="skeleton-line w-80"></div>
+      <div class="skeleton-line w-100"></div>
+      <div class="skeleton-line w-60"></div>
+    </div>
+  </section>
+
+</div>
+
+<div class="profile-container" *ngIf="!loading">
+
+  <!-- ⬅️ BACK -->
+  <div class="top-bar">
+    <button class="back-btn" (click)="goBack()">← Regresar</button>
+  </div>
+
+  <!-- 👤 PERFIL -->
+<div class="avatar-wrapper">
+  <!-- IMAGEN REAL -->
+  <img
+    *ngIf="user?.avatarUrl; else fallbackAvatar"
+    [src]="user.avatarUrl"
+    alt="Avatar"
+    class="avatar-img"
+  />
+
+  <!-- FALLBACK -->
+  <ng-template #fallbackAvatar>
+    <div class="avatar-fallback">
+      {{ user?.fullName?.charAt(0) || 'U' }}
+    </div>
+  </ng-template>
+</div>
+
+
+  <!-- 📊 STATS -->
+  <section class="stats">
+    <div class="stat-card">
+      <h2>{{ reviews.length }}</h2>
+      <span>Reseñas</span>
+    </div>
+
+    <div class="stat-card">
+      <h2>{{ averageRating }}</h2>
+      <span>Rating promedio</span>
+    </div>
+  </section>
+
+  <!-- ⭐ MIS RESEÑAS -->
+  <section class="reviews-section">
+
+    <h2>Mis reseñas</h2>
+
+    <div class="review-card" *ngFor="let r of reviews">
+
+      <!-- HEADER -->
+      <div class="review-header">
+        <strong>{{ r.restaurant?.name }}</strong>
+
+        <nz-rate
+          *ngIf="editingReviewId !== r.reviewId"
+          [ngModel]="r.rating"
+          nzDisabled>
+        </nz-rate>
+      </div>
+
+      <!-- TEXTO -->
+      <p *ngIf="editingReviewId !== r.reviewId">
+        {{ r.reviewText || 'Sin comentario' }}
+      </p>
+
+      <!-- EDIT MODE -->
+      <div *ngIf="editingReviewId === r.reviewId" class="edit-box">
+        <nz-rate [(ngModel)]="editRating"></nz-rate>
+
+        <textarea
+          nz-input
+          rows="3"
+          [(ngModel)]="editText">
+        </textarea>
+
+        <div class="actions">
+          <button nz-button nzType="primary" (click)="saveEdit(r.reviewId)">
+            Guardar
+          </button>
+          <button nz-button nzType="default" (click)="cancelEdit()">
+            Cancelar
+          </button>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="review-footer" *ngIf="editingReviewId !== r.reviewId">
+        <span class="date">
+          {{ r.createdAt | date:'mediumDate' }}
+        </span>
+
+        <div class="actions">
+          <button nz-button nzType="link" (click)="goToRestaurant(r.restaurantId)">
+            Ver restaurante
+          </button>
+
+          <button nz-button nzType="link" (click)="startEdit(r)">
+            Editar
+          </button>
+
+          <button nz-button nzType="link" nzDanger (click)="deleteReview(r.reviewId)">
+            Eliminar
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- EMPTY -->
+    <div class="empty" *ngIf="!reviews.length">
+      Aún no has escrito reseñas
+    </div>
+
+  </section>
+</div>
+
+<!-- ⏳ LOADING -->
+<div class="loading" *ngIf="loading">
+  Cargando perfil...
+</div>

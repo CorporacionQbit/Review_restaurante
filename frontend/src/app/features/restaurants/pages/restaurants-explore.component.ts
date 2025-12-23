@@ -8,11 +8,12 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 
 import { RestaurantsService } from '../services/restaurants.service';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   standalone: true,
   selector: 'app-restaurants-explore',
-   encapsulation: ViewEncapsulation.None,
+  encapsulation: ViewEncapsulation.None,
   imports: [
     CommonModule,
     FormsModule,
@@ -21,14 +22,12 @@ import { RestaurantsService } from '../services/restaurants.service';
     NzSelectModule,
     NzButtonModule,
   ],
-  
   templateUrl: './restaurants-explore.component.html',
   styleUrls: ['./restaurants-explore.component.css'],
 })
 export class RestaurantsExploreComponent implements OnInit {
   restaurants: any[] = [];
 
-  // 🔥 Categorías estáticas (sin controller)
   categories = [
     { id: 'rapida', name: 'Comida rápida' },
     { id: 'china', name: 'China' },
@@ -50,7 +49,8 @@ export class RestaurantsExploreComponent implements OnInit {
 
   constructor(
     private service: RestaurantsService,
-    private router: Router
+    private router: Router,
+    public auth: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -92,6 +92,15 @@ export class RestaurantsExploreComponent implements OnInit {
 
   goToDetail(id: number) {
     this.router.navigate(['/restaurants', id]);
+  }
+
+  goToProfile() {
+    this.router.navigate(['/profile']);
+  }
+
+  logout() {
+    this.auth.logout();
+    this.router.navigate(['/auth/login']);
   }
 
   getImageUrl(r: any): string | null {
