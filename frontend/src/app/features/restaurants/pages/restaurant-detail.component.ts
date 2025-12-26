@@ -18,14 +18,12 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 
 import { RestaurantsService } from '../services/restaurants.service';
 import { AuthService } from '../../auth/auth.service';
+import { FavoritesService } from '../../favorites/favorites.service';
 
 @Component({
   standalone: true,
   selector: 'app-restaurant-detail',
-
-  // 🔥 CLAVE PARA QUE EL CSS SE APLIQUE
   encapsulation: ViewEncapsulation.None,
-
   imports: [
     CommonModule,
     FormsModule,
@@ -39,9 +37,6 @@ import { AuthService } from '../../auth/auth.service';
 })
 export class RestaurantDetailComponent implements OnInit {
 
-  // =========================
-  // 📌 DATA
-  // =========================
   restaurant: any;
   reviews: any[] = [];
 
@@ -51,29 +46,24 @@ export class RestaurantDetailComponent implements OnInit {
 
   safeMapUrl?: SafeResourceUrl;
 
-  // =========================
-  // 📌 SCROLL A RESEÑAS
-  // =========================
+  isFavorite = false;
+  favoriteLoading = false;
+
   @ViewChild('reviewsSection')
   reviewsSection!: ElementRef<HTMLElement>;
 
-  // =========================
-  // 🖼️ GALERÍA – LIGHTBOX
-  // =========================
   activeImageIndex: number | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private service: RestaurantsService,
+    private favoritesService: FavoritesService,
     public auth: AuthService,
     public router: Router,
     private message: NzMessageService,
     private sanitizer: DomSanitizer
   ) {}
 
-  // =========================
-  // 🔄 INIT
-  // =========================
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (!id) return;
@@ -82,9 +72,6 @@ export class RestaurantDetailComponent implements OnInit {
     this.loadReviews(id);
   }
 
-  // =========================
-  // 🏪 RESTAURANTE
-  // =========================
   loadRestaurant(id: number): void {
     this.service.getRestaurantById(id).subscribe({
       next: (res) => {
@@ -94,6 +81,8 @@ export class RestaurantDetailComponent implements OnInit {
           this.safeMapUrl =
             this.sanitizer.bypassSecurityTrustResourceUrl(res.mapsUrl);
         }
+
+        this.checkIfFavorite();
       },
       error: () => {
         this.message.error('No se pudo cargar el restaurante');
@@ -101,23 +90,14 @@ export class RestaurantDetailComponent implements OnInit {
     });
   }
 
-  // =========================
-  // ⭐ RESEÑAS
-  // =========================
   loadReviews(id: number): void {
     this.service.getRestaurantReviews(id).subscribe({
-      next: (res) => {
-        this.reviews = res;
-      },
-      error: () => {
-        this.message.error('No se pudieron cargar las reseñas');
-      },
+      next: (res) => (this.reviews = res),
+      error: () =>
+        this.message.error('No se pudieron cargar las reseñas'),
     });
   }
 
-  // =========================
-  // ✍️ ENVIAR RESEÑA
-  // =========================
   submitReview(): void {
     if (!this.auth.isLoggedIn()) {
       this.router.navigate(['/auth/login'], {
@@ -131,7 +111,7 @@ export class RestaurantDetailComponent implements OnInit {
       return;
     }
 
-    if (!this.reviewText || this.reviewText.trim().length < 3) {
+    if (!this.reviewText.trim()) {
       this.message.warning('Escribe un comentario válido');
       return;
     }
@@ -143,67 +123,74 @@ export class RestaurantDetailComponent implements OnInit {
       reviewText: this.reviewText.trim(),
     }).subscribe({
       next: () => {
-        this.message.success('Reseña publicada correctamente');
+        this.message.success('Reseña publicada');
         this.reviewText = '';
         this.rating = 5;
         this.loadReviews(this.restaurant.restaurantId);
         this.loading = false;
       },
-      error: (err) => {
-        this.message.error(
-          err?.error?.message || 'No se pudo enviar la reseña'
-        );
-        this.loading = false;
-      },
+      error: () => (this.loading = false),
     });
   }
 
-  // =========================
-  // 🔽 SCROLL SUAVE A RESEÑAS
-  // =========================
   scrollToReviews(): void {
-    if (this.reviewsSection) {
-      this.reviewsSection.nativeElement.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }
+    this.reviewsSection?.nativeElement.scrollIntoView({
+      behavior: 'smooth',
+    });
   }
 
-  // =========================
-  // 🖼️ GALERÍA – LIGHTBOX
-  // =========================
-  openImage(index: number): void {
-    this.activeImageIndex = index;
-  }
-
-  closeImage(): void {
-    this.activeImageIndex = null;
-  }
-
-  nextImage(): void {
-    if (this.activeImageIndex === null) return;
-
+  openImage(i: number) { this.activeImageIndex = i; }
+  closeImage() { this.activeImageIndex = null; }
+  nextImage() {
     this.activeImageIndex =
-      (this.activeImageIndex + 1) % this.restaurant.images.length;
+      (this.activeImageIndex! + 1) % this.restaurant.images.length;
   }
-
-  prevImage(): void {
-    if (this.activeImageIndex === null) return;
-
+  prevImage() {
     this.activeImageIndex =
-      (this.activeImageIndex - 1 + this.restaurant.images.length) %
+      (this.activeImageIndex! - 1 + this.restaurant.images.length) %
       this.restaurant.images.length;
   }
 
-  // =========================
-  // 🧠 HELPERS
-  // =========================
-  isLoggedIn(): boolean {
-    return this.auth.isLoggedIn();
+checkIfFavorite(): void {
+  if (!this.auth.isLoggedIn()) return;
+
+  this.favoritesService.getMyFavorites().subscribe({
+    next: (favorites) => {
+      this.isFavorite = favorites.some(
+        f => f.restaurant_id === this.restaurant.restaurantId
+      );
+    },
+  });
+}
+
+
+ toggleFavorite(): void {
+  if (!this.auth.isLoggedIn()) {
+    this.router.navigate(['/auth/login'], {
+      queryParams: { redirect: this.router.url },
+    });
+    return;
   }
 
-  isPremium(): boolean {
-    return !!this.restaurant?.isPremium;
+  this.favoriteLoading = true;
+
+  const action$ = this.isFavorite
+    ? this.favoritesService.removeFavorite(this.restaurant.restaurantId)
+    : this.favoritesService.addFavorite(this.restaurant.restaurantId);
+
+  action$.subscribe({
+    next: () => {
+      this.isFavorite = !this.isFavorite;
+      this.favoriteLoading = false;
+    },
+    error: () => {
+      this.favoriteLoading = false;
+    },
+  });
+}
+
+
+  isLoggedIn(): boolean {
+    return this.auth.isLoggedIn();
   }
 }

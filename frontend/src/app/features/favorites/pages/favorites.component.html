@@ -1,0 +1,50 @@
+<div class="favorites-container">
+
+  <!-- ⬅️ BACK -->
+  <div class="top-bar">
+    <button nz-button nzType="link" (click)="goBack()">← Regresar</button>
+  </div>
+
+  <h1>Mis favoritos</h1>
+  <p class="subtitle">Restaurantes que te gustaron</p>
+
+  <!-- ⏳ LOADING -->
+  <div *ngIf="loading" class="loading">
+    Cargando favoritos...
+  </div>
+
+  <!-- EMPTY -->
+  <div *ngIf="!loading && !favorites.length" class="empty">
+    Aún no tienes restaurantes favoritos ❤️
+  </div>
+
+  <!-- GRID -->
+  <div class="grid" *ngIf="!loading && favorites.length">
+
+    <div class="card" *ngFor="let r of favorites">
+
+      <div class="card-body" (click)="goToRestaurant(r.restaurant_id)">
+        <h3>{{ r.name }}</h3>
+        <p>{{ r.description || 'Sin descripción' }}</p>
+
+        <div class="meta">
+          <span>⭐ {{ r.avg_rating || 0 }}</span>
+          <span>· {{ r.total_reviews }} reseñas</span>
+        </div>
+
+        <span *ngIf="r.is_premium" class="badge">Premium</span>
+      </div>
+
+      <button
+        nz-button
+        nzType="text"
+        nzDanger
+        class="remove-btn"
+        (click)="removeFavorite(r.restaurant_id)">
+        ❌ Quitar
+      </button>
+
+    </div>
+
+  </div>
+</div>

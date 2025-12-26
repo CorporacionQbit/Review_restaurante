@@ -60,6 +60,12 @@ export const routes: Routes = [
     import('./features/profile/profile.routes')
       .then(m => m.PROFILE_ROUTES),
 },
+{
+  path: 'favorites',
+  loadChildren: () =>
+    import('./features/favorites/favorite.routes')
+      .then(m => m.FAVORITES_ROUTES),
+},
 
   // 🚫 404
   {

@@ -17,8 +17,10 @@ import { MenusModule } from './menu/menus.module';
 import { PostsModule } from './post/posts.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 
+
 // ===== MIDDLEWARE =====
 import { AuthMiddleware } from './auth/auth.middleware';
+import { FavoritesModule } from './favorites/favorites.module';
 
 @Module({
   imports: [
@@ -51,6 +53,7 @@ import { AuthMiddleware } from './auth/auth.middleware';
     MenusModule,
     PostsModule,
     SubscriptionsModule,
+    FavoritesModule,
   ],
 })
 export class AppModule implements NestModule {
@@ -59,7 +62,7 @@ export class AppModule implements NestModule {
       .apply(AuthMiddleware)
 
       // =========================
-      // 🔓 RUTAS PÚBLICAS (SIN TOKEN)
+      // 🔓 RUTAS PÚBLICAS
       // =========================
       .exclude(
         // AUTH
@@ -75,9 +78,12 @@ export class AppModule implements NestModule {
       )
 
       // =========================
-      // 🔒 RUTAS PROTEGIDAS (CON TOKEN)
+      // 🔒 RUTAS PROTEGIDAS
       // =========================
       .forRoutes(
+        // ===== FAVORITES (🔥 CLAVE) =====
+        { path: 'favorites', method: RequestMethod.ALL },
+ { path: 'favorites/:id', method: RequestMethod.ALL }, // 
         // ===== USERS =====
         { path: 'users', method: RequestMethod.ALL },
         { path: 'users/me', method: RequestMethod.ALL },
@@ -91,8 +97,7 @@ export class AppModule implements NestModule {
         { path: 'restaurants/:id/images', method: RequestMethod.ALL },
         { path: 'restaurants/:id/validate', method: RequestMethod.ALL },
 
-        // ===== REVIEWS (🔥 CLAVE) =====
-        // 👉 ESTA ERA LA QUE FALTABA
+        // ===== REVIEWS =====
         { path: 'restaurants/:restaurantId/reviews', method: RequestMethod.POST },
         { path: 'reviews/:id', method: RequestMethod.ALL },
         { path: 'reviews/:id/report', method: RequestMethod.ALL },
@@ -124,3 +129,5 @@ export class AppModule implements NestModule {
       );
   }
 }
+
+

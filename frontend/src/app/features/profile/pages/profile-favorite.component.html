@@ -1,0 +1,36 @@
+<section class="favorites-container">
+
+  <h2>❤️ Mis restaurantes favoritos</h2>
+
+  <div *ngIf="loading" class="loading">
+    Cargando favoritos...
+  </div>
+
+  <div *ngIf="!loading && favorites.length === 0" class="empty">
+    No tienes restaurantes favoritos aún
+  </div>
+
+  <div class="favorites-grid" *ngIf="favorites.length">
+
+    <nz-card
+      class="favorite-card"
+      *ngFor="let r of favorites"
+      (click)="goToRestaurant(r.restaurant_id)"
+    >
+      <h3>{{ r.name }}</h3>
+
+      <nz-rate [ngModel]="r.avg_rating" nzDisabled></nz-rate>
+
+      <p class="meta">
+        {{ r.total_reviews }} reseñas
+        <span *ngIf="r.is_premium" class="premium">⭐ Premium</span>
+      </p>
+
+      <p class="desc">
+        {{ r.description || 'Sin descripción' }}
+      </p>
+    </nz-card>
+
+  </div>
+
+</section>
