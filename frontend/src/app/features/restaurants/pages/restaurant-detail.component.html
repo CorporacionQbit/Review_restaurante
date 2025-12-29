@@ -1,251 +1,246 @@
-<div class="restaurant-detail-container">
+<div class="restaurant-detail-page">
 
-  <!-- ================= HEADER ================= -->
-  <section class="restaurant-header">
+  <div class="restaurant-detail-container">
 
-    <div class="header-top">
-      <h1 class="restaurant-title">
-        {{ restaurant?.name }}
-      </h1>
+    <!-- ================= HEADER ================= -->
+    <section class="restaurant-header">
 
-      <!-- ❤️ FAVORITO -->
-      <div
-        class="favorite-btn"
-        [class.active]="isFavorite"
-        (click)="toggleFavorite()"
-        title="Agregar a favoritos">
-        <span *ngIf="!isFavorite">🤍</span>
-        <span *ngIf="isFavorite">❤️</span>
-      </div>
-    </div>
+      <div class="header-top">
+        <h1 class="restaurant-title">
+          {{ restaurant?.name }}
+        </h1>
 
-    <div class="restaurant-meta">
-      <nz-rate [ngModel]="restaurant?.avgRating" nzDisabled></nz-rate>
-      <span>
-        {{ restaurant?.avgRating || 0 }} · {{ restaurant?.totalReviews }} reseñas
-      </span>
-
-      <span *ngIf="restaurant?.isPremium" class="badge-premium">
-        ⭐ Premium
-      </span>
-    </div>
-
-    <p class="restaurant-description">
-      {{ restaurant?.description || 'Sin descripción disponible' }}
-    </p>
-
-    <button class="cta-btn" (click)="scrollToReviews()">
-      Ver reseñas
-    </button>
-  </section>
-
-  <!-- ================= HERO ================= -->
-  <section class="hero">
-
-    <div
-      class="hero-image"
-      *ngIf="restaurant?.images?.length > 0; else noHero"
-      [style.backgroundImage]="'url(http://localhost:3000/' + restaurant.images[0].imageUrl + ')'">
-    </div>
-
-    <ng-template #noHero>
-      <div class="hero-placeholder">
-        {{ restaurant?.name?.charAt(0) }}
-      </div>
-    </ng-template>
-
-  </section>
-
-  <!-- ================= INFO RÁPIDA ================= -->
-  <section class="restaurant-info">
-
-    <div class="info-item">
-      <span class="icon">📍</span>
-      <div>
-        <strong>Ubicación</strong>
-        <p>
-          {{ restaurant?.address }}
-          <span *ngIf="restaurant?.city"> · {{ restaurant.city }}</span>
-          <span *ngIf="restaurant?.zone"> (Zona {{ restaurant.zone }})</span>
-        </p>
-      </div>
-    </div>
-
-    <div class="info-item">
-      <span class="icon">💰</span>
-      <div>
-        <strong>Rango de precios</strong>
-        <p>
-          {{ restaurant?.priceRange ? ('$'.repeat(restaurant.priceRange)) : 'No especificado' }}
-        </p>
-      </div>
-    </div>
-
-    <div class="info-item" *ngIf="restaurant?.phoneNumber">
-      <span class="icon">📞</span>
-      <p>{{ restaurant.phoneNumber }}</p>
-    </div>
-
-    <div class="info-item" *ngIf="restaurant?.email">
-      <span class="icon">✉️</span>
-      <p>{{ restaurant.email }}</p>
-    </div>
-
-  </section>
-
-  <!-- ================= CONTENT ================= -->
-  <div class="content">
-
-    <!-- ========== MAIN ========== -->
-    <main class="main">
-
-      <!-- ===== GALERÍA ===== -->
-      <section class="gallery-section" *ngIf="restaurant?.images?.length">
-        <h2>Galería</h2>
-
-        <div class="gallery-grid">
-          <div
-            class="gallery-item"
-            *ngFor="let img of restaurant.images; let i = index"
-            [style.backgroundImage]="'url(http://localhost:3000/' + img.imageUrl + ')'"
-            (click)="openImage(i)">
-            <div class="overlay">Ver</div>
-          </div>
+        <!-- ❤️ FAVORITO -->
+        <div
+          class="favorite-btn"
+          [class.active]="isFavorite"
+          (click)="toggleFavorite()"
+          title="Agregar a favoritos">
+          <span *ngIf="!isFavorite">🤍</span>
+          <span *ngIf="isFavorite">❤️</span>
         </div>
-      </section>
+      </div>
 
-      <!-- ===== RESEÑAS ===== -->
-      <section class="reviews-section" #reviewsSection>
+      <div class="restaurant-meta">
+        <nz-rate [ngModel]="restaurant?.avgRating" nzDisabled></nz-rate>
+        <span>
+          {{ restaurant?.avgRating || 0 }} · {{ restaurant?.totalReviews }} reseñas
+        </span>
 
-        <h2>Opiniones de clientes ({{ reviews.length }})</h2>
+        <span *ngIf="restaurant?.isPremium" class="badge-premium">
+          ⭐ Premium
+        </span>
+      </div>
 
-        <div class="review-card" *ngFor="let r of reviews">
+      <p class="restaurant-description">
+        {{ restaurant?.description || 'Sin descripción disponible' }}
+      </p>
 
-          <div class="avatar">
-            {{ r.user?.fullName?.charAt(0) || 'U' }}
+      <button class="cta-btn" (click)="scrollToReviews()">
+        Ver reseñas
+      </button>
+    </section>
+
+    <!-- ================= HERO ================= -->
+    <section class="hero">
+
+      <div
+        class="hero-image"
+        *ngIf="restaurant?.images?.length > 0; else noHero"
+        [style.backgroundImage]="'url(http://localhost:3000/' + restaurant.images[0].imageUrl + ')'">
+      </div>
+
+      <ng-template #noHero>
+        <div class="hero-placeholder">
+          {{ restaurant?.name?.charAt(0) }}
+        </div>
+      </ng-template>
+
+    </section>
+
+    <!-- ================= INFO ================= -->
+    <section class="restaurant-info">
+
+      <div class="info-item">
+        <span class="icon">📍</span>
+        <div>
+          <strong>Ubicación</strong>
+          <p>
+            {{ restaurant?.address }}
+            <span *ngIf="restaurant?.city"> · {{ restaurant.city }}</span>
+            <span *ngIf="restaurant?.zone"> (Zona {{ restaurant.zone }})</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <span class="icon">💰</span>
+        <div>
+          <strong>Rango de precios</strong>
+          <p>
+            {{ restaurant?.priceRange ? ('$'.repeat(restaurant.priceRange)) : 'No especificado' }}
+          </p>
+        </div>
+      </div>
+
+      <div class="info-item" *ngIf="restaurant?.phoneNumber">
+        <span class="icon">📞</span>
+        <p>{{ restaurant.phoneNumber }}</p>
+      </div>
+
+      <div class="info-item" *ngIf="restaurant?.email">
+        <span class="icon">✉️</span>
+        <p>{{ restaurant.email }}</p>
+      </div>
+
+    </section>
+
+    <!-- ================= CONTENT ================= -->
+    <div class="content">
+
+      <!-- MAIN -->
+      <main class="main">
+
+        <!-- GALERÍA -->
+        <section class="gallery-section" *ngIf="restaurant?.images?.length">
+          <h2>Galería</h2>
+
+          <div class="gallery-grid">
+            <div
+              class="gallery-item"
+              *ngFor="let img of restaurant.images; let i = index"
+              [style.backgroundImage]="'url(http://localhost:3000/' + img.imageUrl + ')'"
+              (click)="openImage(i)">
+              <div class="overlay">Ver</div>
+            </div>
           </div>
+        </section>
 
-          <div class="review-content">
-            <div class="review-header">
-              <strong>{{ r.user?.fullName || 'Usuario' }}</strong>
-              <nz-rate [ngModel]="r.rating" nzDisabled></nz-rate>
+        <!-- RESEÑAS -->
+        <section class="reviews-section" #reviewsSection>
+
+          <h2>Opiniones de clientes ({{ reviews.length }})</h2>
+
+          <div class="review-card" *ngFor="let r of reviews">
+
+            <div class="avatar">
+              {{ r.user?.fullName?.charAt(0) || 'U' }}
             </div>
 
-            <p>{{ r.reviewText || 'Sin comentario' }}</p>
-            <span class="date">
-              {{ r.createdAt | date:'mediumDate' }}
-            </span>
+            <div class="review-content">
+              <div class="review-header">
+                <strong>{{ r.user?.fullName || 'Usuario' }}</strong>
+                <nz-rate [ngModel]="r.rating" nzDisabled></nz-rate>
+              </div>
+
+              <p>{{ r.reviewText || 'Sin comentario' }}</p>
+              <span class="date">
+                {{ r.createdAt | date:'mediumDate' }}
+              </span>
+            </div>
+          </div>
+
+          <div class="empty" *ngIf="reviews.length === 0">
+            Aún no hay reseñas
+          </div>
+
+        </section>
+
+        <!-- FORMULARIO -->
+        <section class="review-form">
+
+          <h3>Cuéntanos tu experiencia</h3>
+
+          <div *ngIf="!isLoggedIn()" class="login-box">
+            <p>Debes iniciar sesión para escribir una reseña.</p>
+            <button
+              nz-button
+              nzType="primary"
+              (click)="router.navigate(['/auth/login'], { queryParams: { redirect: router.url } })">
+              Iniciar sesión
+            </button>
+          </div>
+
+          <div *ngIf="isLoggedIn()">
+
+            <label>Calificación</label>
+            <nz-rate [(ngModel)]="rating"></nz-rate>
+
+            <label>Comentario</label>
+            <textarea
+              nz-input
+              rows="4"
+              [(ngModel)]="reviewText"
+              placeholder="¿Cómo fue tu experiencia?">
+            </textarea>
+
+            <button
+              nz-button
+              nzType="primary"
+              (click)="submitReview()">
+              Publicar reseña
+            </button>
+          </div>
+
+        </section>
+
+      </main>
+
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+
+        <div class="sidebar-box map" *ngIf="restaurant?.isPremium && safeMapUrl">
+          <h4>Ubicación</h4>
+          <iframe [src]="safeMapUrl"></iframe>
+        </div>
+
+        <div class="sidebar-box menu" *ngIf="restaurant?.menus?.length">
+          <h4>Menú</h4>
+
+          <div class="menu-card" *ngFor="let m of restaurant.menus">
+            <div class="menu-icon">🍽️</div>
+            <div class="menu-info">
+              <strong>Menú del restaurante</strong>
+              <span>Ver menú completo</span>
+            </div>
+            <a class="menu-action" [href]="m.menuUrl" target="_blank">
+              Ver
+            </a>
           </div>
         </div>
 
-        <div class="empty" *ngIf="reviews.length === 0">
-          Aún no hay reseñas
-        </div>
+        <div class="sidebar-box posts" *ngIf="restaurant?.posts?.length">
+          <h4>Novedades</h4>
 
-      </section>
-
-      <!-- ===== FORMULARIO RESEÑA ===== -->
-      <section class="review-form">
-
-        <h3>Cuéntanos tu experiencia</h3>
-        <p>Tu opinión ayuda a otros clientes</p>
-
-        <div *ngIf="!isLoggedIn()" class="login-box">
-          <p>Debes iniciar sesión para escribir una reseña.</p>
-          <button
-            nz-button
-            nzType="primary"
-            (click)="router.navigate(['/auth/login'], { queryParams: { redirect: router.url } })">
-            Iniciar sesión
-          </button>
-        </div>
-
-        <div *ngIf="isLoggedIn()">
-
-          <label>Calificación</label>
-          <nz-rate [(ngModel)]="rating"></nz-rate>
-
-          <label>Comentario</label>
-          <textarea
-            nz-input
-            rows="4"
-            [(ngModel)]="reviewText"
-            placeholder="¿Cómo fue tu experiencia?">
-          </textarea>
-
-          <button
-            nz-button
-            nzType="primary"
-            (click)="submitReview()">
-            Publicar reseña
-          </button>
-        </div>
-
-      </section>
-
-    </main>
-
-    <!-- ========== SIDEBAR ========== -->
-    <aside class="sidebar">
-
-      <!-- MAPA PREMIUM -->
-      <div class="sidebar-box map" *ngIf="restaurant?.isPremium && safeMapUrl">
-        <h4>Ubicación</h4>
-        <iframe [src]="safeMapUrl"></iframe>
-      </div>
-
-      <!-- MENÚ PREMIUM -->
-      <div class="sidebar-box menu" *ngIf="restaurant?.menus?.length">
-        <h4>Menú</h4>
-
-        <div class="menu-card" *ngFor="let m of restaurant.menus">
-          <div class="menu-icon">🍽️</div>
-          <div class="menu-info">
-            <strong>Menú del restaurante</strong>
-            <span>Ver menú completo</span>
+          <div class="post-card" *ngFor="let p of restaurant.posts">
+            <strong>{{ p.title }}</strong>
+            <p>{{ p.content }}</p>
+            <span>{{ p.createdAt | date:'mediumDate' }}</span>
           </div>
-          <a
-            class="menu-action"
-            [href]="m.menuUrl"
-            target="_blank">
-            Ver
-          </a>
         </div>
-      </div>
 
-      <!-- POSTS PREMIUM -->
-      <div class="sidebar-box posts" *ngIf="restaurant?.posts?.length">
-        <h4>Novedades</h4>
-
-        <div class="post-card" *ngFor="let p of restaurant.posts">
-          <strong>{{ p.title }}</strong>
-          <p>{{ p.content }}</p>
-          <span>{{ p.createdAt | date:'mediumDate' }}</span>
+        <div class="sidebar-premium" *ngIf="restaurant?.isPremium">
+          ⭐ Restaurante Premium
         </div>
+
+      </aside>
+
+    </div>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" *ngIf="activeImageIndex !== null">
+
+      <div class="lightbox-backdrop" (click)="closeImage()"></div>
+
+      <div class="lightbox-content">
+        <img
+          [src]="'http://localhost:3000/' + restaurant.images[activeImageIndex].imageUrl" />
+
+        <button class="lightbox-close" (click)="closeImage()">✕</button>
+        <button class="lightbox-prev" (click)="prevImage()">‹</button>
+        <button class="lightbox-next" (click)="nextImage()">›</button>
       </div>
 
-      <!-- BADGE PREMIUM -->
-      <div class="sidebar-premium" *ngIf="restaurant?.isPremium">
-        ⭐ Restaurante Premium
-      </div>
-
-    </aside>
-
-  </div>
-
-  <!-- ================= LIGHTBOX ================= -->
-  <div class="lightbox" *ngIf="activeImageIndex !== null">
-
-    <div class="lightbox-backdrop" (click)="closeImage()"></div>
-
-    <div class="lightbox-content">
-      <img
-        [src]="'http://localhost:3000/' + restaurant.images[activeImageIndex].imageUrl"
-        alt="Imagen del restaurante" />
-
-      <button class="lightbox-close" (click)="closeImage()">✕</button>
-      <button class="lightbox-prev" (click)="prevImage()">‹</button>
-      <button class="lightbox-next" (click)="nextImage()">›</button>
     </div>
 
   </div>

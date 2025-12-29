@@ -17,12 +17,6 @@ export const routes: Routes = [
       import('./features/restaurants/pages/restaurants-explore.component')
         .then(m => m.RestaurantsExploreComponent),
   },
-  {
-    path: 'restaurants/:id',
-    loadComponent: () =>
-      import('./features/restaurants/pages/restaurant-detail.component')
-        .then(m => m.RestaurantDetailComponent),
-  },
 
   // 🔐 AUTH
   {
@@ -38,7 +32,6 @@ export const routes: Routes = [
     component: LayoutComponent,
     children: [
 
-      // SOLO DASHBOARD OWNER
       {
         path: 'restaurants',
         loadChildren: () =>
@@ -52,20 +45,22 @@ export const routes: Routes = [
           import('./features/admin/admin.routes')
             .then(m => m.ADMIN_ROUTES),
       },
+
+      {
+        path: 'profile',
+        loadChildren: () =>
+          import('./features/profile/profile.routes')
+            .then(m => m.PROFILE_ROUTES),
+      },
+
+      {
+        path: 'favorites',
+        loadChildren: () =>
+          import('./features/favorites/favorite.routes')
+            .then(m => m.FAVORITES_ROUTES),
+      },
     ],
   },
-{
-  path: 'profile',
-  loadChildren: () =>
-    import('./features/profile/profile.routes')
-      .then(m => m.PROFILE_ROUTES),
-},
-{
-  path: 'favorites',
-  loadChildren: () =>
-    import('./features/favorites/favorite.routes')
-      .then(m => m.FAVORITES_ROUTES),
-},
 
   // 🚫 404
   {

@@ -1,0 +1,90 @@
+<div class="create-container">
+
+  <h1>🍽️ Crear restaurante</h1>
+  <p class="subtitle">
+    Registra tu restaurante para comenzar a recibir reseñas
+  </p>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <label>Nombre *</label>
+    <input
+      nz-input
+      placeholder="Nombre del restaurante"
+      formControlName="name" />
+
+    <label>Descripción</label>
+    <textarea
+      nz-input
+      rows="3"
+      placeholder="Descripción"
+      formControlName="description"></textarea>
+
+    <label>Teléfono</label>
+    <input
+      nz-input
+      placeholder="Teléfono"
+      formControlName="phoneNumber" />
+
+    <label>Email</label>
+    <input
+      nz-input
+      placeholder="Email"
+      formControlName="email" />
+
+    <label>Dirección</label>
+    <input
+      nz-input
+      placeholder="Dirección"
+      formControlName="address" />
+
+    <div class="grid">
+
+      <div>
+        <label>Ciudad</label>
+        <input
+          nz-input
+          placeholder="Ciudad"
+          formControlName="city" />
+      </div>
+
+      <div>
+        <label>Zona</label>
+        <input
+          nz-input
+          placeholder="Zona"
+          formControlName="zone" />
+      </div>
+
+      <div>
+        <label>Precio</label>
+        <nz-select
+          nzPlaceHolder="Rango"
+          formControlName="priceRange">
+          <nz-option [nzValue]="1" nzLabel="$"></nz-option>
+<nz-option [nzValue]="2" nzLabel="$$"></nz-option>
+<nz-option [nzValue]="3" nzLabel="$$$"></nz-option>
+<nz-option [nzValue]="4" nzLabel="$$$$"></nz-option>
+<nz-option [nzValue]="5" nzLabel="$$$$$"></nz-option>
+
+        </nz-select>
+      </div>
+
+    </div>
+
+    <label>URL Google Maps</label>
+    <input
+      nz-input
+      placeholder="https://maps.google.com/..."
+      formControlName="mapsUrl" />
+
+    <button
+      nz-button
+      nzType="primary"
+      nzBlock
+      [disabled]="loading">
+      {{ loading ? 'Creando...' : 'Crear restaurante' }}
+    </button>
+
+  </form>
+</div>

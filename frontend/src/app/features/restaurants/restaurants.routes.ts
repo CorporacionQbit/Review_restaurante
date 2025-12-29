@@ -7,16 +7,22 @@ export const RESTAURANTS_ROUTES: Routes = [
   // 🔒 OWNER – dashboard
   {
     path: '',
-    canActivate: [
-      authGuard,
-      roleGuard(['owner']),
-    ],
+    canActivate: [authGuard, roleGuard(['owner'])],
     loadComponent: () =>
       import('./pages/restaurants-owner.component')
         .then(m => m.RestaurantsOwnerComponent),
   },
 
-  // 🔓 CLIENTE – LISTADO PÚBLICO
+  // 🔒 OWNER – CREAR RESTAURANTE
+  {
+    path: 'create',
+    canActivate: [authGuard, roleGuard(['owner'])],
+    loadComponent: () =>
+      import('./pages/create-restaurant.component')
+        .then(m => m.CreateRestaurantComponent),
+  },
+
+  // 🔓 CLIENTE – LISTADO
   {
     path: 'explore',
     loadComponent: () =>
@@ -24,7 +30,7 @@ export const RESTAURANTS_ROUTES: Routes = [
         .then(m => m.RestaurantsExploreComponent),
   },
 
-  // 🔓 CLIENTE – DETALLE DEL RESTAURANTE
+  // 🔓 CLIENTE – DETALLE (SIEMPRE AL FINAL)
   {
     path: ':id',
     loadComponent: () =>

@@ -1,0 +1,50 @@
+.create-container {
+  max-width: 720px;
+  margin: auto;
+  padding: 32px;
+}
+
+h1 {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  color: #6b7280;
+  margin-bottom: 28px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+label {
+  font-weight: 600;
+  font-size: 13px;
+  color: #374151;
+}
+
+textarea {
+  resize: none;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+button {
+  margin-top: 24px;
+  height: 44px;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

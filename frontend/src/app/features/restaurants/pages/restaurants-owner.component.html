@@ -1,0 +1,49 @@
+<div class="page-header">
+  <h1>Mis restaurantes</h1>
+
+  <button nz-button nzType="primary" (click)="goToCreate()">
+    + Crear nuevo restaurante
+  </button>
+</div>
+
+<div *ngIf="loading" class="center">
+  Cargando restaurantes...
+</div>
+
+<div *ngIf="!loading && restaurants.length === 0" class="empty">
+  No has registrado restaurantes todavía.
+</div>
+
+<div class="grid" *ngIf="!loading && restaurants.length">
+
+  <nz-card
+    *ngFor="let r of restaurants"
+    class="restaurant-card"
+    (click)="goToRestaurant(r.restaurantId)"
+  >
+    <div class="card-header">
+      <h3>{{ r.name }}</h3>
+      <span *ngIf="r.isPremium" class="badge-premium">Premium</span>
+    </div>
+
+    <p class="meta">
+      {{ r.city }} · Zona {{ r.zone }}
+    </p>
+
+    <nz-tag
+      [nzColor]="
+        r.onboardingStatus === 'Aprobado'
+          ? 'green'
+          : r.onboardingStatus === 'Rechazado'
+          ? 'red'
+          : 'orange'
+      ">
+      {{ r.onboardingStatus }}
+    </nz-tag>
+
+    <div class="stats">
+      ⭐ {{ r.avgRating }} ({{ r.totalReviews }})
+    </div>
+  </nz-card>
+
+</div>

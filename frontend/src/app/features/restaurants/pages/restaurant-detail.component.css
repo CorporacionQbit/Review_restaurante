@@ -320,5 +320,16 @@
   background: linear-gradient(135deg, #ff4d4f, #ff7875);
   color: white;
 }
+/* ===== FIX LAYOUT CON SIDEBAR ===== */
+.restaurant-detail-page {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.restaurant-detail-container {
+  width: 100%;
+  max-width: 1280px;
+}
 
 

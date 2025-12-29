@@ -1,0 +1,54 @@
+<nz-layout style="min-height: 100vh">
+
+  <!-- SIDEBAR -->
+  <nz-sider nzTheme="dark" nzCollapsible nzWidth="220px">
+    <div class="logo">Reviews</div>
+
+    <ul nz-menu nzTheme="dark" nzMode="inline">
+
+      <li nz-menu-item routerLink="/restaurants/explore">
+        <span nz-icon nzType="search"></span>
+        Explorar
+      </li>
+
+      <!-- OWNER -->
+      <li *ngIf="role === 'owner'" nz-menu-item routerLink="/restaurants">
+        <span nz-icon nzType="home"></span>
+        Mis Restaurantes
+      </li>
+
+      <li *ngIf="role === 'owner'" nz-menu-item routerLink="/restaurants/create">
+        <span nz-icon nzType="plus-circle"></span>
+        Crear nuevo restaurante
+      </li>
+
+      <!-- ADMIN -->
+      <li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin">
+        <span nz-icon nzType="tool"></span>
+        Administración
+      </li>
+
+    </ul>
+  </nz-sider>
+
+  <!-- MAIN -->
+  <nz-layout>
+
+    <!-- HEADER -->
+    <nz-header class="header">
+      <button nz-button nzType="link" (click)="logout()">Salir</button>
+    </nz-header>
+
+    <!-- CONTENT -->
+    <nz-content class="content">
+      <router-outlet></router-outlet>
+    </nz-content>
+
+    <!-- FOOTER -->
+    <nz-footer class="footer">
+      Reviews ©2025
+    </nz-footer>
+
+  </nz-layout>
+
+</nz-layout>

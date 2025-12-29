@@ -1,0 +1,80 @@
+/* HEADER */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  font-size: 26px;
+  font-weight: 600;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* CARD */
+.restaurant-card {
+  cursor: pointer;
+  border-radius: 14px;
+  transition: all 0.25s ease;
+  border: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+.restaurant-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.12);
+}
+
+/* HEADER CARD */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* META */
+.meta {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+/* STATS */
+.stats {
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* PREMIUM BADGE */
+.badge-premium {
+  background: linear-gradient(135deg, #ffb347, #ffcc33);
+  color: #fff;
+  padding: 2px 10px;
+  font-size: 12px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+/* LOADING / EMPTY */
+.center,
+.empty {
+  text-align: center;
+  padding: 60px 0;
+  font-size: 16px;
+  color: #999;
+}
