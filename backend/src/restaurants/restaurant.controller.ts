@@ -43,7 +43,7 @@ export class RestaurantsController {
   // =========================
   // RESTAURANTES DEL OWNER
   // =========================
-  @Get('my-restaurants')
+  @Get('owner/my-restaurants')
   async myRestaurants(@Req() req: AuthRequest) {
     if (!req.user || req.user.role !== 'owner') {
       throw new ForbiddenException('Solo dueños');

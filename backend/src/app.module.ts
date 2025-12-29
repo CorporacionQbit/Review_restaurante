@@ -83,7 +83,7 @@ export class AppModule implements NestModule {
       .forRoutes(
         // ===== FAVORITES (🔥 CLAVE) =====
         { path: 'favorites', method: RequestMethod.ALL },
- { path: 'favorites/:id', method: RequestMethod.ALL }, // 
+        { path: 'favorites/:id', method: RequestMethod.ALL }, // 
         // ===== USERS =====
         { path: 'users', method: RequestMethod.ALL },
         { path: 'users/me', method: RequestMethod.ALL },
@@ -93,6 +93,7 @@ export class AppModule implements NestModule {
 
         // ===== RESTAURANTS =====
         { path: 'restaurants', method: RequestMethod.ALL },
+         { path: 'restaurants/owner/my-restaurants', method: RequestMethod.ALL },
         { path: 'restaurants/my-restaurants', method: RequestMethod.ALL },
         { path: 'restaurants/:id/images', method: RequestMethod.ALL },
         { path: 'restaurants/:id/validate', method: RequestMethod.ALL },
