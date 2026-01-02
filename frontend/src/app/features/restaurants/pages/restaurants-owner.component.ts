@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzTagModule } from 'ng-zorro-antd/tag';
@@ -14,7 +15,7 @@ import { OwnerRestaurant } from '../models/restaurant-owner.model';
     CommonModule,
     NzButtonModule,
     NzCardModule,
-    NzTagModule
+    NzTagModule,
   ],
   templateUrl: './restaurants-owner.component.html',
   styleUrls: ['./restaurants-owner.component.css'],
@@ -32,7 +33,6 @@ export class RestaurantsOwnerComponent implements OnInit {
   ngOnInit(): void {
     this.restaurantsService.getMyRestaurants().subscribe({
       next: (res) => {
-        console.log('MIS RESTAURANTES =>', res);
         this.restaurants = res;
         this.loading = false;
       },
@@ -46,7 +46,20 @@ export class RestaurantsOwnerComponent implements OnInit {
     this.router.navigate(['/restaurants/create']);
   }
 
-  goToRestaurant(id: number): void {
-    this.router.navigate(['/restaurants', id]);
+ goToRestaurant(id: number): void {
+  this.router.navigate(['/restaurants', id, 'dashboard']);
+}
+
+  // Panel privado
+  goToImages(id: number): void {
+    this.router.navigate(['/restaurants', id, 'images']);
+  }
+
+  goToMap(id: number): void {
+    this.router.navigate(['/restaurants', id, 'map']);
+  }
+
+  goToPosts(id: number): void {
+    this.router.navigate(['/restaurants', id, 'posts']);
   }
 }

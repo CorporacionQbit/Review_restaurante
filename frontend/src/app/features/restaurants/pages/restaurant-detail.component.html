@@ -1,5 +1,4 @@
 <div class="restaurant-detail-page">
-
   <div class="restaurant-detail-container">
 
     <!-- ================= HEADER ================= -->
@@ -10,9 +9,10 @@
           {{ restaurant?.name }}
         </h1>
 
-        <!-- ❤️ FAVORITO -->
+        <!-- ❤️ FAVORITO (solo clientes logueados) -->
         <div
           class="favorite-btn"
+          *ngIf="isLoggedIn()"
           [class.active]="isFavorite"
           (click)="toggleFavorite()"
           title="Agregar a favoritos">
@@ -30,6 +30,12 @@
         <span *ngIf="restaurant?.isPremium" class="badge-premium">
           ⭐ Premium
         </span>
+
+        <span
+          class="badge-status"
+          [ngClass]="restaurant?.onboardingStatus?.toLowerCase()">
+          {{ restaurant?.onboardingStatus }}
+        </span>
       </div>
 
       <p class="restaurant-description">
@@ -43,7 +49,6 @@
 
     <!-- ================= HERO ================= -->
     <section class="hero">
-
       <div
         class="hero-image"
         *ngIf="restaurant?.images?.length > 0; else noHero"
@@ -55,7 +60,6 @@
           {{ restaurant?.name?.charAt(0) }}
         </div>
       </ng-template>
-
     </section>
 
     <!-- ================= INFO ================= -->
@@ -101,7 +105,7 @@
       <!-- MAIN -->
       <main class="main">
 
-        <!-- GALERÍA -->
+        <!-- ================= GALERÍA ================= -->
         <section class="gallery-section" *ngIf="restaurant?.images?.length">
           <h2>Galería</h2>
 
@@ -116,13 +120,34 @@
           </div>
         </section>
 
-        <!-- RESEÑAS -->
-        <section class="reviews-section" #reviewsSection>
+        <!-- ================= POSTS (PREMIUM) ================= -->
+        <section
+          class="posts-section"
+          *ngIf="restaurant?.isPremium && posts?.length">
 
+          <h2>Novedades</h2>
+
+          <div class="post-card" *ngFor="let p of posts">
+            <h3>{{ p.title }}</h3>
+            <p>{{ p.content }}</p>
+
+            <img
+              *ngIf="p.imageUrl"
+              [src]="'http://localhost:3000/' + p.imageUrl"
+              alt="Imagen del post" />
+
+            <span class="post-date">
+              {{ p.createdAt | date:'mediumDate' }}
+            </span>
+          </div>
+
+        </section>
+
+        <!-- ================= RESEÑAS ================= -->
+        <section class="reviews-section" #reviewsSection>
           <h2>Opiniones de clientes ({{ reviews.length }})</h2>
 
           <div class="review-card" *ngFor="let r of reviews">
-
             <div class="avatar">
               {{ r.user?.fullName?.charAt(0) || 'U' }}
             </div>
@@ -143,14 +168,14 @@
           <div class="empty" *ngIf="reviews.length === 0">
             Aún no hay reseñas
           </div>
-
         </section>
 
-        <!-- FORMULARIO -->
+        <!-- ================= FORMULARIO RESEÑA ================= -->
         <section class="review-form">
 
           <h3>Cuéntanos tu experiencia</h3>
 
+          <!-- NO LOGUEADO -->
           <div *ngIf="!isLoggedIn()" class="login-box">
             <p>Debes iniciar sesión para escribir una reseña.</p>
             <button
@@ -161,7 +186,18 @@
             </button>
           </div>
 
-          <div *ngIf="isLoggedIn()">
+          <!-- LOGUEADO PERO NO APROBADO -->
+          <div
+            *ngIf="isLoggedIn() && restaurant?.onboardingStatus !== 'Aprobado'"
+            class="blocked-box">
+            <p>
+              Este restaurante aún no ha sido aprobado para recibir reseñas.
+            </p>
+          </div>
+
+          <!-- LOGUEADO Y APROBADO -->
+          <div
+            *ngIf="isLoggedIn() && restaurant?.onboardingStatus === 'Aprobado'">
 
             <label>Calificación</label>
             <nz-rate [(ngModel)]="rating"></nz-rate>
@@ -186,15 +222,21 @@
 
       </main>
 
-      <!-- SIDEBAR -->
+      <!-- ================= SIDEBAR ================= -->
       <aside class="sidebar">
 
-        <div class="sidebar-box map" *ngIf="restaurant?.isPremium && safeMapUrl">
+        <!-- MAPA (SOLO PREMIUM) -->
+        <div
+          class="sidebar-box map"
+          *ngIf="restaurant?.isPremium && safeMapUrl">
           <h4>Ubicación</h4>
           <iframe [src]="safeMapUrl"></iframe>
         </div>
 
-        <div class="sidebar-box menu" *ngIf="restaurant?.menus?.length">
+        <!-- MENÚ (SOLO PREMIUM) -->
+        <div
+          class="sidebar-box menu"
+          *ngIf="restaurant?.isPremium && restaurant?.menus?.length">
           <h4>Menú</h4>
 
           <div class="menu-card" *ngFor="let m of restaurant.menus">
@@ -209,27 +251,23 @@
           </div>
         </div>
 
-        <div class="sidebar-box posts" *ngIf="restaurant?.posts?.length">
-          <h4>Novedades</h4>
-
-          <div class="post-card" *ngFor="let p of restaurant.posts">
-            <strong>{{ p.title }}</strong>
-            <p>{{ p.content }}</p>
-            <span>{{ p.createdAt | date:'mediumDate' }}</span>
-          </div>
+        <!-- MENSAJE SI NO ES PREMIUM -->
+        <div
+          class="sidebar-box locked"
+          *ngIf="!restaurant?.isPremium">
+          <p>🔒 Funciones Premium disponibles</p>
         </div>
 
+        <!-- BADGE PREMIUM -->
         <div class="sidebar-premium" *ngIf="restaurant?.isPremium">
           ⭐ Restaurante Premium
         </div>
 
       </aside>
-
     </div>
 
-    <!-- LIGHTBOX -->
+    <!-- ================= LIGHTBOX ================= -->
     <div class="lightbox" *ngIf="activeImageIndex !== null">
-
       <div class="lightbox-backdrop" (click)="closeImage()"></div>
 
       <div class="lightbox-content">
@@ -240,9 +278,7 @@
         <button class="lightbox-prev" (click)="prevImage()">‹</button>
         <button class="lightbox-next" (click)="nextImage()">›</button>
       </div>
-
     </div>
 
   </div>
-
 </div>

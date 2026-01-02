@@ -1,0 +1,23 @@
+<h2>Imágenes del restaurante</h2>
+
+<p>
+  {{ images.length }} / {{ maxImages }} imágenes
+  <span *ngIf="!isPremium">(Plan normal)</span>
+</p>
+
+<nz-upload
+  nzListType="picture-card"
+  [nzBeforeUpload]="beforeUpload"
+  [nzShowUploadList]="false">
+  <div *ngIf="images.length < maxImages">
+    ➕ Subir
+  </div>
+</nz-upload>
+
+<div class="grid">
+  <div
+    class="img"
+    *ngFor="let img of images"
+    [style.backgroundImage]="'url(http://localhost:3000/' + img.imageUrl + ')'">
+  </div>
+</div>

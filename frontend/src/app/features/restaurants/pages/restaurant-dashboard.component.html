@@ -1,0 +1,86 @@
+<div class="dashboard" *ngIf="!loading">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>{{ restaurant.name }}</h1>
+
+    <nz-tag
+      [nzColor]="
+        restaurant.onboardingStatus === 'Aprobado'
+          ? 'green'
+          : restaurant.onboardingStatus === 'Rechazado'
+          ? 'red'
+          : 'orange'
+      ">
+      {{ restaurant.onboardingStatus }}
+    </nz-tag>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-box">
+    <p>Progreso del restaurantesss</p>
+    <nz-progress
+      [nzPercent]="completionPercent()"
+      nzStatus="active">
+    </nz-progress>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div class="checklist">
+
+    <div class="item">
+      <span>📸 Imágenes</span>
+      <span>{{ checklist.images ? '✔' : '❌' }}</span>
+      <button nz-button nzSize="small" (click)="goImages()">
+        Gestionar
+      </button>
+    </div>
+
+    <div class="item">
+      <span>🕒 Horarios</span>
+      <span>{{ checklist.schedule ? '✔' : '❌' }}</span>
+    </div>
+
+    <div class="item">
+      <span>🌐 Redes sociales</span>
+      <span>{{ checklist.socials ? '✔' : '❌' }}</span>
+    </div>
+
+    <div class="item locked" *ngIf="!restaurant.isPremium">
+      <span>📄 Menú (Premium)</span>
+      <span>🔒</span>
+      <button nz-button nzType="link" (click)="goPremium()">
+        Hazte Premium
+      </button>
+    </div>
+
+    <div class="item" *ngIf="restaurant.isPremium">
+      <span>📄 Menú</span>
+      <span>{{ checklist.menu ? '✔' : '❌' }}</span>
+      <button nz-button nzSize="small" (click)="goMenu()">
+        Gestionar
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="actions">
+    <button
+      nz-button
+      nzType="primary"
+      [disabled]="completionPercent() < 60"
+      (click)="sendToReview()">
+      Enviar a revisión
+    </button>
+
+    <button
+      nz-button
+      nzType="default"
+      *ngIf="!restaurant.isPremium"
+      (click)="goPremium()">
+      ⭐ Hazte Premium
+    </button>
+  </div>
+
+</div>

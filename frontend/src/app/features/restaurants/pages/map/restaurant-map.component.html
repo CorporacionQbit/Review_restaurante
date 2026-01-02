@@ -1,0 +1,48 @@
+<div class="map-page" *ngIf="!loading">
+
+  <h1>Ubicación del restaurante</h1>
+
+  <!-- 🔒 NO PREMIUM -->
+  <nz-card *ngIf="!restaurant?.isPremium" class="blocked">
+    <h3>Función Premium</h3>
+    <p>
+      Solo los restaurantes <strong>Premium</strong>
+      pueden mostrar su ubicación en el mapa.
+    </p>
+  </nz-card>
+
+  <!-- ⭐ PREMIUM -->
+  <ng-container *ngIf="restaurant?.isPremium">
+
+    <!-- FORM -->
+    <nz-card class="map-form">
+      <label>URL del mapa (Google Maps / Waze)</label>
+
+      <input
+        nz-input
+        [(ngModel)]="mapsUrl"
+        (ngModelChange)="updatePreview()"
+        placeholder="https://www.google.com/maps?q=..."
+      />
+
+     <button
+  nz-button
+  nzType="primary"
+  [nzLoading]="saving"
+  (click)="saveMap()">
+  Guardar ubicación
+</button>
+
+    </nz-card>
+
+    <!-- PREVIEW -->
+    <nz-card *ngIf="safeMapUrl" class="map-preview">
+      <iframe
+        [src]="safeMapUrl"
+        loading="lazy">
+      </iframe>
+    </nz-card>
+
+  </ng-container>
+
+</div>

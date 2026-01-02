@@ -1,0 +1,108 @@
+<div class="posts-page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <h2>Publicaciones del restaurante</h2>
+    <p *ngIf="restaurant?.isPremium">
+      Comparte novedades, promociones o anuncios importantes.
+    </p>
+    <p *ngIf="!restaurant?.isPremium" class="warning">
+      ⚠️ Solo restaurantes <strong>Premium</strong> pueden crear publicaciones.
+    </p>
+  </div>
+
+  <!-- FORM CREAR POST -->
+  <nz-card
+    class="create-post-card"
+    *ngIf="restaurant?.isPremium"
+    nzTitle="Crear nueva publicación">
+
+    <div class="form-group">
+      <label>Título</label>
+      <input
+        nz-input
+        [(ngModel)]="title"
+        placeholder="Ej. Nuevo menú de temporada" />
+    </div>
+
+    <div class="form-group">
+      <label>Contenido</label>
+      <textarea
+        nz-input
+        rows="4"
+        [(ngModel)]="content"
+        placeholder="Describe la novedad del restaurante">
+      </textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Imagen (URL opcional)</label>
+      <input
+        nz-input
+        [(ngModel)]="imageUrl"
+        placeholder="https://..." />
+    </div>
+
+    <button
+      nz-button
+      nzType="primary"
+      [disabled]="saving"
+      (click)="createPost()">
+      Publicar
+    </button>
+
+    <div class="limit-info">
+      Máximo <strong>2 posts activos</strong> por restaurante Premium.
+    </div>
+  </nz-card>
+
+  <!-- LISTA DE POSTS -->
+  <div class="posts-list">
+
+    <nz-card
+      *ngFor="let post of posts"
+      class="post-card"
+      [ngClass]="{ inactive: !post.isActive }">
+
+      <div class="post-header">
+        <h3>{{ post.title }}</h3>
+
+        <nz-switch
+          [ngModel]="post.isActive"
+          (ngModelChange)="toggleActive(post)">
+        </nz-switch>
+      </div>
+
+      <p class="post-content">
+        {{ post.content }}
+      </p>
+
+      <img
+        *ngIf="post.imageUrl"
+        class="post-image"
+        [src]="post.imageUrl"
+        alt="Imagen del post" />
+
+      <div class="post-footer">
+        <span class="date">
+          {{ post.createdAt | date:'mediumDate' }}
+        </span>
+
+        <button
+          nz-button
+          nzType="default"
+          nzDanger
+          (click)="deletePost(post.postId)">
+          Eliminar
+        </button>
+      </div>
+
+    </nz-card>
+
+    <div class="empty" *ngIf="!loading && posts.length === 0">
+      Aún no has creado publicaciones.
+    </div>
+
+  </div>
+
+</div>

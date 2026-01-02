@@ -1,0 +1,112 @@
+<div *ngIf="loading" class="dashboard-loading">
+  Cargando dashboard...
+</div>
+
+<div *ngIf="!loading" class="restaurant-dashboard">
+
+  <!-- HEADER -->
+  <div class="dashboard-header">
+    <h1>{{ restaurant.name }}</h1>
+
+    <div class="badges">
+      <span
+        class="badge"
+        [ngClass]="{
+          approved: restaurant.onboardingStatus === 'Aprobado',
+          pending: restaurant.onboardingStatus === 'Pendiente',
+          rejected: restaurant.onboardingStatus === 'Rechazado'
+        }">
+        {{ restaurant.onboardingStatus }}
+      </span>
+
+      <span *ngIf="restaurant.isPremium" class="badge premium">
+        ⭐ Premium
+      </span>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-card">
+    <div class="progress-info">
+      <span>Progreso del restaurante</span>
+      <strong>{{ progress }}%</strong>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="progress"></div>
+    </div>
+  </div>
+
+  <!-- METRICS -->
+  <div class="metrics">
+    <div class="metric-card">
+      <span class="icon">⭐</span>
+      <div>
+        <small>Rating</small>
+        <strong>{{ restaurant.avgRating || 0 }}</strong>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <span class="icon">📝</span>
+      <div>
+        <small>Reseñas</small>
+        <strong>{{ restaurant.totalReviews || 0 }}</strong>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <span class="icon">📸</span>
+      <div>
+        <small>Imágenes</small>
+        <strong>{{ restaurant.images?.length || 0 }}</strong>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <span class="icon">📰</span>
+      <div>
+        <small>Posts</small>
+        <strong>{{ restaurant.posts?.length || 0 }}/2</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="actions-grid">
+
+    <div class="action-card" (click)="go('images')">
+      <div class="icon">📸</div>
+      <h3>Imágenes</h3>
+      <p>Sube y administra fotos</p>
+    </div>
+
+    <div class="action-card" (click)="go('map')">
+      <div class="icon">🗺️</div>
+      <h3>Ubicación</h3>
+      <p>Configura el mapa</p>
+    </div>
+
+    <div
+      class="action-card"
+      [class.locked]="!restaurant.isPremium"
+      (click)="restaurant.isPremium && go('menu')">
+      <div class="icon">📄</div>
+      <h3>Menú</h3>
+      <p *ngIf="restaurant.isPremium">Menú visible al público</p>
+      <p *ngIf="!restaurant.isPremium" class="locked-text">🔒 Solo Premium</p>
+    </div>
+
+    <div
+      class="action-card"
+      [class.locked]="!restaurant.isPremium"
+      (click)="restaurant.isPremium && go('posts')">
+      <div class="icon">📰</div>
+      <h3>Posts</h3>
+      <p *ngIf="restaurant.isPremium">Promociones y novedades</p>
+      <p *ngIf="!restaurant.isPremium" class="locked-text">🔒 Solo Premium</p>
+    </div>
+
+  </div>
+
+</div>

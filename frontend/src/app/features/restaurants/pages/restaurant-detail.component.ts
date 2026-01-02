@@ -39,6 +39,7 @@ export class RestaurantDetailComponent implements OnInit {
 
   restaurant: any;
   reviews: any[] = [];
+  posts: any[] = [];
 
   rating = 5;
   reviewText = '';
@@ -49,10 +50,12 @@ export class RestaurantDetailComponent implements OnInit {
   isFavorite = false;
   favoriteLoading = false;
 
+  activeImageIndex: number | null = null;
+
+  restaurantId!: number;
+
   @ViewChild('reviewsSection')
   reviewsSection!: ElementRef<HTMLElement>;
-
-  activeImageIndex: number | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -65,15 +68,19 @@ export class RestaurantDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    if (!id) return;
+    this.restaurantId = Number(this.route.snapshot.paramMap.get('id'));
+    if (!this.restaurantId) return;
 
-    this.loadRestaurant(id);
-    this.loadReviews(id);
+    this.loadRestaurant();
+    this.loadReviews();
+    this.loadPosts();
   }
 
-  loadRestaurant(id: number): void {
-    this.service.getRestaurantById(id).subscribe({
+  /* =========================
+     RESTAURANTE
+  ========================= */
+  loadRestaurant(): void {
+    this.service.getRestaurantById(this.restaurantId).subscribe({
       next: (res) => {
         this.restaurant = res;
 
@@ -90,8 +97,11 @@ export class RestaurantDetailComponent implements OnInit {
     });
   }
 
-  loadReviews(id: number): void {
-    this.service.getRestaurantReviews(id).subscribe({
+  /* =========================
+     RESEÑAS
+  ========================= */
+  loadReviews(): void {
+    this.service.getRestaurantReviews(this.restaurantId).subscribe({
       next: (res) => (this.reviews = res),
       error: () =>
         this.message.error('No se pudieron cargar las reseñas'),
@@ -118,7 +128,7 @@ export class RestaurantDetailComponent implements OnInit {
 
     this.loading = true;
 
-    this.service.createReview(this.restaurant.restaurantId, {
+    this.service.createReview(this.restaurantId, {
       rating: this.rating,
       reviewText: this.reviewText.trim(),
     }).subscribe({
@@ -126,7 +136,7 @@ export class RestaurantDetailComponent implements OnInit {
         this.message.success('Reseña publicada');
         this.reviewText = '';
         this.rating = 5;
-        this.loadReviews(this.restaurant.restaurantId);
+        this.loadReviews();
         this.loading = false;
       },
       error: () => (this.loading = false),
@@ -139,6 +149,23 @@ export class RestaurantDetailComponent implements OnInit {
     });
   }
 
+  /* =========================
+     POSTS PREMIUM
+  ========================= */
+  loadPosts(): void {
+    this.service.getRestaurantPosts(this.restaurantId).subscribe({
+      next: (res) => {
+        this.posts = res;
+      },
+      error: () => {
+        this.posts = [];
+      },
+    });
+  }
+
+  /* =========================
+     GALERÍA
+  ========================= */
   openImage(i: number) { this.activeImageIndex = i; }
   closeImage() { this.activeImageIndex = null; }
   nextImage() {
@@ -151,44 +178,45 @@ export class RestaurantDetailComponent implements OnInit {
       this.restaurant.images.length;
   }
 
-checkIfFavorite(): void {
-  if (!this.auth.isLoggedIn()) return;
+  /* =========================
+     FAVORITOS
+  ========================= */
+  checkIfFavorite(): void {
+    if (!this.auth.isLoggedIn()) return;
 
-  this.favoritesService.getMyFavorites().subscribe({
-    next: (favorites) => {
-      this.isFavorite = favorites.some(
-        f => f.restaurant_id === this.restaurant.restaurantId
-      );
-    },
-  });
-}
-
-
- toggleFavorite(): void {
-  if (!this.auth.isLoggedIn()) {
-    this.router.navigate(['/auth/login'], {
-      queryParams: { redirect: this.router.url },
+    this.favoritesService.getMyFavorites().subscribe({
+      next: (favorites) => {
+        this.isFavorite = favorites.some(
+          f => f.restaurant_id === this.restaurantId
+        );
+      },
     });
-    return;
   }
 
-  this.favoriteLoading = true;
+  toggleFavorite(): void {
+    if (!this.auth.isLoggedIn()) {
+      this.router.navigate(['/auth/login'], {
+        queryParams: { redirect: this.router.url },
+      });
+      return;
+    }
 
-  const action$ = this.isFavorite
-    ? this.favoritesService.removeFavorite(this.restaurant.restaurantId)
-    : this.favoritesService.addFavorite(this.restaurant.restaurantId);
+    this.favoriteLoading = true;
 
-  action$.subscribe({
-    next: () => {
-      this.isFavorite = !this.isFavorite;
-      this.favoriteLoading = false;
-    },
-    error: () => {
-      this.favoriteLoading = false;
-    },
-  });
-}
+    const action$ = this.isFavorite
+      ? this.favoritesService.removeFavorite(this.restaurantId)
+      : this.favoritesService.addFavorite(this.restaurantId);
 
+    action$.subscribe({
+      next: () => {
+        this.isFavorite = !this.isFavorite;
+        this.favoriteLoading = false;
+      },
+      error: () => {
+        this.favoriteLoading = false;
+      },
+    });
+  }
 
   isLoggedIn(): boolean {
     return this.auth.isLoggedIn();

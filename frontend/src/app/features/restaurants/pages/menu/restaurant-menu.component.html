@@ -1,0 +1,66 @@
+<div class="menu-page" *ngIf="!loading">
+
+  <h1>Menú del restaurante</h1>
+
+  <!-- 🔒 NO PREMIUM -->
+  <nz-card *ngIf="!restaurant?.isPremium" class="blocked">
+    <h3>Función Premium</h3>
+    <p>
+      Para agregar un menú debes actualizar este restaurante a
+      <strong>Plan Premium</strong>.
+    </p>
+  </nz-card>
+
+  <!-- ⭐ PREMIUM -->
+  <ng-container *ngIf="restaurant?.isPremium">
+
+    <!-- YA TIENE MENÚ -->
+    <nz-card *ngIf="menu" class="menu-card">
+      <h3>Menú publicado</h3>
+
+      <p *ngIf="menu.description">{{ menu.description }}</p>
+
+      <a
+        class="menu-link"
+        [href]="menu.menuUrl"
+        target="_blank">
+        Ver menú
+      </a>
+
+      <button
+        nz-button
+        nzType="default"
+        nzDanger
+        (click)="deleteMenu()">
+        Eliminar menú
+      </button>
+    </nz-card>
+
+    <!-- NO TIENE MENÚ -->
+    <nz-card *ngIf="!menu" class="menu-form">
+      <h3>Agregar menú</h3>
+
+      <label>URL del menú (PDF o link)</label>
+      <input
+        nz-input
+        [(ngModel)]="menuUrl"
+        placeholder="https://..." />
+
+      <label>Descripción (opcional)</label>
+      <input
+        nz-input
+        [(ngModel)]="description"
+        placeholder="Menú principal" />
+<button
+  nz-button
+  nzType="primary"
+  [nzLoading]="saving"
+  (click)="createMenu()">
+
+        Guardar menú
+      </button>
+    </nz-card>
+
+  </ng-container>
+
+</div>

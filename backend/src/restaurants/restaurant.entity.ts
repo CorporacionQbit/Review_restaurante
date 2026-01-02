@@ -23,9 +23,7 @@ export class Restaurant {
   @Column({ name: 'owner_user_id' })
   ownerUserId: number;
 
-  @ManyToOne(() => User, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'owner_user_id' })
   owner: User;
 
@@ -35,59 +33,25 @@ export class Restaurant {
   @Column({ type: 'text', nullable: true })
   description: string | null;
 
-  @Column({
-    name: 'phone_number',
-    type: 'varchar',
-    length: 50,
-    nullable: true,
-  })
+  @Column({ name: 'phone_number', type: 'varchar', length: 50, nullable: true })
   phoneNumber: string | null;
 
-  @Column({
-    name: 'email',
-    type: 'varchar',
-    length: 255,
-    nullable: true,
-  })
+  @Column({ name: 'email', type: 'varchar', length: 255, nullable: true })
   email: string | null;
 
-  @Column({
-    name: 'address',
-    type: 'varchar',
-    length: 255,
-    nullable: true,
-  })
+  @Column({ name: 'address', type: 'varchar', length: 255, nullable: true })
   address: string | null;
 
-  @Column({
-    name: 'city',
-    type: 'varchar',
-    length: 100,
-    nullable: true,
-  })
+  @Column({ name: 'city', type: 'varchar', length: 100, nullable: true })
   city: string | null;
 
-  @Column({
-    name: 'zone',
-    type: 'varchar',
-    length: 50,
-    nullable: true,
-  })
+  @Column({ name: 'zone', type: 'varchar', length: 50, nullable: true })
   zone: string | null;
 
-  @Column({
-    name: 'maps_url',
-    type: 'varchar',
-    length: 500,
-    nullable: true,
-  })
+  @Column({ name: 'maps_url', type: 'varchar', length: 500, nullable: true })
   mapsUrl: string | null;
 
-  @Column({
-    name: 'price_range',
-    type: 'smallint',
-    nullable: true,
-  })
+  @Column({ name: 'price_range', type: 'smallint', nullable: true })
   priceRange: number | null;
 
   @Column({
@@ -99,25 +63,13 @@ export class Restaurant {
   })
   avgRating: number;
 
-  @Column({
-    name: 'total_reviews',
-    type: 'int',
-    default: 0,
-  })
+  @Column({ name: 'total_reviews', type: 'int', default: 0 })
   totalReviews: number;
 
-  @Column({
-    name: 'is_approved',
-    type: 'boolean',
-    default: false,
-  })
+  @Column({ name: 'is_approved', type: 'boolean', default: false })
   isApproved: boolean;
 
-  @Column({
-    name: 'is_premium',
-    type: 'boolean',
-    default: false,
-  })
+  @Column({ name: 'is_premium', type: 'boolean', default: false })
   isPremium: boolean;
 
   @Column({
@@ -126,33 +78,25 @@ export class Restaurant {
     length: 20,
     default: 'Pendiente',
   })
-  onboardingStatus: string;
+  onboardingStatus: 'Pendiente' | 'EnRevision' | 'Aprobado';
 
-  @Column({
-    name: 'onboarding_comment',
-    type: 'text',
-    nullable: true,
-  })
+  @Column({ name: 'onboarding_comment', type: 'text', nullable: true })
   onboardingComment: string | null;
 
-  
-  // Relación con imágenes
+  // ================= RELACIONES =================
 
   @OneToMany(() => RestaurantImage, (img) => img.restaurant)
   images: RestaurantImage[];
 
   @OneToMany(() => Menu, (menu) => menu.restaurant, { cascade: true })
-menus: Menu[]
+  menus: Menu[];
 
- 
-  // Relación con reseñas
- 
   @OneToMany(() => Review, (review) => review.restaurant)
   reviews: Review[];
-  
-  @OneToMany(() => Post, (post) => post.restaurant, { cascade: true })
-posts: Post[];
 
-@OneToOne(() => Subscription, (sub) => sub.restaurant)
-subscription: Subscription;
+  @OneToMany(() => Post, (post) => post.restaurant, { cascade: true })
+  posts: Post[];
+
+  @OneToOne(() => Subscription, (sub) => sub.restaurant)
+  subscription: Subscription;
 }

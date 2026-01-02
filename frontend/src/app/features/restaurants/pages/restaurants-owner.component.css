@@ -78,3 +78,9 @@
   font-size: 16px;
   color: #999;
 }
+.owner-actions {
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}

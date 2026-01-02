@@ -6,14 +6,17 @@
   </button>
 </div>
 
+<!-- LOADING -->
 <div *ngIf="loading" class="center">
   Cargando restaurantes...
 </div>
 
+<!-- EMPTY -->
 <div *ngIf="!loading && restaurants.length === 0" class="empty">
   No has registrado restaurantes todavía.
 </div>
 
+<!-- GRID -->
 <div class="grid" *ngIf="!loading && restaurants.length">
 
   <nz-card
@@ -21,6 +24,7 @@
     class="restaurant-card"
     (click)="goToRestaurant(r.restaurantId)"
   >
+
     <div class="card-header">
       <h3>{{ r.name }}</h3>
       <span *ngIf="r.isPremium" class="badge-premium">Premium</span>
@@ -44,6 +48,33 @@
     <div class="stats">
       ⭐ {{ r.avgRating }} ({{ r.totalReviews }})
     </div>
+
+    <!-- OWNER ACTIONS -->
+    <div class="owner-actions">
+
+      <button
+        nz-button
+        nzType="default"
+        (click)="goToImages(r.restaurantId); $event.stopPropagation()">
+        🖼️ Imágenes
+      </button>
+
+      <button
+        nz-button
+        nzType="default"
+        (click)="goToMap(r.restaurantId); $event.stopPropagation()">
+        📍 Mapa
+      </button>
+
+      <button
+        nz-button
+        nzType="default"
+        (click)="goToPosts(r.restaurantId); $event.stopPropagation()">
+        📢 Posts
+      </button>
+
+    </div>
+
   </nz-card>
 
 </div>

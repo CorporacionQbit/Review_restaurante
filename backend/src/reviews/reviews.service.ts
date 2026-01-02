@@ -27,8 +27,7 @@ export class ReviewsService {
     private readonly reportRepo: Repository<ReviewReport>,
   ) {}
 
-
-  // Crear reseña (con trigger de 4 días)
+  // ================= CREAR RESEÑA =================
   async createReview(
     userId: number,
     restaurantId: number,
@@ -42,18 +41,25 @@ export class ReviewsService {
       throw new NotFoundException('Restaurante no encontrado');
     }
 
+    // 🔒 BLOQUEO POR ONBOARDING
+    if (restaurant.onboardingStatus !== 'Aprobado') {
+      throw new ForbiddenException(
+        'Este restaurante aún no está aprobado para recibir reseñas',
+      );
+    }
+
     const review = this.reviewRepo.create({
       userId,
       restaurantId,
       rating: dto.rating,
       reviewText: dto.reviewText ?? null,
-      status: 'Pendiente', 
+      status: 'Pendiente',
     });
 
     try {
       return await this.reviewRepo.save(review);
     } catch (e) {
-      if (e.message.includes('debe esperar 4 días')) {
+      if (e.message?.includes('debe esperar 4 días')) {
         throw new ForbiddenException(
           'Debes esperar 4 días antes de volver a reseñar este restaurante.',
         );
@@ -62,9 +68,7 @@ export class ReviewsService {
     }
   }
 
-
-  // Obtener reseñas de un restaurante (por rol)
-  
+  // ================= OBTENER RESEÑAS =================
   async getRestaurantReviews(
     restaurantId: number,
     role?: string,
@@ -94,7 +98,7 @@ export class ReviewsService {
       }
     }
 
-    // Cliente ve reseñas sin filtrar
+    // Cliente
     return this.reviewRepo.find({
       where: { restaurantId },
       relations: ['user'],
@@ -102,9 +106,7 @@ export class ReviewsService {
     });
   }
 
-  
-  // Obtener reseñas del usuario
-  
+  // ================= RESEÑAS DEL USUARIO =================
   async getUserReviews(userId: number) {
     return this.reviewRepo.find({
       where: { userId },
@@ -113,9 +115,7 @@ export class ReviewsService {
     });
   }
 
-  
-  // Actualizar reseña (solo autor)
-  
+  // ================= ACTUALIZAR RESEÑA =================
   async updateReview(
     reviewId: number,
     userId: number,
@@ -135,9 +135,7 @@ export class ReviewsService {
     return this.reviewRepo.save(review);
   }
 
-
-  // Eliminar reseña (solo autor)
-  
+  // ================= ELIMINAR RESEÑA =================
   async deleteReview(reviewId: number, userId: number) {
     const review = await this.reviewRepo.findOne({ where: { reviewId } });
 
@@ -152,9 +150,7 @@ export class ReviewsService {
     return { success: true };
   }
 
-
-  // REPORTAR RESEÑA (dueño)
-
+  // ================= REPORTAR RESEÑA =================
   async reportReview(reviewId: number, ownerId: number, reason: string) {
     const review = await this.reviewRepo.findOne({
       where: { reviewId },
@@ -163,7 +159,6 @@ export class ReviewsService {
 
     if (!review) throw new NotFoundException('Reseña no encontrada');
 
-    // Validar que el dueño es quien reporta
     const restaurant = await this.restaurantRepo.findOne({
       where: { restaurantId: review.restaurantId },
     });
@@ -184,9 +179,7 @@ export class ReviewsService {
     return this.reportRepo.save(report);
   }
 
-  
-  // ADMIN: obtener todos los reportes
-  
+  // ================= ADMIN =================
   async getReports() {
     return this.reportRepo.find({
       relations: ['review', 'user'],
@@ -194,28 +187,17 @@ export class ReviewsService {
     });
   }
 
-  
-  // ADMIN: eliminar reseña reportada
- 
   async adminDeleteReview(reviewId: number) {
     const review = await this.reviewRepo.findOne({ where: { reviewId } });
 
     if (!review) throw new NotFoundException('Reseña no encontrada');
 
-    // Marcar reportes como resueltos
-    await this.reportRepo.update(
-      { reviewId },
-      { isResolved: true },
-    );
-
+    await this.reportRepo.update({ reviewId }, { isResolved: true });
     await this.reviewRepo.remove(review);
 
     return { success: true };
   }
 
-  
-  // ADMIN: resolver reporte sin borrar reseña
- 
   async resolveReport(reportId: number) {
     const report = await this.reportRepo.findOne({ where: { reportId } });
 
@@ -224,7 +206,6 @@ export class ReviewsService {
     }
 
     report.isResolved = true;
-
     return this.reportRepo.save(report);
   }
 }

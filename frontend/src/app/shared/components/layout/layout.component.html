@@ -19,7 +19,7 @@
 
       <li *ngIf="role === 'owner'" nz-menu-item routerLink="/restaurants/create">
         <span nz-icon nzType="plus-circle"></span>
-        Crear nuevo restaurante
+        Crear restaurante
       </li>
 
       <!-- ADMIN -->
@@ -36,7 +36,9 @@
 
     <!-- HEADER -->
     <nz-header class="header">
-      <button nz-button nzType="link" (click)="logout()">Salir</button>
+      <button nz-button nzType="link" (click)="logout()">
+        Salir
+      </button>
     </nz-header>
 
     <!-- CONTENT -->
