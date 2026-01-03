@@ -23,167 +23,125 @@ export class SubscriptionsService {
     private readonly paymentRepo: Repository<Payment>,
   ) {}
 
- 
-  // UTILIDAD: obtener restaurante del OWNER
-  
-  private async getRestaurantByOwner(ownerId: number): Promise<Restaurant> {
+  // ===============================
+  // UTILIDAD
+  // ===============================
+  private async getRestaurant(
+    ownerId: number,
+    restaurantId: number,
+  ): Promise<Restaurant> {
     const restaurant = await this.restaurantRepo.findOne({
-      where: { ownerUserId: ownerId },
+      where: { restaurantId, ownerUserId: ownerId },
     });
 
     if (!restaurant) {
-      throw new NotFoundException(
-        'El usuario no tiene restaurante asociado',
-      );
+      throw new NotFoundException('Restaurante no encontrado');
     }
 
     return restaurant;
   }
 
-
-  //  Obtener mi suscripción actual
-
+  // ===============================
+  // MI SUSCRIPCIÓN
+  // ===============================
   async getMySubscription(ownerId: number) {
-    const restaurant = await this.getRestaurantByOwner(ownerId);
+    const restaurant = await this.restaurantRepo.findOne({
+      where: { ownerUserId: ownerId },
+    });
 
-    const sub = await this.subscriptionRepo.findOne({
-      where: { restaurantId: restaurant.restaurantId },
+    if (!restaurant) {
+      throw new NotFoundException('No tienes restaurante');
+    }
+
+    let sub = await this.subscriptionRepo.findOne({
+      where: { restaurant: { restaurantId: restaurant.restaurantId } },
+      relations: ['restaurant'],
     });
 
     if (!sub) {
-      throw new NotFoundException('No existe suscripción para tu restaurante');
+      sub = this.subscriptionRepo.create({
+        restaurant,
+        planType: 'Normal',
+        isActive: true,
+        startDate: new Date().toISOString().slice(0, 10),
+      });
+
+      sub = await this.subscriptionRepo.save(sub);
     }
 
     return sub;
   }
 
+  // ===============================
+  // UPGRADE
+  // ===============================
+  async upgrade(ownerId: number, restaurantId: number) {
+    const restaurant = await this.getRestaurant(ownerId, restaurantId);
 
-  // Crear suscripción inicial (NORMAL)
-  
-  async createInitialForOwner(ownerId: number) {
-    const restaurant = await this.getRestaurantByOwner(ownerId);
-
-    const existing = await this.subscriptionRepo.findOne({
-      where: { restaurantId: restaurant.restaurantId },
+    let sub = await this.subscriptionRepo.findOne({
+      where: { restaurant: { restaurantId } },
+      relations: ['restaurant'],
     });
 
-    if (existing) return existing;
-
-    const start = new Date();
-    const end = new Date();
-    end.setMonth(end.getMonth() + 1);
-
-    const sub = this.subscriptionRepo.create({
-      restaurantId: restaurant.restaurantId,
-      planType: 'Normal',
-      startDate: start.toISOString().slice(0, 10),
-      endDate: end.toISOString().slice(0, 10),
-      isActive: true,
-    });
-
-    return this.subscriptionRepo.save(sub);
-  }
-
- 
-  // 3. Upgrade a PREMIUM
-async upgrade(ownerId: number) {
-  const restaurant = await this.restaurantRepo.findOne({
-    where: { ownerUserId: ownerId },
-  });
-
-  if (!restaurant) {
-    throw new NotFoundException('No tienes restaurante asociado');
-  }
-
-  let sub = await this.subscriptionRepo.findOne({
-    where: { restaurantId: restaurant.restaurantId },
-  });
-
-  // Si no existe, crear NORMAL
-  if (!sub) {
-    const start = new Date();
-    const end = new Date();
-    end.setMonth(end.getMonth() + 1);
-
-    sub = this.subscriptionRepo.create({
-      restaurantId: restaurant.restaurantId,
-      planType: 'Normal',
-      startDate: start.toISOString().slice(0, 10),
-      endDate: end.toISOString().slice(0, 10),
-      isActive: true,
-    });
-
-    sub = await this.subscriptionRepo.save(sub);
-  }
-
-  if (sub.planType === 'Premium') {
-    
-    if (!restaurant.isPremium) {
-      restaurant.isPremium = true;
-      await this.restaurantRepo.save(restaurant);
+    if (!sub) {
+      sub = this.subscriptionRepo.create({
+        restaurant,
+        planType: 'Normal',
+        isActive: true,
+        startDate: new Date().toISOString().slice(0, 10),
+      });
     }
 
-    throw new BadRequestException('Ya tienes el plan Premium');
+    if (sub.planType === 'Premium') {
+      throw new BadRequestException('Ya es Premium');
+    }
+
+    sub.planType = 'Premium';
+    sub.isActive = true;
+    sub.canceledAt = undefined;
+    sub.cancelReason = undefined;
+
+    await this.subscriptionRepo.save(sub);
+
+    restaurant.isPremium = true;
+    await this.restaurantRepo.save(restaurant);
+
+    return { message: 'Plan actualizado a Premium' };
   }
 
-  // Upgrade real
-  sub.planType = 'Premium';
-  sub.isActive = true;
-  sub.canceledAt = undefined;
-  sub.cancelReason = undefined;
-
-  await this.subscriptionRepo.save(sub);
-
-  //  SINCRONIZACIÓN CLAVE
-  restaurant.isPremium = true;
-  await this.restaurantRepo.save(restaurant);
-
-  return {
-    message: 'Plan actualizado a Premium',
-  };
-}
-
-  // 4. Downgrade a NORMAL
-  
-  async downgrade(ownerId: number) {
-  const restaurant = await this.getRestaurantByOwner(ownerId);
-
-  const sub = await this.subscriptionRepo.findOne({
-    where: { restaurantId: restaurant.restaurantId },
-  });
-
-  if (!sub) {
-    throw new NotFoundException('Suscripción no encontrada');
-  }
-
-  if (sub.planType === 'Normal') {
-    throw new BadRequestException('Ya estás en plan Normal');
-  }
-
-  // Cambiar plan
-  sub.planType = 'Normal';
-  sub.isActive = true;
-
-  await this.subscriptionRepo.save(sub);
-
-  //  SINCRONIZAR RESTAURANTE
-  restaurant.isPremium = false;
-  await this.restaurantRepo.save(restaurant);
-
-  return {
-    message: 'Plan cambiado a Normal correctamente',
-  };
-}
-
-
-  
-  // Reactivar suscripción
-   
-  async reactivate(ownerId: number) {
-    const restaurant = await this.getRestaurantByOwner(ownerId);
+  // ===============================
+  // DOWNGRADE
+  // ===============================
+  async downgrade(ownerId: number, restaurantId: number) {
+    const restaurant = await this.getRestaurant(ownerId, restaurantId);
 
     const sub = await this.subscriptionRepo.findOne({
-      where: { restaurantId: restaurant.restaurantId },
+      where: { restaurant: { restaurantId } },
+      relations: ['restaurant'],
+    });
+
+    if (!sub || sub.planType === 'Normal') {
+      throw new BadRequestException('Ya estás en plan Normal');
+    }
+
+    sub.planType = 'Normal';
+    await this.subscriptionRepo.save(sub);
+
+    restaurant.isPremium = false;
+    await this.restaurantRepo.save(restaurant);
+
+    return { message: 'Plan cambiado a Normal' };
+  }
+
+  // ===============================
+  // REACTIVAR
+  // ===============================
+  async reactivate(ownerId: number, restaurantId: number) {
+    const restaurant = await this.getRestaurant(ownerId, restaurantId);
+
+    const sub = await this.subscriptionRepo.findOne({
+      where: { restaurant: { restaurantId } },
+      relations: ['restaurant'],
     });
 
     if (!sub) {
@@ -198,34 +156,80 @@ async upgrade(ownerId: number) {
     sub.canceledAt = undefined;
     sub.cancelReason = undefined;
 
-    return this.subscriptionRepo.save(sub);
+    await this.subscriptionRepo.save(sub);
+
+    restaurant.isPremium = true;
+    await this.restaurantRepo.save(restaurant);
+
+    return { message: 'Suscripción reactivada' };
   }
 
-  //
-  //  Historial de planes (OWNER)
-  // 
+  // ===============================
+  // CANCELAR
+  // ===============================
+  async cancel(
+    ownerId: number,
+    restaurantId: number,
+    reason: string,
+  ) {
+    const restaurant = await this.getRestaurant(ownerId, restaurantId);
+
+    const sub = await this.subscriptionRepo.findOne({
+      where: { restaurant: { restaurantId } },
+      relations: ['restaurant'],
+    });
+
+    if (!sub) {
+      throw new NotFoundException('Suscripción no encontrada');
+    }
+
+    if (!sub.isActive) {
+      throw new BadRequestException('La suscripción ya está cancelada');
+    }
+
+    sub.isActive = false;
+    sub.canceledAt = new Date();
+    sub.cancelReason = reason || 'Cancelada por el usuario';
+
+    await this.subscriptionRepo.save(sub);
+
+    restaurant.isPremium = false;
+    await this.restaurantRepo.save(restaurant);
+
+    return { message: 'Suscripción cancelada correctamente' };
+  }
+
+  // ===============================
+  // HISTORIAL
+  // ===============================
   async getHistoryByOwner(ownerId: number) {
-    const restaurant = await this.getRestaurantByOwner(ownerId);
+    const restaurant = await this.restaurantRepo.findOne({
+      where: { ownerUserId: ownerId },
+    });
+
+    if (!restaurant) return [];
 
     return this.subscriptionRepo.find({
-      where: { restaurantId: restaurant.restaurantId },
+      where: { restaurant: { restaurantId: restaurant.restaurantId } },
+      relations: ['restaurant'],
       order: { startDate: 'DESC' },
     });
   }
 
-  //
-  // Historial de pagos (OWNER)
-  // 
   async getPaymentHistoryByOwner(ownerId: number) {
-    const restaurant = await this.getRestaurantByOwner(ownerId);
+    const restaurant = await this.restaurantRepo.findOne({
+      where: { ownerUserId: ownerId },
+    });
+
+    if (!restaurant) return [];
 
     const subs = await this.subscriptionRepo.find({
-      where: { restaurantId: restaurant.restaurantId },
+      where: { restaurant: { restaurantId: restaurant.restaurantId } },
     });
 
     if (!subs.length) return [];
 
-    const subIds = subs.map((s) => s.subscriptionId);
+    const subIds = subs.map(s => s.subscriptionId);
 
     return this.paymentRepo.find({
       where: {
@@ -237,50 +241,11 @@ async upgrade(ownerId: number) {
     });
   }
 
-  //  Detalles completos (OWNER)
- 
   async getSubscriptionDetailsByOwner(ownerId: number) {
-    const restaurant = await this.getRestaurantByOwner(ownerId);
-
     return {
-      current: await this.subscriptionRepo.findOne({
-        where: { restaurantId: restaurant.restaurantId },
-      }),
+      current: await this.getMySubscription(ownerId),
       history: await this.getHistoryByOwner(ownerId),
       payments: await this.getPaymentHistoryByOwner(ownerId),
     };
   }
- 
-// Cancelar suscripción (OWNER)
-
-async cancel(ownerId: number, reason: string) {
-  const restaurant = await this.getRestaurantByOwner(ownerId);
-
-  const sub = await this.subscriptionRepo.findOne({
-    where: { restaurantId: restaurant.restaurantId },
-  });
-
-  if (!sub) {
-    throw new NotFoundException('Suscripción no encontrada');
-  }
-
-  if (!sub.isActive) {
-    throw new BadRequestException('La suscripción ya está cancelada');
-  }
-
-  sub.isActive = false;
-  sub.canceledAt = new Date();
-  sub.cancelReason = reason || 'Cancelada por el usuario';
-
-  await this.subscriptionRepo.save(sub);
-
-  //  cancelar premium también en restaurante
-  restaurant.isPremium = false;
-  await this.restaurantRepo.save(restaurant);
-
-  return {
-    message: 'Suscripción cancelada correctamente',
-  };
-}
-
 }

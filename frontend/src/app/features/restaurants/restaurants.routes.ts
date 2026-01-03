@@ -58,6 +58,14 @@ export const RESTAURANTS_ROUTES: Routes = [
       import('./pages/post/restaurant-post.component')
         .then(m => m.RestaurantPostsComponent),
   },
+{
+  path: ':id/subscription',
+  canActivate: [authGuard, roleGuard(['owner'])],
+  loadComponent: () =>
+    import('./pages/subscription/subscription.component')
+     .then(m => m.SubscriptionComponent),
+
+},
 
 {
   path: ':id/menu',

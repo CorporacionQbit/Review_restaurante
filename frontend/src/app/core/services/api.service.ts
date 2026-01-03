@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 
+
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private apiUrl = environment.apiUrl;
@@ -10,6 +11,7 @@ export class ApiService {
 
   get<T>(url: string, params?: Record<string, any>) {
     let httpParams = new HttpParams();
+
     if (params) {
       Object.keys(params).forEach(key => {
         if (params[key] !== null && params[key] !== undefined) {
@@ -17,7 +19,10 @@ export class ApiService {
         }
       });
     }
-    return this.http.get<T>(`${this.apiUrl}${url}`, { params: httpParams });
+
+    return this.http.get<T>(`${this.apiUrl}${url}`, {
+      params: httpParams,
+    });
   }
 
   post<T>(url: string, body: any) {
@@ -26,6 +31,11 @@ export class ApiService {
 
   put<T>(url: string, body: any) {
     return this.http.put<T>(`${this.apiUrl}${url}`, body);
+  }
+
+  // ✅ ESTE MÉTODO ES EL QUE TE FALTABA
+  patch<T>(url: string, body?: any) {
+    return this.http.patch<T>(`${this.apiUrl}${url}`, body);
   }
 
   delete<T>(url: string) {

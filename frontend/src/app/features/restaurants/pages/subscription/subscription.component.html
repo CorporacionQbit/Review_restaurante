@@ -1,0 +1,31 @@
+<nz-card *ngIf="!loading">
+  <h2>Suscripción del restaurante</h2>
+
+  <p>
+    <strong>Plan actual:</strong>
+    {{ subscription.planType }}
+  </p>
+
+  <p>
+    <strong>Estado:</strong>
+    {{ subscription.isActive ? 'Activo' : 'Inactivo' }}
+  </p>
+
+  <div class="actions">
+    <button
+      nz-button
+      nzType="primary"
+      *ngIf="subscription.planType === 'Normal'"
+      (click)="upgrade()">
+      Mejorar a Premium
+    </button>
+
+    <button
+      nz-button
+      nzType="default"
+      *ngIf="subscription.planType === 'Premium'"
+      (click)="downgrade()">
+      Cambiar a Normal
+    </button>
+  </div>
+</nz-card>

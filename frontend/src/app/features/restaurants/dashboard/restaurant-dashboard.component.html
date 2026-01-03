@@ -107,6 +107,22 @@
       <p *ngIf="!restaurant.isPremium" class="locked-text">🔒 Solo Premium</p>
     </div>
 
+    <div
+  class="action-card subscription-card"
+  (click)="go('subscription')">
+
+  <div class="icon">💳</div>
+  <h3>Suscripción</h3>
+
+  <p *ngIf="restaurant.isPremium">
+    Plan Premium activo
+  </p>
+
+  <p *ngIf="!restaurant.isPremium">
+    Plan Normal · Mejorar a Premium
+  </p>
+</div>
+
   </div>
 
 </div>
