@@ -16,6 +16,7 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { MenusModule } from './menu/menus.module';
 import { PostsModule } from './post/posts.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 
 // ===== MIDDLEWARE =====
@@ -54,6 +55,7 @@ import { FavoritesModule } from './favorites/favorites.module';
     PostsModule,
     SubscriptionsModule,
     FavoritesModule,
+    AnalyticsModule,
   ],
 })
 export class AppModule implements NestModule {
@@ -127,6 +129,11 @@ export class AppModule implements NestModule {
         { path: 'subscriptions/history', method: RequestMethod.ALL },
         { path: 'subscriptions/payments', method: RequestMethod.ALL },
         { path: 'subscriptions/details', method: RequestMethod.ALL },
+        // ===== ANALYTICS =====
+{ path: 'analytics', method: RequestMethod.ALL },
+{ path: 'analytics/*path', method: RequestMethod.ALL },
+
+
       );
   }
 }
