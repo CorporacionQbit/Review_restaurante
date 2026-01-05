@@ -1,0 +1,39 @@
+<div class="analytics-card">
+
+  <h3 class="restaurant-title">
+    {{ restaurant.name }}
+  </h3>
+
+  <!-- LOADING -->
+  <div class="loading" *ngIf="loading">
+    Cargando analytics…
+  </div>
+
+  <!-- MÉTRICAS -->
+  <div class="metrics" *ngIf="!loading && summary">
+    <div>
+      👀
+      <strong>{{ summary.views }}</strong>
+      <span>Vistas</span>
+    </div>
+
+    <div>
+      📍
+      <strong>{{ summary.clickMap }}</strong>
+      <span>Mapa</span>
+    </div>
+
+    <div>
+      🌐
+      <strong>{{ summary.clickWebsite }}</strong>
+      <span>Web</span>
+    </div>
+  </div>
+
+  
+ <!-- CHART -->
+<div class="chart-wrapper" [class.hidden]="loading || !active">
+  <canvas #chartCanvas></canvas>
+</div>
+
+</div>

@@ -21,6 +21,12 @@
         <span nz-icon nzType="plus-circle"></span>
         Crear restaurante
       </li>
+      <!-- OWNER -->
+<li *ngIf="role === 'owner'" nz-menu-item routerLink="/analytics">
+  <span nz-icon nzType="bar-chart"></span>
+  Analytics
+</li>
+
 
       <!-- ADMIN -->
       <li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin">

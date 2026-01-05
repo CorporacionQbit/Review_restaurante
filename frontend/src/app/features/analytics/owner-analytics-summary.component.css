@@ -1,0 +1,28 @@
+.summary-wrapper {
+  margin-bottom: 24px;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.kpi-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 6px 20px rgba(0,0,0,.06);
+}
+
+.kpi-card strong {
+  display: block;
+  font-size: 26px;
+  margin-top: 8px;
+}
+
+.kpi-card span {
+  font-size: 13px;
+  color: #777;
+}

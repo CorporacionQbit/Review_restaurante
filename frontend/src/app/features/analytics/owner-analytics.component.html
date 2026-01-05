@@ -1,0 +1,36 @@
+<button class="back-btn" (click)="goBack()">← Regresar</button>
+
+<div class="analytics-container">
+
+  <h1 class="page-title">Analytics</h1>
+
+  <!-- SELECTOR DE RANGO -->
+  <nz-radio-group
+    [(ngModel)]="range"
+    (ngModelChange)="changeRange($event)"
+    nzButtonStyle="solid"
+    class="range-selector">
+
+    <label nz-radio-button nzValue="7d">7 días</label>
+    <label nz-radio-button nzValue="30d">30 días</label>
+    <label nz-radio-button nzValue="90d">90 días</label>
+
+  </nz-radio-group>
+
+  <!-- GLOBAL SUMMARY -->
+  <app-owner-analytics-summary [range]="range"></app-owner-analytics-summary>
+
+  <!-- CARRUSEL -->
+  <div class="carousel-wrapper" *ngIf="restaurants.length">
+    <nz-carousel nzDots="false" (nzAfterChange)="onSlideChange($event)">
+      <div nz-carousel-content *ngFor="let r of restaurants; let i = index">
+        <app-restaurant-analytics-card
+          [restaurant]="r"
+          [range]="range"
+          [active]="i === activeIndex">
+        </app-restaurant-analytics-card>
+      </div>
+    </nz-carousel>
+  </div>
+
+</div>

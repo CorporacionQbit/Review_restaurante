@@ -3,19 +3,27 @@ import { LayoutComponent } from './shared/components/layout/layout.component';
 
 export const routes: Routes = [
 
-  // 🏠 HOME PÚBLICO
+  // HOME
   {
     path: '',
     redirectTo: 'restaurants/explore',
     pathMatch: 'full',
   },
 
-  // 🔓 RESTAURANTS PÚBLICO (SIN SIDEBAR)
+  // 🔓 EXPLORAR (PUBLICO)
   {
     path: 'restaurants/explore',
     loadComponent: () =>
       import('./features/restaurants/pages/restaurants-explore.component')
         .then(m => m.RestaurantsExploreComponent),
+  },
+
+  // 🔓 DETALLE PUBLICO (⭐ CLAVE)
+  {
+    path: 'restaurants/:id',
+    loadComponent: () =>
+      import('./features/restaurants/pages/restaurant-detail.component')
+        .then(m => m.RestaurantDetailComponent),
   },
 
   // 🔐 AUTH
@@ -26,7 +34,7 @@ export const routes: Routes = [
         .then(m => m.AUTH_ROUTES),
   },
 
-  // 🔒 APP INTERNA (CON SIDEBAR)
+  // 🔒 AREA PRIVADA (CON LAYOUT)
   {
     path: '',
     component: LayoutComponent,
@@ -62,7 +70,7 @@ export const routes: Routes = [
     ],
   },
 
-  // 🚫 404
+  // 404
   {
     path: '**',
     redirectTo: '',

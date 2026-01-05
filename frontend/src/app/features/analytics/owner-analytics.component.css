@@ -1,0 +1,51 @@
+/* ===== PAGE BACKGROUND ===== */
+:host {
+  display: block;
+  background: linear-gradient(180deg, #f8fafc, #eef2f7);
+  min-height: 100vh;
+}
+
+/* ===== BACK BUTTON ===== */
+.back-btn {
+  margin: 20px 24px;
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  color: #2563eb;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.back-btn:hover {
+  text-decoration: underline;
+}
+
+/* ===== MAIN CONTAINER ===== */
+.analytics-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+/* ===== TITLE ===== */
+.page-title {
+  font-size: 30px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  color: #0f172a;
+}
+
+/* ===== RANGE SELECTOR ===== */
+.range-selector {
+  display: inline-flex;
+  background: #ffffff;
+  padding: 6px;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  margin-bottom: 28px;
+}
+
+/* ===== CAROUSEL ===== */
+.carousel-wrapper {
+  margin-top: 32px;
+}

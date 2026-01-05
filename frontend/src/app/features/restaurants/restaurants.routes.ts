@@ -4,7 +4,7 @@ import { roleGuard } from '../../core/guards/role.guard';
 
 export const RESTAURANTS_ROUTES: Routes = [
 
-  // 🔒 OWNER – LISTADO DE RESTAURANTES
+  // 🔒 OWNER – LISTADO
   {
     path: '',
     canActivate: [authGuard, roleGuard(['owner'])],
@@ -13,7 +13,7 @@ export const RESTAURANTS_ROUTES: Routes = [
         .then(m => m.RestaurantsOwnerComponent),
   },
 
-  // 🔒 OWNER – CREAR RESTAURANTE
+  // 🔒 OWNER – CREAR (ANTES DE :id)
   {
     path: 'create',
     canActivate: [authGuard, roleGuard(['owner'])],
@@ -22,15 +22,14 @@ export const RESTAURANTS_ROUTES: Routes = [
         .then(m => m.CreateRestaurantComponent),
   },
 
-  // 🔒 OWNER – DASHBOARD (🔥 ANTES DE :id)
- {
-  path: ':id/dashboard',
-  canActivate: [authGuard, roleGuard(['owner'])],
-  loadComponent: () =>
-    import('./dashboard/restaurant-dashboard-component')
-      .then(m => m.RestaurantDashboardComponent),
-},
-
+  // 🔒 OWNER – DASHBOARD
+  {
+    path: ':id/dashboard',
+    canActivate: [authGuard, roleGuard(['owner'])],
+    loadComponent: () =>
+      import('./dashboard/restaurant-dashboard-component')
+        .then(m => m.RestaurantDashboardComponent),
+  },
 
   // 🔒 OWNER – IMÁGENES
   {
@@ -58,30 +57,6 @@ export const RESTAURANTS_ROUTES: Routes = [
       import('./pages/post/restaurant-post.component')
         .then(m => m.RestaurantPostsComponent),
   },
-{
-  path: ':id/subscription',
-  canActivate: [authGuard, roleGuard(['owner'])],
-  loadComponent: () =>
-    import('./pages/subscription/subscription.component')
-     .then(m => m.SubscriptionComponent),
-
-},
-
-{
-  path: ':id/menu',
-  canActivate: [authGuard, roleGuard(['owner'])],
-  loadComponent: () =>
-    import('./pages/menu/restaurant-menu.component')
-      .then(m => m.RestaurantMenuComponent),
-},
-
-  // 🔓 CLIENTE – EXPLORAR
-  {
-    path: 'explore',
-    loadComponent: () =>
-      import('./pages/restaurants-explore.component')
-        .then(m => m.RestaurantsExploreComponent),
-  },
 
   // 🔓 CLIENTE – DETALLE PÚBLICO (⚠️ SIEMPRE AL FINAL)
   {
@@ -90,7 +65,4 @@ export const RESTAURANTS_ROUTES: Routes = [
       import('./pages/restaurant-detail.component')
         .then(m => m.RestaurantDetailComponent),
   },
-  // 🔒 OWNER – MENÚ
-
-
 ];

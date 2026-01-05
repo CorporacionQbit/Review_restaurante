@@ -35,11 +35,18 @@ export class LayoutComponent implements OnInit {
     private auth: AuthService,
     private restaurantsService: RestaurantsService,
     private router: Router
-  ) {
-    this.role = this.auth.getUserRole();
-  }
+  ) {}
 
   ngOnInit(): void {
+    this.role = this.auth.getUserRole();
+
+    // ⛔ CLIENTE → NO DEBE VER LAYOUT
+    if (this.role === 'client') {
+      this.router.navigateByUrl(this.router.url.replace(/^\/+/, '/'));
+      return;
+    }
+
+    // OWNER
     if (this.role === 'owner') {
       this.restaurantsService.getMyRestaurants().subscribe({
         next: (res: OwnerRestaurant[]) => {

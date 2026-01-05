@@ -90,9 +90,11 @@ export class RestaurantsExploreComponent implements OnInit {
     }
   }
 
-  goToDetail(id: number) {
-    this.router.navigate(['/restaurants', id]);
-  }
+goToDetail(id: number) {
+  this.router.navigate(['/restaurants', id]);
+}
+
+
 
   goToProfile() {
     this.router.navigate(['/profile']);

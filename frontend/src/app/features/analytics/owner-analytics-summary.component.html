@@ -1,0 +1,33 @@
+<div class="summary-wrapper">
+
+  <div *ngIf="loading">Cargando resumen...</div>
+
+  <div *ngIf="!loading && data" class="kpi-grid">
+
+    <div class="kpi-card">
+      🏪
+      <strong>{{ data.restaurants }}</strong>
+      <span>Restaurantes</span>
+    </div>
+
+    <div class="kpi-card">
+      👀
+      <strong>{{ data.views }}</strong>
+      <span>Vistas</span>
+    </div>
+
+    <div class="kpi-card">
+      📍
+      <strong>{{ data.clickMap }}</strong>
+      <span>Mapa</span>
+    </div>
+
+    <div class="kpi-card">
+      🌐
+      <strong>{{ data.clickWebsite }}</strong>
+      <span>Web</span>
+    </div>
+
+  </div>
+
+</div>
