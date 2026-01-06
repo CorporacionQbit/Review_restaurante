@@ -26,16 +26,13 @@ export class SubscriptionsService {
   // ===============================
   // UTILIDAD
   // ===============================
-  private async getRestaurant(
-    ownerId: number,
-    restaurantId: number,
-  ): Promise<Restaurant> {
+  private async getRestaurantByOwner(ownerId: number): Promise<Restaurant> {
     const restaurant = await this.restaurantRepo.findOne({
-      where: { restaurantId, ownerUserId: ownerId },
+      where: { ownerUserId: ownerId },
     });
 
     if (!restaurant) {
-      throw new NotFoundException('Restaurante no encontrado');
+      throw new NotFoundException('No tienes restaurante');
     }
 
     return restaurant;
@@ -45,13 +42,7 @@ export class SubscriptionsService {
   // MI SUSCRIPCIÓN
   // ===============================
   async getMySubscription(ownerId: number) {
-    const restaurant = await this.restaurantRepo.findOne({
-      where: { ownerUserId: ownerId },
-    });
-
-    if (!restaurant) {
-      throw new NotFoundException('No tienes restaurante');
-    }
+    const restaurant = await this.getRestaurantByOwner(ownerId);
 
     let sub = await this.subscriptionRepo.findOne({
       where: { restaurant: { restaurantId: restaurant.restaurantId } },
@@ -75,12 +66,11 @@ export class SubscriptionsService {
   // ===============================
   // UPGRADE
   // ===============================
-  async upgrade(ownerId: number, restaurantId: number) {
-    const restaurant = await this.getRestaurant(ownerId, restaurantId);
+  async upgrade(ownerId: number) {
+    const restaurant = await this.getRestaurantByOwner(ownerId);
 
     let sub = await this.subscriptionRepo.findOne({
-      where: { restaurant: { restaurantId } },
-      relations: ['restaurant'],
+      where: { restaurant: { restaurantId: restaurant.restaurantId } },
     });
 
     if (!sub) {
@@ -106,18 +96,18 @@ export class SubscriptionsService {
     restaurant.isPremium = true;
     await this.restaurantRepo.save(restaurant);
 
-    return { message: 'Plan actualizado a Premium' };
+   return await this.getMySubscription(ownerId);
+
   }
 
   // ===============================
   // DOWNGRADE
   // ===============================
-  async downgrade(ownerId: number, restaurantId: number) {
-    const restaurant = await this.getRestaurant(ownerId, restaurantId);
+  async downgrade(ownerId: number) {
+    const restaurant = await this.getRestaurantByOwner(ownerId);
 
     const sub = await this.subscriptionRepo.findOne({
-      where: { restaurant: { restaurantId } },
-      relations: ['restaurant'],
+      where: { restaurant: { restaurantId: restaurant.restaurantId } },
     });
 
     if (!sub || sub.planType === 'Normal') {
@@ -130,60 +120,21 @@ export class SubscriptionsService {
     restaurant.isPremium = false;
     await this.restaurantRepo.save(restaurant);
 
-    return { message: 'Plan cambiado a Normal' };
-  }
+   return await this.getMySubscription(ownerId);
 
-  // ===============================
-  // REACTIVAR
-  // ===============================
-  async reactivate(ownerId: number, restaurantId: number) {
-    const restaurant = await this.getRestaurant(ownerId, restaurantId);
-
-    const sub = await this.subscriptionRepo.findOne({
-      where: { restaurant: { restaurantId } },
-      relations: ['restaurant'],
-    });
-
-    if (!sub) {
-      throw new NotFoundException('Suscripción no encontrada');
-    }
-
-    if (sub.isActive) {
-      throw new BadRequestException('La suscripción ya está activa');
-    }
-
-    sub.isActive = true;
-    sub.canceledAt = undefined;
-    sub.cancelReason = undefined;
-
-    await this.subscriptionRepo.save(sub);
-
-    restaurant.isPremium = true;
-    await this.restaurantRepo.save(restaurant);
-
-    return { message: 'Suscripción reactivada' };
   }
 
   // ===============================
   // CANCELAR
   // ===============================
-  async cancel(
-    ownerId: number,
-    restaurantId: number,
-    reason: string,
-  ) {
-    const restaurant = await this.getRestaurant(ownerId, restaurantId);
+  async cancel(ownerId: number, reason: string) {
+    const restaurant = await this.getRestaurantByOwner(ownerId);
 
     const sub = await this.subscriptionRepo.findOne({
-      where: { restaurant: { restaurantId } },
-      relations: ['restaurant'],
+      where: { restaurant: { restaurantId: restaurant.restaurantId } },
     });
 
-    if (!sub) {
-      throw new NotFoundException('Suscripción no encontrada');
-    }
-
-    if (!sub.isActive) {
+    if (!sub || !sub.isActive) {
       throw new BadRequestException('La suscripción ya está cancelada');
     }
 
@@ -200,14 +151,10 @@ export class SubscriptionsService {
   }
 
   // ===============================
-  // HISTORIAL
+  // HISTORIAL / PAGOS
   // ===============================
   async getHistoryByOwner(ownerId: number) {
-    const restaurant = await this.restaurantRepo.findOne({
-      where: { ownerUserId: ownerId },
-    });
-
-    if (!restaurant) return [];
+    const restaurant = await this.getRestaurantByOwner(ownerId);
 
     return this.subscriptionRepo.find({
       where: { restaurant: { restaurantId: restaurant.restaurantId } },
@@ -217,11 +164,7 @@ export class SubscriptionsService {
   }
 
   async getPaymentHistoryByOwner(ownerId: number) {
-    const restaurant = await this.restaurantRepo.findOne({
-      where: { ownerUserId: ownerId },
-    });
-
-    if (!restaurant) return [];
+    const restaurant = await this.getRestaurantByOwner(ownerId);
 
     const subs = await this.subscriptionRepo.find({
       where: { restaurant: { restaurantId: restaurant.restaurantId } },
@@ -239,13 +182,5 @@ export class SubscriptionsService {
       },
       order: { createdAt: 'DESC' },
     });
-  }
-
-  async getSubscriptionDetailsByOwner(ownerId: number) {
-    return {
-      current: await this.getMySubscription(ownerId),
-      history: await this.getHistoryByOwner(ownerId),
-      payments: await this.getPaymentHistoryByOwner(ownerId),
-    };
   }
 }

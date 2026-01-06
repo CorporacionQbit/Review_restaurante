@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from './../../../../core/services/api.service';
-import { Observable } from 'rxjs';
+import { ApiService } from '../../../../core/services/api.service';
+
 @Injectable({ providedIn: 'root' })
 export class SubscriptionService {
   constructor(private api: ApiService) {}
@@ -9,22 +9,15 @@ export class SubscriptionService {
     return this.api.get('/subscriptions/my');
   }
 
-  upgrade(restaurantId: number) {
-    return this.api.patch('/subscriptions/upgrade', {
-      restaurantId,
-    });
+  upgrade() {
+    return this.api.patch('/subscriptions/upgrade');
   }
 
-  downgrade(restaurantId: number) {
-    return this.api.patch('/subscriptions/downgrade', {
-      restaurantId,
-    });
+  downgrade() {
+    return this.api.patch('/subscriptions/downgrade');
   }
 
-  cancel(restaurantId: number, reason?: string) {
-    return this.api.patch('/subscriptions/cancel', {
-      restaurantId,
-      reason,
-    });
+  cancel(reason?: string) {
+    return this.api.patch('/subscriptions/cancel', { reason });
   }
 }

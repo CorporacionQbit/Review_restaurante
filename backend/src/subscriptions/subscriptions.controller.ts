@@ -2,9 +2,9 @@ import {
   Controller,
   Get,
   Patch,
-  Body,
   Req,
-  BadRequestException,
+  Body,
+  UnauthorizedException,
 } from '@nestjs/common';
 
 import { SubscriptionsService } from './subscriptions.service';
@@ -19,6 +19,10 @@ export class SubscriptionsController {
   // ===============================
   @Get('my')
   async mySubscription(@Req() req) {
+    if (!req.user) {
+      throw new UnauthorizedException();
+    }
+
     return this.service.getMySubscription(req.user.userId);
   }
 
@@ -26,81 +30,41 @@ export class SubscriptionsController {
   // Upgrade
   // ===============================
   @Patch('upgrade')
-  async upgrade(
-    @Req() req,
-    @Body('restaurantId') restaurantId: number,
-  ) {
-    if (!restaurantId) {
-      throw new BadRequestException('restaurantId es requerido');
+  upgrade(@Req() req) {
+    if (!req.user) {
+      throw new UnauthorizedException();
     }
 
-    return this.service.upgrade(req.user.userId, restaurantId);
+    return this.service.upgrade(req.user.userId);
   }
 
   // ===============================
   // Downgrade
   // ===============================
   @Patch('downgrade')
-  async downgrade(
-    @Req() req,
-    @Body('restaurantId') restaurantId: number,
-  ) {
-    if (!restaurantId) {
-      throw new BadRequestException('restaurantId es requerido');
+  downgrade(@Req() req) {
+    if (!req.user) {
+      throw new UnauthorizedException();
     }
 
-    return this.service.downgrade(req.user.userId, restaurantId);
+    return this.service.downgrade(req.user.userId);
   }
 
   // ===============================
   // Cancelar
   // ===============================
   @Patch('cancel')
-  async cancel(
+  cancel(
     @Req() req,
-    @Body() dto: CancelSubscriptionDto & { restaurantId: number },
+    @Body() dto: CancelSubscriptionDto,
   ) {
-    if (!dto.restaurantId) {
-      throw new BadRequestException('restaurantId es requerido');
+    if (!req.user) {
+      throw new UnauthorizedException();
     }
 
     return this.service.cancel(
       req.user.userId,
-      dto.restaurantId,
       dto.reason || '',
     );
-  }
-
-  // ===============================
-  // Reactivar
-  // ===============================
-  @Patch('reactivate')
-  async reactivate(
-    @Req() req,
-    @Body('restaurantId') restaurantId: number,
-  ) {
-    if (!restaurantId) {
-      throw new BadRequestException('restaurantId es requerido');
-    }
-
-    return this.service.reactivate(req.user.userId, restaurantId);
-  }
-
-  // ===============================
-  // Historial
-  // ===============================
-  @Get('history')
-  async getHistory(@Req() req) {
-    return this.service.getHistoryByOwner(req.user.userId);
-  }
-
-  @Get('payments')
-  async getPayments(@Req() req) {
-    return this.service.getPaymentHistoryByOwner(req.user.userId);
-  }
-
-  @Get('details')
-  async getDetails(@Req() req) {
-    return this.service.getSubscriptionDetailsByOwner(req.user.userId);
   }
 }

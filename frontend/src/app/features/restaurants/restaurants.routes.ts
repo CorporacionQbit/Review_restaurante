@@ -13,7 +13,7 @@ export const RESTAURANTS_ROUTES: Routes = [
         .then(m => m.RestaurantsOwnerComponent),
   },
 
-  // 🔒 OWNER – CREAR (ANTES DE :id)
+  // 🔒 OWNER – CREAR
   {
     path: 'create',
     canActivate: [authGuard, roleGuard(['owner'])],
@@ -58,11 +58,21 @@ export const RESTAURANTS_ROUTES: Routes = [
         .then(m => m.RestaurantPostsComponent),
   },
 
-  // 🔓 CLIENTE – DETALLE PÚBLICO (⚠️ SIEMPRE AL FINAL)
+  // ⭐ OWNER – MENÚ (PREMIUM)
   {
-    path: ':id',
+    path: ':id/menu',
+    canActivate: [authGuard, roleGuard(['owner'])],
     loadComponent: () =>
-      import('./pages/restaurant-detail.component')
-        .then(m => m.RestaurantDetailComponent),
+      import('./pages/menu/restaurant-menu.component')
+        .then(m => m.RestaurantMenuComponent),
+  },
+
+  // 💳 OWNER – SUSCRIPCIÓN
+  {
+    path: ':id/subscription',
+    canActivate: [authGuard, roleGuard(['owner'])],
+    loadComponent: () =>
+      import('./pages/subscription/subscription.component')
+        .then(m => m.SubscriptionComponent),
   },
 ];

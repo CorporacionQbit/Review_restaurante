@@ -1,5 +1,22 @@
-import { Routes } from '@angular/router';
+import { Routes, UrlSegment } from '@angular/router';
 import { LayoutComponent } from './shared/components/layout/layout.component';
+
+/* 🔒 matcher SOLO numérico */
+export function numericIdMatcher(segments: UrlSegment[]) {
+  if (
+    segments.length === 2 &&
+    segments[0].path === 'restaurants' &&
+    /^[0-9]+$/.test(segments[1].path)
+  ) {
+    return {
+      consumed: segments,
+      posParams: {
+        id: segments[1],
+      },
+    };
+  }
+  return null;
+}
 
 export const routes: Routes = [
 
@@ -10,7 +27,7 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
 
-  // 🔓 EXPLORAR (PUBLICO)
+  // 🔓 EXPLORAR
   {
     path: 'restaurants/explore',
     loadComponent: () =>
@@ -18,9 +35,9 @@ export const routes: Routes = [
         .then(m => m.RestaurantsExploreComponent),
   },
 
-  // 🔓 DETALLE PUBLICO (⭐ CLAVE)
+  // 🔓 DETALLE PUBLICO (SOLO NUMÉRICO)
   {
-    path: 'restaurants/:id',
+    matcher: numericIdMatcher,
     loadComponent: () =>
       import('./features/restaurants/pages/restaurant-detail.component')
         .then(m => m.RestaurantDetailComponent),
@@ -34,7 +51,7 @@ export const routes: Routes = [
         .then(m => m.AUTH_ROUTES),
   },
 
-  // 🔒 AREA PRIVADA (CON LAYOUT)
+  // 🔒 AREA PRIVADA (LAYOUT)
   {
     path: '',
     component: LayoutComponent,
@@ -45,6 +62,13 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/restaurants/restaurants.routes')
             .then(m => m.RESTAURANTS_ROUTES),
+      },
+
+      {
+        path: 'analytics',
+        loadChildren: () =>
+          import('./features/analytics/services/analytics.routes')
+            .then(m => m.ANALYTICS_ROUTES),
       },
 
       {
