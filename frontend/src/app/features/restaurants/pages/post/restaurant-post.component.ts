@@ -71,33 +71,34 @@ export class RestaurantPostsComponent implements OnInit {
     });
   }
 
-  createPost(): void {
-    if (!this.title || !this.content) {
-      this.message.warning('Título y contenido son obligatorios');
-      return;
-    }
-
-    this.saving = true;
-
-    this.restaurantsService.createPost({
-      title: this.title,
-      content: this.content,
-      imageUrl: this.imageUrl || undefined,
-    }).subscribe({
-      next: () => {
-        this.message.success('Post creado correctamente');
-        this.title = '';
-        this.content = '';
-        this.imageUrl = '';
-        this.loadPosts();
-        this.saving = false;
-      },
-      error: (err: any) => {
-        this.message.error(err.error?.message || 'Error al crear post');
-        this.saving = false;
-      }
-    });
+ createPost(): void {
+  if (!this.title || !this.content) {
+    this.message.warning('Título y contenido son obligatorios');
+    return;
   }
+
+  this.saving = true;
+
+  this.restaurantsService.createPost({
+    restaurantId: this.restaurantId, // ✅ CLAVE
+    title: this.title,
+    content: this.content,
+    imageUrl: this.imageUrl || undefined,
+  }).subscribe({
+    next: () => {
+      this.message.success('Post creado correctamente');
+      this.title = '';
+      this.content = '';
+      this.imageUrl = '';
+      this.loadPosts();
+      this.saving = false;
+    },
+    error: (err) => {
+      this.message.error(err.error?.message || 'Error al crear post');
+      this.saving = false;
+    }
+  });
+}
 
   toggleActive(post: RestaurantPost): void {
     this.restaurantsService.updatePost(post.postId, {

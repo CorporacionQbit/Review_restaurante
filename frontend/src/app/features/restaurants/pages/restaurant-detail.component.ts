@@ -90,9 +90,10 @@ export class RestaurantDetailComponent implements OnInit {
       }
 
       // ✅ SOLO cargar posts si cumple condiciones
-      if (res?.isPremium && this.auth.isLoggedIn()) {
-        this.loadPosts();
-      }
+      if (res?.isPremium) {
+  this.loadPosts();
+}
+
 
       this.checkIfFavorite();
     },

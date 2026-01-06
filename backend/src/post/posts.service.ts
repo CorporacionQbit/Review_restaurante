@@ -22,47 +22,43 @@ export class PostsService {
   ) {}
 
  
-  // CREAR POST solo dueño modo  PREMIUM
- 
-  async create(ownerUserId: number, dto: CreatePostDto) {
-    const restaurant = await this.restaurantRepo.findOne({
-      where: { ownerUserId },
-      relations: ['posts'],
-    });
+async create(ownerUserId: number, dto: CreatePostDto) {
+  const restaurant = await this.restaurantRepo.findOne({
+    where: {
+      restaurantId: dto.restaurantId,
+      ownerUserId,
+    },
+    relations: ['posts'],
+  });
 
-    if (!restaurant) {
-      throw new NotFoundException(
-        'Tu usuario no tiene restaurante asociado.',
-      );
-    }
-
-    if (!restaurant.isPremium) {
-      throw new ForbiddenException(
-        'Solo restaurantes Premium pueden crear posts.',
-      );
-    }
-
-    // Máximo 2 posts activos
-    const activePosts = restaurant.posts.filter(
-      (p) => p.isActive === true,
-    ).length;
-
-    if (activePosts >= 2) {
-      throw new ForbiddenException(
-        'Límite de 2 posts activos alcanzado para el plan Premium.',
-      );
-    }
-
-    const post = this.postRepo.create({
-      restaurant: restaurant, 
-      title: dto.title,
-      content: dto.content,
-      imageUrl: dto.imageUrl || undefined, 
-      isActive: true,
-    });
-
-    return this.postRepo.save(post);
+  if (!restaurant) {
+    throw new NotFoundException('Restaurante no encontrado');
   }
+
+  if (!restaurant.isPremium) {
+    throw new ForbiddenException(
+      'Solo restaurantes Premium pueden crear posts.',
+    );
+  }
+
+  const activePosts = restaurant.posts.filter(p => p.isActive).length;
+
+  if (activePosts >= 2) {
+    throw new ForbiddenException(
+      'Límite de 2 posts activos alcanzado para el plan Premium.',
+    );
+  }
+
+  const post = this.postRepo.create({
+    restaurant,
+    title: dto.title,
+    content: dto.content,
+    imageUrl: dto.imageUrl,
+    isActive: true,
+  });
+
+  return this.postRepo.save(post);
+}
 
 
   // ACTUALIZAR POST solo dueño 
@@ -117,26 +113,31 @@ export class PostsService {
 
 
   // ELIMINAR POST solo dueño 
+// DESACTIVAR POST (soft delete)
+async delete(id: number, ownerUserId: number) {
+  const post = await this.postRepo.findOne({
+    where: { postId: id },
+    relations: ['restaurant'],
+  });
 
-  async delete(id: number, ownerUserId: number) {
-    const post = await this.postRepo.findOne({
-      where: { postId: id },
-      relations: ['restaurant'],
-    });
-
-    if (!post) {
-      throw new NotFoundException('Post no encontrado.');
-    }
-
-    if (post.restaurant.ownerUserId !== ownerUserId) {
-      throw new ForbiddenException(
-        'No puedes eliminar este post.',
-      );
-    }
-
-    await this.postRepo.remove(post);
-    return { success: true };
+  if (!post) {
+    throw new NotFoundException('Post no encontrado.');
   }
+
+  if (post.restaurant.ownerUserId !== ownerUserId) {
+    throw new ForbiddenException(
+      'No puedes eliminar este post.',
+    );
+  }
+
+  // 🔴 NO eliminar, solo desactivar
+  post.isActive = false;
+
+  await this.postRepo.save(post);
+
+  return { message: 'Post desactivado correctamente' };
+}
+
 
   // LISTAR POSTS ACTIVOS POR RESTAURANTE metodo publico
 
