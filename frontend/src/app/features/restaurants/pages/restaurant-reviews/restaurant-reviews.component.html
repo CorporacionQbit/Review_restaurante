@@ -1,0 +1,69 @@
+<nz-card nzTitle="Reseñas del restaurante">
+
+  <div *ngIf="loading">Cargando reseñas...</div>
+
+  <nz-card
+    *ngFor="let r of reviews"
+    class="review-card">
+
+    <div class="header">
+      <strong>{{ r.user?.fullName || 'Usuario' }}</strong>
+      <nz-rate [ngModel]="r.rating" nzDisabled></nz-rate>
+    </div>
+
+    <p class="text">
+      {{ r.reviewText || 'Sin comentario' }}
+    </p>
+
+    <div class="footer">
+      <span class="date">
+        {{ r.createdAt | date:'mediumDate' }}
+      </span>
+
+      <div class="actions">
+        <!-- 🚩 BADGE -->
+        <span
+          *ngIf="r.isReported"
+          class="reported-badge">
+          🚩 Reportada
+        </span>
+
+        <!-- BOTÓN ACTIVO -->
+        <button
+          nz-button
+          nzType="default"
+          nzDanger
+          *ngIf="!r.isReported"
+          (click)="report(r)">
+          Reportar
+        </button>
+
+        <!-- BOTÓN DESHABILITADO -->
+        <button
+          nz-button
+          nzType="default"
+          disabled
+          *ngIf="r.isReported">
+          Reportada
+        </button>
+      </div>
+    </div>
+
+  </nz-card>
+
+  <div *ngIf="!loading && reviews.length === 0" class="empty">
+    No hay reseñas aún
+  </div>
+
+</nz-card>
+
+<!-- MODAL -->
+<ng-template #reportTpl>
+  <textarea
+    nz-input
+    rows="4"
+    placeholder="Describe el motivo del reporte"
+    [(ngModel)]="reportReason"
+    style="width:100%">
+  </textarea>
+</ng-template>

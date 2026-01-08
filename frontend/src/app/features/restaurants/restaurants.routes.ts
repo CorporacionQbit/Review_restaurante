@@ -57,6 +57,14 @@ export const RESTAURANTS_ROUTES: Routes = [
       import('./pages/post/restaurant-post.component')
         .then(m => m.RestaurantPostsComponent),
   },
+  {
+  path: ':id/reviews',
+  canActivate: [authGuard, roleGuard(['owner'])],
+  loadComponent: () =>
+    import('./pages/restaurant-reviews/restaurant-reviews.component')
+      .then(m => m.RestaurantReviewsComponent),
+},
+
 
   // ⭐ OWNER – MENÚ (PREMIUM)
   {

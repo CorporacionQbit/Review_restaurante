@@ -17,7 +17,7 @@ import { MenusModule } from './menu/menus.module';
 import { PostsModule } from './post/posts.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { AnalyticsModule } from './analytics/analytics.module';
-
+import { AdminModule } from './admin/admin.module';
 
 // ===== MIDDLEWARE =====
 import { AuthMiddleware } from './auth/auth.middleware';
@@ -56,6 +56,7 @@ import { FavoritesModule } from './favorites/favorites.module';
     SubscriptionsModule,
     FavoritesModule,
     AnalyticsModule,
+    AdminModule,
   ],
 })
 export class AppModule implements NestModule {
@@ -106,10 +107,12 @@ export class AppModule implements NestModule {
         { path: 'reviews/:id/report', method: RequestMethod.ALL },
 
         // ===== ADMIN =====
-        { path: 'admin/review-reports', method: RequestMethod.ALL },
-        { path: 'admin/reviews/:id', method: RequestMethod.ALL },
-        { path: 'admin/review-reports/:id/resolve', method: RequestMethod.ALL },
+         { path: 'admin/dashboard', method: RequestMethod.ALL },
+  { path: 'admin/dashboard/metrics', method: RequestMethod.ALL },
 
+  { path: 'admin/review-reports', method: RequestMethod.ALL },
+  { path: 'admin/reviews/:id', method: RequestMethod.ALL },
+  { path: 'admin/review-reports/:id/resolve', method: RequestMethod.ALL },
         // ===== POSTS =====
         { path: 'posts', method: RequestMethod.ALL },
         { path: 'posts/:id', method: RequestMethod.ALL },

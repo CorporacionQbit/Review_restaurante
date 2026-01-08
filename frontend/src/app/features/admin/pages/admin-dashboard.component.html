@@ -1,0 +1,126 @@
+<h2 class="title">Dashboard Administración</h2>
+
+<nz-spin [nzSpinning]="loading">
+
+  <!-- =========================
+       KPI / MÉTRICAS
+  ========================== -->
+  <div class="grid kpi-grid" *ngIf="metrics">
+
+    <nz-card class="kpi-card users">
+      <div class="kpi">
+        <div class="icon">
+          <i nz-icon nzType="user"></i>
+        </div>
+        <div>
+          <p class="label">Usuarios</p>
+          <p class="value">{{ metrics.users }}</p>
+        </div>
+      </div>
+    </nz-card>
+
+    <nz-card class="kpi-card restaurants">
+      <div class="kpi">
+        <div class="icon">
+          <i nz-icon nzType="shop"></i>
+        </div>
+        <div>
+          <p class="label">Restaurantes</p>
+          <p class="value">{{ metrics.restaurants }}</p>
+        </div>
+      </div>
+    </nz-card>
+
+    <nz-card class="kpi-card pending">
+      <div class="kpi">
+        <div class="icon">
+          <i nz-icon nzType="clock-circle"></i>
+        </div>
+        <div>
+          <p class="label">Restaurantes pendientes</p>
+          <p class="value">{{ metrics.pendingRestaurants }}</p>
+        </div>
+      </div>
+    </nz-card>
+
+    <nz-card class="kpi-card reviews">
+      <div class="kpi">
+        <div class="icon">
+          <i nz-icon nzType="file-text"></i>
+        </div>
+        <div>
+          <p class="label">Reseñas pendientes</p>
+          <p class="value">{{ metrics.pendingReviews }}</p>
+        </div>
+      </div>
+    </nz-card>
+
+  </div>
+
+<!-- =========================
+     ACCIONES RÁPIDAS
+========================== -->
+<div class="actions" *ngIf="metrics">
+
+  <nz-card class="action-card primary" (click)="goToPendingRestaurants()">
+    <div class="action-content">
+      <div class="icon">
+        <i nz-icon nzType="shop"></i>
+      </div>
+      <div>
+        <h4>Validar restaurantes</h4>
+        <p>{{ metrics.pendingRestaurants }} pendientes</p>
+      </div>
+    </div>
+  </nz-card>
+
+  <nz-card class="action-card warning" (click)="goToPendingReviews()">
+    <div class="action-content">
+      <div class="icon">
+        <i nz-icon nzType="file-text"></i>
+      </div>
+      <div>
+        <h4>Moderar reseñas</h4>
+        <p>{{ metrics.pendingReviews }} pendientes</p>
+      </div>
+    </div>
+  </nz-card>
+
+  <nz-card class="action-card" (click)="goToUsers()">
+    <div class="action-content">
+      <div class="icon">
+        <i nz-icon nzType="user"></i>
+      </div>
+      <div>
+        <h4>Usuarios</h4>
+        <p>Gestión general</p>
+      </div>
+    </div>
+  </nz-card>
+
+</div>
+
+
+  <!-- =========================
+       GRÁFICAS
+  ========================== -->
+  <div class="charts" *ngIf="metrics">
+
+    <nz-card class="chart-card">
+      <h3>Resumen general</h3>
+      <p class="subtitle">Usuarios vs Restaurantes</p>
+      <div echarts [options]="barOptions" class="chart"></div>
+    </nz-card>
+
+    <nz-card class="chart-card">
+      <h3>
+        Pendientes por moderar
+        <span class="hint">requiere atención</span>
+      </h3>
+      <p class="subtitle">Acciones administrativas</p>
+      <div echarts [options]="donutOptions" class="chart"></div>
+    </nz-card>
+
+  </div>
+
+</nz-spin>
