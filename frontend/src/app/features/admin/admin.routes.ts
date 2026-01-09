@@ -13,4 +13,12 @@ export const ADMIN_ROUTES: Routes = [
       import('./pages/admin-dashboard.component')
         .then(m => m.AdminDashboardComponent),
   },
+   {
+    path: 'reviews-reports',
+    loadComponent: () =>
+      import('./pages/review/admin-review-reports.component')
+        .then(m => m.AdminReviewReportsComponent),
+  },
+
 ];
+

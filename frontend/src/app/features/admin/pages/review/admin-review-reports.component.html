@@ -1,0 +1,56 @@
+<div class="page admin-review-reports">
+
+  <h2 class="page-title">Reseñas reportadas</h2>
+
+  <nz-table
+    [nzData]="reports"
+    [nzLoading]="loading"
+    nzBordered
+    nzSize="middle"
+    class="reports-table"
+  >
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Reseña</th>
+        <th>Motivo</th>
+        <th>Estado</th>
+        <th style="width: 140px;">Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let r of reports">
+        <td>#{{ r.review.reviewId }}</td>
+
+        <td class="review-text">
+          {{ r.review.reviewText || 'Sin comentario' }}
+        </td>
+
+        <td>
+          <nz-tag nzColor="red">{{ r.reason }}</nz-tag>
+        </td>
+
+        <td>
+          <nz-tag nzColor="gold">Pendiente</nz-tag>
+        </td>
+
+        <td>
+          <button
+            nz-button
+            nzType="primary"
+            nzSize="small"
+            (click)="openDetailModal(r)"
+          >
+            Ver detalle
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+
+  <div *ngIf="!loading && reports.length === 0" class="empty-state">
+    No hay reseñas reportadas pendientes 🎉
+  </div>
+
+</div>

@@ -33,6 +33,13 @@
         <span nz-icon nzType="tool"></span>
         Administración
       </li>
+<li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/reviews-reports">
+  <span nz-icon nzType="flag"></span>
+  Reseñas reportadas
+</li>
+
+
+
 
     </ul>
   </nz-sider>

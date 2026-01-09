@@ -208,4 +208,50 @@ export class ReviewsService {
     report.isResolved = true;
     return this.reportRepo.save(report);
   }
+  // ================= ADMIN: MODERACIÓN =================
+
+async getPendingReviews() {
+  return this.reviewRepo.find({
+    where: { status: 'Pendiente' },
+    relations: ['user', 'restaurant'],
+    order: { createdAt: 'DESC' },
+  });
+}
+
+async approveReview(reviewId: number) {
+  const review = await this.reviewRepo.findOne({
+    where: { reviewId },
+  });
+
+  if (!review) {
+    throw new NotFoundException('Reseña no encontrada');
+  }
+
+  review.status = 'Aprobada';
+  review.rejectionReason = null;
+
+  return this.reviewRepo.save(review);
+}
+async rejectReview(reviewId: number, reason: string) {
+  const review = await this.reviewRepo.findOne({
+    where: { reviewId },
+  });
+
+  if (!review) {
+    throw new NotFoundException('Reseña no encontrada');
+  }
+
+  review.status = 'Rechazada';
+  review.rejectionReason = reason;
+
+  // resolver todos los reportes asociados
+  await this.reportRepo.update(
+    { reviewId },
+    { isResolved: true },
+  );
+
+  return this.reviewRepo.save(review);
+}
+
+
 }

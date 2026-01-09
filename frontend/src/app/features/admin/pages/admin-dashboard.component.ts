@@ -7,7 +7,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NgxEchartsModule } from 'ngx-echarts';
 
 import { AdminService } from '../pages/admin.service';
-
+import { ViewEncapsulation } from '@angular/core';
 /* =========================
    TIPADO PRO
 ========================= */
@@ -19,6 +19,7 @@ interface DashboardMetrics {
 }
 
 @Component({
+  
   standalone: true,
   selector: 'app-admin-dashboard',
   imports: [
@@ -28,6 +29,7 @@ interface DashboardMetrics {
     NgxEchartsModule,
   ],
   templateUrl: './admin-dashboard.component.html',
+  encapsulation: ViewEncapsulation.None,
   styleUrls: ['./admin-dashboard.component.css'],
 })
 export class AdminDashboardComponent implements OnInit {

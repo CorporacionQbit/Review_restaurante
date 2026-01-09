@@ -178,4 +178,47 @@ async reportReview(
 
     return this.reviewsService.resolveReport(Number(id));
   }
+  // ================================
+// ADMIN: RESEÑAS PENDIENTES
+// ================================
+
+// GET /admin/reviews/pending
+@Get('admin/reviews/pending')
+async getPendingReviews(@Req() req: AuthRequest) {
+  if (!req.user || req.user.role !== 'admin') {
+    throw new ForbiddenException('Solo administradores');
+  }
+
+  return this.reviewsService.getPendingReviews();
+}
+
+// PATCH /admin/reviews/:id/approve
+@Patch('admin/reviews/:id/approve')
+async approveReview(
+  @Req() req: AuthRequest,
+  @Param('id') id: string,
+) {
+  if (!req.user || req.user.role !== 'admin') {
+    throw new ForbiddenException('Solo administradores');
+  }
+
+  return this.reviewsService.approveReview(Number(id));
+}
+// ADMIN: RECHAZAR RESEÑA (NO eliminar)
+@Patch('admin/reviews/:id/reject')
+async rejectReview(
+  @Req() req: AuthRequest,
+  @Param('id') id: string,
+  @Body() body: { reason: string },
+) {
+  if (!req.user || req.user.role !== 'admin') {
+    throw new ForbiddenException('Solo administradores');
+  }
+
+  return this.reviewsService.rejectReview(
+    Number(id),
+    body.reason,
+  );
+}
+
 }
