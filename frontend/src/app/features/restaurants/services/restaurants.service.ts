@@ -106,16 +106,15 @@ uploadImage(restaurantId: number, file: File) {
       data
     );
   }
-  updateRestaurant(
+updateRestaurant(
   restaurantId: number,
   data: any
 ) {
-  return this.api.put(
+  return this.api.patch(
     `/restaurants/${restaurantId}`,
     data
   );
 }
-
 getPostsByRestaurant(restaurantId: number) {
   return this.api.get<any[]>(`/posts/restaurant/${restaurantId}`);
 }

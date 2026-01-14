@@ -1,51 +1,115 @@
-/* ===== PAGE BACKGROUND ===== */
+/* ===============================
+   PAGE BASE / HERO
+================================ */
 :host {
   display: block;
-  background: linear-gradient(180deg, #f8fafc, #eef2f7);
   min-height: 100vh;
+  background:
+    radial-gradient(1000px 420px at 15% -120px, rgba(249,115,22,.18), transparent 60%),
+    linear-gradient(180deg, #fff7ed 0%, #f8fafc 40%, #eef2f7 100%);
 }
 
-/* ===== BACK BUTTON ===== */
+/* ===============================
+   BACK BUTTON
+================================ */
 .back-btn {
   margin: 20px 24px;
   background: transparent;
   border: none;
   font-size: 14px;
-  color: #2563eb;
+  color: #ea580c;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .back-btn:hover {
   text-decoration: underline;
 }
 
-/* ===== MAIN CONTAINER ===== */
+/* ===============================
+   CONTAINER
+================================ */
 .analytics-container {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
-  padding: 0 24px 80px;
+  padding: 24px 24px 120px;
 }
 
-/* ===== TITLE ===== */
+/* ===============================
+   TITLE
+================================ */
 .page-title {
-  font-size: 30px;
-  font-weight: 800;
-  margin-bottom: 20px;
+  font-size: 40px;
+  font-weight: 900;
   color: #0f172a;
+  letter-spacing: -0.7px;
 }
 
-/* ===== RANGE SELECTOR ===== */
-.range-selector {
+.page-title::after {
+  content: 'Resumen del rendimiento de tus restaurantes';
+  display: block;
+  font-size: 15px;
+  color: #9a3412;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+/* ===============================
+   FILTERS
+================================ */
+.range-selector,
+.group-selector {
   display: inline-flex;
   background: #ffffff;
   padding: 6px;
-  border-radius: 14px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-  margin-bottom: 28px;
+  border-radius: 18px;
+  box-shadow: 0 10px 28px rgba(249,115,22,.18);
+  margin: 28px 10px 36px 0;
 }
 
-/* ===== CAROUSEL ===== */
+/* ===============================
+   NG-ZORRO RADIO
+================================ */
+:host ::ng-deep .ant-radio-button-wrapper {
+  border: none;
+  background: transparent;
+  padding: 7px 16px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #7c2d12;
+}
+
+:host ::ng-deep .ant-radio-button-wrapper-checked {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: #ffffff !important;
+  box-shadow: 0 14px 34px rgba(249,115,22,.45);
+}
+
+/* ===============================
+   CAROUSEL
+================================ */
 .carousel-wrapper {
-  margin-top: 32px;
+  margin-top: 48px;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+
+  .analytics-container {
+    padding: 16px 16px 80px;
+  }
+
+  .page-title {
+    font-size: 30px;
+  }
+
+  .range-selector,
+  .group-selector {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 18px;
+  }
 }

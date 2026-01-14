@@ -23,13 +23,17 @@ import { OwnerRestaurant } from '../../models/restaurant-owner.model';
   ],
   templateUrl: './restaurant-map.component.html',
   styleUrls: ['./restaurant-map.component.css'],
-})
-export class RestaurantMapComponent implements OnInit {
+})export class RestaurantMapComponent implements OnInit {
 
   restaurantId!: number;
   restaurant!: OwnerRestaurant;
 
+  // 🔹 INPUT (editable)
   mapsUrl = '';
+
+  // 🔹 VALOR GUARDADO (persistente)
+  savedMapsUrl = '';
+
   safeMapUrl: SafeResourceUrl | null = null;
 
   loading = true;
@@ -43,10 +47,7 @@ export class RestaurantMapComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.restaurantId = Number(
-      this.route.snapshot.paramMap.get('id')
-    );
-
+    this.restaurantId = Number(this.route.snapshot.paramMap.get('id'));
     this.loadRestaurant();
   }
 
@@ -56,8 +57,12 @@ export class RestaurantMapComponent implements OnInit {
       .subscribe({
         next: (res) => {
           this.restaurant = res;
-          this.mapsUrl = res.mapsUrl || '';
-          this.updatePreview();
+
+          // 🔥 separar estados
+          this.savedMapsUrl = res.mapsUrl || '';
+          this.mapsUrl = this.savedMapsUrl;
+
+          this.updatePreview(this.mapsUrl);
           this.loading = false;
         },
         error: () => {
@@ -66,23 +71,42 @@ export class RestaurantMapComponent implements OnInit {
       });
   }
 
-  updatePreview(): void {
-    if (!this.mapsUrl) {
+  // =========================
+  // PREVIEW (USA INPUT)
+  // =========================
+  updatePreview(value: string): void {
+    if (!value) {
       this.safeMapUrl = null;
       return;
     }
 
+    let url = value.trim();
+
+    if (url.includes('maps.app.goo.gl')) {
+      this.safeMapUrl = null;
+      return;
+    }
+
+    if (url.includes('google.com/maps') && !url.includes('embed')) {
+      const coordsMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+
+      if (coordsMatch) {
+        url = `https://www.google.com/maps?q=${coordsMatch[1]},${coordsMatch[2]}&output=embed`;
+      } else {
+        url = url.replace('/maps', '/maps/embed');
+      }
+    }
+
     this.safeMapUrl =
-      this.sanitizer.bypassSecurityTrustResourceUrl(
-        this.mapsUrl
-      );
+      this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
+  // =========================
+  // GUARDAR
+  // =========================
   saveMap(): void {
     if (!this.mapsUrl) {
-      this.message.warning(
-        'Debes ingresar una URL de mapa'
-      );
+      this.message.warning('Debes ingresar una URL');
       return;
     }
 
@@ -94,16 +118,15 @@ export class RestaurantMapComponent implements OnInit {
       })
       .subscribe({
         next: () => {
-          this.message.success(
-            'Ubicación guardada correctamente'
-          );
-          this.updatePreview();
+          // 🔥 actualizar valor guardado
+          this.savedMapsUrl = this.mapsUrl;
+
+          this.message.success('Ubicación guardada correctamente');
+          this.updatePreview(this.mapsUrl);
           this.saving = false;
         },
-        error: (err:any) => {
-          this.message.error(
-            err.error?.message || 'Error al guardar ubicación'
-          );
+        error: (err) => {
+          this.message.error(err.error?.message || 'Error al guardar');
           this.saving = false;
         }
       });

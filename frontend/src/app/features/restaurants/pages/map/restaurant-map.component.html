@@ -2,47 +2,53 @@
 
   <h1>Ubicación del restaurante</h1>
 
-  <!-- 🔒 NO PREMIUM -->
   <nz-card *ngIf="!restaurant?.isPremium" class="blocked">
     <h3>Función Premium</h3>
-    <p>
-      Solo los restaurantes <strong>Premium</strong>
-      pueden mostrar su ubicación en el mapa.
-    </p>
+    <p>Solo los restaurantes <strong>Premium</strong> pueden usar mapas.</p>
   </nz-card>
 
-  <!-- ⭐ PREMIUM -->
   <ng-container *ngIf="restaurant?.isPremium">
 
-    <!-- FORM -->
     <nz-card class="map-form">
-      <label>URL del mapa (Google Maps / Waze)</label>
+      <label>URL del mapa</label>
 
       <input
         nz-input
         [(ngModel)]="mapsUrl"
-        (ngModelChange)="updatePreview()"
-        placeholder="https://www.google.com/maps?q=..."
+        (ngModelChange)="updatePreview($event)"
+        placeholder="https://maps.google.com/..."
       />
 
-     <button
-  nz-button
-  nzType="primary"
-  [nzLoading]="saving"
-  (click)="saveMap()">
-  Guardar ubicación
-</button>
+      <button
+        nz-button
+        nzType="primary"
+        [nzLoading]="saving"
+        (click)="saveMap()">
+        Guardar ubicación
+      </button>
 
+      <!-- ✅ SIEMPRE MOSTRAR LO GUARDADO -->
+      <p *ngIf="savedMapsUrl" style="margin-top:8px">
+        Ubicación guardada:
+        <a
+          [href]="savedMapsUrl"
+          target="_blank"
+          rel="noopener noreferrer">
+          Abrir en Google Maps
+        </a>
+      </p>
     </nz-card>
 
     <!-- PREVIEW -->
     <nz-card *ngIf="safeMapUrl" class="map-preview">
-      <iframe
-        [src]="safeMapUrl"
-        loading="lazy">
-      </iframe>
+      <iframe [src]="safeMapUrl" loading="lazy"></iframe>
+    </nz-card>
+
+    <!-- FALLBACK -->
+    <nz-card *ngIf="!safeMapUrl && mapsUrl">
+      <p>No se puede incrustar este mapa.</p>
+      <a [href]="mapsUrl" target="_blank">Abrir mapa</a>
     </nz-card>
 
   </ng-container>
-
 </div>

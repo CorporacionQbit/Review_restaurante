@@ -62,16 +62,60 @@ export class RestaurantDashboardComponent implements OnInit {
     });
   }
 
+  // =========================
+  // PROGRESO DEL PERFIL (FRONTEND)
+  // =========================
   calculateProgress(): void {
     let completed = 0;
-    const total = 4;
+    let total = 2; // imágenes + ubicación (siempre cuentan)
 
-    if (this.restaurant.images?.length) completed++;
-    if (this.restaurant.schedules?.length) completed++;
-    if (this.restaurant.socialLinks?.length) completed++;
-    if (this.restaurant.isPremium && this.restaurant.menus?.length) completed++;
+    // 📸 Imágenes
+    if (this.restaurant.images?.length > 0) {
+      completed++;
+    }
+
+    // 🗺️ Ubicación
+    if (this.restaurant.mapsUrl) {
+      completed++;
+    }
+
+    // ⭐ Funcionalidades Premium
+    if (this.restaurant.isPremium) {
+      total += 2;
+
+      // 📄 Menú
+      if (this.restaurant.menus?.length > 0) {
+        completed++;
+      }
+
+      // 📰 Posts
+      if (this.restaurant.posts?.length > 0) {
+        completed++;
+      }
+    }
 
     this.progress = Math.round((completed / total) * 100);
+  }
+
+  // =========================
+  // TEXTO DINÁMICO DE AYUDA
+  // =========================
+  get missingSteps(): string {
+    if (!this.restaurant) return '';
+
+    const missing: string[] = [];
+
+    if (!this.restaurant.images?.length) missing.push('imágenes');
+    if (!this.restaurant.mapsUrl) missing.push('ubicación');
+
+    if (this.restaurant.isPremium) {
+      if (!this.restaurant.menus?.length) missing.push('menú');
+      if (!this.restaurant.posts?.length) missing.push('posts');
+    }
+
+    return missing.length
+      ? `Faltan ${missing.join(' y ')}`
+      : 'Perfil completo 🎉';
   }
 
   go(section: string): void {

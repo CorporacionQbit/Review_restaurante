@@ -17,6 +17,18 @@
 
   </nz-radio-group>
 
+  <!-- SELECTOR DE AGRUPACIÓN -->
+  <div class="group-selector">
+    <nz-radio-group
+      [(ngModel)]="groupBy"
+      nzButtonStyle="solid">
+
+      <label nz-radio-button nzValue="day">Días</label>
+      <label nz-radio-button nzValue="month">Meses</label>
+
+    </nz-radio-group>
+  </div>
+
   <!-- GLOBAL SUMMARY -->
   <app-owner-analytics-summary [range]="range"></app-owner-analytics-summary>
 
@@ -27,6 +39,7 @@
         <app-restaurant-analytics-card
           [restaurant]="r"
           [range]="range"
+          [groupBy]="groupBy"
           [active]="i === activeIndex">
         </app-restaurant-analytics-card>
       </div>

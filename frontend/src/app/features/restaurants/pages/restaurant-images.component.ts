@@ -32,7 +32,7 @@ export class RestaurantImagesComponent implements OnInit {
     this.service.getRestaurantById(this.restaurantId).subscribe(res => {
       this.images = res.images || [];
       this.isPremium = res.isPremium;
-      this.maxImages = this.isPremium ? 10 : 3;
+      this.maxImages = this.isPremium ? 5 : 2;
     });
   }
 beforeUpload = (file: NzUploadFile): boolean => {

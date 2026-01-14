@@ -4,8 +4,8 @@ import {
   OnChanges,
   ElementRef,
   ViewChild,
-  SimpleChanges,
   ChangeDetectorRef,
+  ViewEncapsulation,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OwnerRestaurant } from '../restaurants/models/restaurant-owner.model';
@@ -19,11 +19,13 @@ import Chart from 'chart.js/auto';
   imports: [CommonModule],
   templateUrl: './restaurant-analytics-card.component.html',
   styleUrls: ['./restaurant-analytics-card.component.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class RestaurantAnalyticsCardComponent implements OnChanges {
 
   @Input() restaurant!: OwnerRestaurant;
   @Input() range!: '7d' | '30d' | '90d';
+  @Input() groupBy: 'day' | 'month' = 'day';
   @Input() active = false;
 
   @ViewChild('chartCanvas')
@@ -34,7 +36,10 @@ export class RestaurantAnalyticsCardComponent implements OnChanges {
 
   private chart?: Chart;
 
-  constructor(private analyticsService: AnalyticsService) {}
+  constructor(
+    private analyticsService: AnalyticsService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnChanges(): void {
     if (this.restaurant && this.active) {
@@ -47,24 +52,65 @@ export class RestaurantAnalyticsCardComponent implements OnChanges {
 
     this.analyticsService
       .getRestaurantSummary(this.restaurant.restaurantId, this.range)
-      .subscribe(res => (this.summary = res));
+      .subscribe(res => {
+        this.summary = res;
+        this.cdr.detectChanges();
+      });
 
     this.analyticsService
       .getRestaurantTimeline(this.restaurant.restaurantId, this.range)
       .subscribe({
         next: rows => {
-          this.renderChart(rows);
+          const data =
+            this.groupBy === 'month'
+              ? this.groupByMonth(rows)
+              : this.groupByDay(rows);
+
+          setTimeout(() => this.renderChart(data));
           this.loading = false;
         },
         error: () => (this.loading = false),
       });
   }
 
-  private formatDate(date: string): string {
-    return new Date(date).toLocaleDateString('es-GT', {
-      day: '2-digit',
-      month: 'short',
+  private groupByDay(rows: any[]) {
+    return rows.map(r => ({
+      label: new Date(r.date).toLocaleDateString('es-GT', {
+        day: '2-digit',
+        month: 'short',
+      }),
+      views: r.views,
+      clickMap: r.clickMap,
+      clickWebsite: r.clickWebsite,
+    }));
+  }
+
+  private groupByMonth(rows: any[]) {
+    const map = new Map<string, any>();
+
+    rows.forEach(r => {
+      const d = new Date(r.date);
+      const key = `${d.getFullYear()}-${d.getMonth()}`;
+
+      if (!map.has(key)) {
+        map.set(key, {
+          label: d.toLocaleDateString('es-GT', {
+            month: 'short',
+            year: 'numeric',
+          }),
+          views: 0,
+          clickMap: 0,
+          clickWebsite: 0,
+        });
+      }
+
+      const m = map.get(key);
+      m.views += r.views;
+      m.clickMap += r.clickMap;
+      m.clickWebsite += r.clickWebsite;
     });
+
+    return Array.from(map.values());
   }
 
   private renderChart(rows: any[]): void {
@@ -75,33 +121,24 @@ export class RestaurantAnalyticsCardComponent implements OnChanges {
     }
 
     this.chart = new Chart(this.chartCanvas.nativeElement, {
-      type: 'line',
+      type: 'bar',
       data: {
-        labels: rows.map(r => this.formatDate(r.date)),
+        labels: rows.map(r => r.label),
         datasets: [
           {
             label: 'Vistas',
             data: rows.map(r => r.views),
-            borderColor: '#1677ff',
-            backgroundColor: 'rgba(22,119,255,0.15)',
-            fill: true,
-            tension: 0.35,
+            backgroundColor: '#1677ff',
           },
           {
             label: 'Mapa',
             data: rows.map(r => r.clickMap),
-            borderColor: '#52c41a',
-            backgroundColor: 'rgba(82,196,26,0.15)',
-            fill: true,
-            tension: 0.35,
+            backgroundColor: '#52c41a',
           },
           {
             label: 'Web',
             data: rows.map(r => r.clickWebsite),
-            borderColor: '#faad14',
-            backgroundColor: 'rgba(250,173,20,0.15)',
-            fill: true,
-            tension: 0.35,
+            backgroundColor: '#faad14',
           },
         ],
       },

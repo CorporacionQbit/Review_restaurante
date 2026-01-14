@@ -1,28 +1,90 @@
+/* ===============================
+   SUMMARY WRAPPER
+================================ */
 .summary-wrapper {
-  margin-bottom: 24px;
+  margin: 64px 0 72px;
 }
 
+/* ===============================
+   KPI GRID
+================================ */
 .kpi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 28px;
 }
 
+/* ===============================
+   KPI CARD
+================================ */
 .kpi-card {
-  background: #fff;
-  border-radius: 14px;
-  padding: 16px;
-  text-align: center;
-  box-shadow: 0 6px 20px rgba(0,0,0,.06);
+  position: relative;
+  background: linear-gradient(180deg, #ffffff, #fff7ed);
+  border-radius: 28px;
+  padding: 32px 28px;
+  text-align: left;
+  box-shadow:
+    0 26px 70px rgba(249,115,22,.22),
+    inset 0 1px 0 rgba(255,255,255,.95);
+  transition: transform .25s ease, box-shadow .25s ease;
 }
 
+.kpi-card:hover {
+  transform: translateY(-8px);
+  box-shadow:
+    0 40px 100px rgba(249,115,22,.35);
+}
+
+/* ===============================
+   KPI VALUE
+================================ */
 .kpi-card strong {
   display: block;
-  font-size: 26px;
-  margin-top: 8px;
+  font-size: 40px;
+  font-weight: 900;
+  margin-top: 22px;
+  letter-spacing: -0.9px;
 }
 
+/* ===============================
+   KPI LABEL
+================================ */
 .kpi-card span {
   font-size: 13px;
-  color: #777;
+  color: #9a3412;
+  font-weight: 600;
+}
+
+/* ===============================
+   SEMANTIC COLORS
+================================ */
+.kpi-card:nth-child(1) strong { color: #0f172a; }
+.kpi-card:nth-child(2) strong { color: #f97316; }
+.kpi-card:nth-child(3) strong { color: #22c55e; }
+.kpi-card:nth-child(4) strong { color: #0ea5e9; }
+
+/* ===============================
+   PRIMARY KPI
+================================ */
+.kpi-card:nth-child(2) {
+  border: 1px solid rgba(249,115,22,.35);
+  background: linear-gradient(180deg, #fff7ed, #ffffff);
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+
+  .summary-wrapper {
+    margin: 40px 0 48px;
+  }
+
+  .kpi-card {
+    padding: 24px;
+  }
+
+  .kpi-card strong {
+    font-size: 34px;
+  }
 }

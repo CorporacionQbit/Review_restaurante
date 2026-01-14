@@ -1,102 +1,149 @@
-<div class="create-container">
+<div class="create-page">
 
-  <h1>🍽️ Crear restaurante</h1>
-  <p class="subtitle">
-    Registra tu restaurante para comenzar a recibir reseñas
-  </p>
+  <div class="create-card">
 
-  <form [formGroup]="form" (ngSubmit)="submit()">
-
-    <label>Nombre *</label>
-    <input
-      nz-input
-      placeholder="Nombre del restaurante"
-      formControlName="name" />
-
-    <label>Descripción</label>
-    <textarea
-      nz-input
-      rows="3"
-      placeholder="Descripción"
-      formControlName="description"></textarea>
-
-    <label>Teléfono</label>
-    <input
-      nz-input
-      placeholder="Teléfono"
-      formControlName="phoneNumber" />
-
-    <label>Email</label>
-    <input
-      nz-input
-      placeholder="Email"
-      formControlName="email" />
-
-    <label>Dirección</label>
-    <input
-      nz-input
-      placeholder="Dirección"
-      formControlName="address" />
-
-    <div class="grid">
-
-      <div>
-        <label>Ciudad</label>
-        <input
-          nz-input
-          placeholder="Ciudad"
-          formControlName="city" />
-      </div>
-
-      <div>
-        <label>Zona</label>
-        <input
-          nz-input
-          placeholder="Zona"
-          formControlName="zone" />
-      </div>
-
-      <div>
-        <label>Precio</label>
-        <nz-select
-          nzPlaceHolder="Rango"
-          formControlName="priceRange">
-          <nz-option [nzValue]="1" nzLabel="$"></nz-option>
-          <nz-option [nzValue]="2" nzLabel="$$"></nz-option>
-          <nz-option [nzValue]="3" nzLabel="$$$"></nz-option>
-          <nz-option [nzValue]="4" nzLabel="$$$$"></nz-option>
-          <nz-option [nzValue]="5" nzLabel="$$$$$"></nz-option>
-        </nz-select>
-      </div>
-
+    <!-- HEADER -->
+    <div class="header">
+      <div class="icon">🍽️</div>
+      <h1>Crear restaurante</h1>
+      <p>
+        Registra tu restaurante y empieza a recibir reseñas de clientes reales.
+      </p>
     </div>
 
-    <!-- 🔹 NUEVO: CATEGORÍAS -->
-    <label>Categorías *</label>
-    <nz-select
-      nzMode="multiple"
-      nzPlaceHolder="Selecciona una o más categorías"
-      formControlName="categoryIds">
-      <nz-option
-        *ngFor="let c of categories"
-        [nzValue]="c.categoryId"
-        [nzLabel]="c.name">
-      </nz-option>
-    </nz-select>
+    <form [formGroup]="form" (ngSubmit)="submit()">
 
-    <label>URL Google Maps</label>
-    <input
-      nz-input
-      placeholder="https://maps.google.com/..."
-      formControlName="mapsUrl" />
+      <!-- =====================
+           INFO BÁSICA
+      ====================== -->
+      <section class="section">
+        <h3>Información básica</h3>
 
-    <button
-      nz-button
-      nzType="primary"
-      nzBlock
-      [disabled]="loading">
-      {{ loading ? 'Creando...' : 'Crear restaurante' }}
-    </button>
+        <div class="field">
+          <label>Nombre *</label>
+          <input
+            nz-input
+            placeholder="Nombre del restaurante"
+            formControlName="name" />
+        </div>
 
-  </form>
+        <div class="field">
+          <label>Categorías *</label>
+          <nz-select
+            nzMode="multiple"
+            nzPlaceHolder="Selecciona una o más categorías"
+            formControlName="categoryIds">
+            <nz-option
+              *ngFor="let c of categories"
+              [nzValue]="c.categoryId"
+              [nzLabel]="c.name">
+            </nz-option>
+          </nz-select>
+        </div>
+
+        <div class="field">
+          <label>Precio</label>
+          <nz-select
+            nzPlaceHolder="Rango de precios"
+            formControlName="priceRange">
+            <nz-option [nzValue]="1" nzLabel="$"></nz-option>
+            <nz-option [nzValue]="2" nzLabel="$$"></nz-option>
+            <nz-option [nzValue]="3" nzLabel="$$$"></nz-option>
+            <nz-option [nzValue]="4" nzLabel="$$$$"></nz-option>
+            <nz-option [nzValue]="5" nzLabel="$$$$$"></nz-option>
+          </nz-select>
+        </div>
+      </section>
+
+      <!-- =====================
+           CONTACTO & UBICACIÓN
+      ====================== -->
+      <section class="section">
+        <h3>Contacto y ubicación</h3>
+
+        <div class="grid-2">
+          <div class="field">
+            <label>Teléfono</label>
+            <input
+              nz-input
+              placeholder="Teléfono"
+              formControlName="phoneNumber" />
+          </div>
+
+          <div class="field">
+            <label>Email</label>
+            <input
+              nz-input
+              placeholder="Email"
+              formControlName="email" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Dirección</label>
+          <input
+            nz-input
+            placeholder="Dirección"
+            formControlName="address" />
+        </div>
+
+        <div class="grid-3">
+          <div class="field">
+            <label>Ciudad</label>
+            <input
+              nz-input
+              placeholder="Ciudad"
+              formControlName="city" />
+          </div>
+
+          <div class="field">
+            <label>Zona</label>
+            <input
+              nz-input
+              placeholder="Zona"
+              formControlName="zone" />
+          </div>
+
+          <div class="field">
+            <label>Google Maps</label>
+            <input
+              nz-input
+              placeholder="https://maps.google.com/..."
+              formControlName="mapsUrl" />
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================
+           DESCRIPCIÓN
+      ====================== -->
+      <section class="section">
+        <h3>Descripción</h3>
+
+        <div class="field">
+          <label>Descripción (opcional)</label>
+          <textarea
+            nz-input
+            rows="3"
+            placeholder="Cuéntales a tus clientes qué hace especial tu restaurante"
+            formControlName="description">
+          </textarea>
+          <small>
+            Esta información será visible públicamente.
+          </small>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <button
+        nz-button
+        nzType="primary"
+        nzBlock
+        [disabled]="loading">
+        {{ loading ? 'Creando restaurante…' : 'Crear restaurante y empezar' }}
+      </button>
+
+    </form>
+  </div>
+
 </div>
