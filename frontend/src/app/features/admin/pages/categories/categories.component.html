@@ -1,0 +1,59 @@
+<div class="categories-page">
+ <!-- HEADER MEJORADO -->
+  <div class="page-header">
+    <div class="title-group">
+      <h1>Categorías</h1>
+      <p>Gestiona las categorías disponibles en la plataforma</p>
+    </div>
+    
+  <div class="header">
+    <button
+      nz-button
+      nzType="primary"
+      (click)="create()">
+      ➕ Nueva categoría
+    </button>
+  </div>
+
+  <nz-table
+    class="categories-table"
+    [nzData]="categories"
+    [nzLoading]="loading"
+    nzBordered>
+
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th style="width: 220px">Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let c of categories">
+        <td>{{ c.categoryId }}</td>
+        <td>{{ c.name }}</td>
+        <td>
+          <div class="actions">
+            <button
+              nz-button
+              nzSize="small"
+              (click)="edit(c)">
+              Editar
+            </button>
+
+            <button
+              nz-button
+              nzSize="small"
+              nzDanger
+              (click)="delete(c)">
+              Eliminar
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+
+  </nz-table>
+
+</div>

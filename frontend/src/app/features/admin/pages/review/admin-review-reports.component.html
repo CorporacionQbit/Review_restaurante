@@ -1,56 +1,72 @@
-<div class="page admin-review-reports">
+<div class="reports-page">
 
-  <h2 class="page-title">Reseñas reportadas</h2>
-
-  <nz-table
-    [nzData]="reports"
-    [nzLoading]="loading"
-    nzBordered
-    nzSize="middle"
-    class="reports-table"
-  >
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Reseña</th>
-        <th>Motivo</th>
-        <th>Estado</th>
-        <th style="width: 140px;">Acciones</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <tr *ngFor="let r of reports">
-        <td>#{{ r.review.reviewId }}</td>
-
-        <td class="review-text">
-          {{ r.review.reviewText || 'Sin comentario' }}
-        </td>
-
-        <td>
-          <nz-tag nzColor="red">{{ r.reason }}</nz-tag>
-        </td>
-
-        <td>
-          <nz-tag nzColor="gold">Pendiente</nz-tag>
-        </td>
-
-        <td>
-          <button
-            nz-button
-            nzType="primary"
-            nzSize="small"
-            (click)="openDetailModal(r)"
-          >
-            Ver detalle
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </nz-table>
-
-  <div *ngIf="!loading && reports.length === 0" class="empty-state">
-    No hay reseñas reportadas pendientes 🎉
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="title-group">
+      <h1>Reseñas reportadas</h1>
+      <p>Revisa reportes enviados por usuarios y toma acciones</p>
+    </div>
   </div>
+
+  <!-- CARD -->
+  <nz-card class="reports-card">
+
+    <nz-table
+      [nzData]="reports"
+      [nzLoading]="loading"
+      nzBordered
+      nzSize="middle"
+      class="reports-table"
+    >
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Reseña</th>
+          <th>Motivo</th>
+          <th>Estado</th>
+          <th style="width: 160px">Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let r of reports">
+          <td class="muted">#{{ r.review.reviewId }}</td>
+
+          <td class="review-text">
+            {{ r.review.reviewText || 'Sin comentario' }}
+          </td>
+
+          <td>
+            <span class="tag danger">
+              {{ r.reason }}
+            </span>
+          </td>
+
+          <td>
+            <span class="tag warning">
+              Pendiente
+            </span>
+          </td>
+
+          <td>
+            <button
+              nz-button
+              nzSize="small"
+              class="btn-primary"
+              (click)="openDetailModal(r)"
+            >
+              Ver detalle
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+
+    <!-- EMPTY -->
+    <div *ngIf="!loading && reports.length === 0" class="empty-state">
+       No hay reseñas reportadas pendientes
+    </div>
+
+  </nz-card>
 
 </div>

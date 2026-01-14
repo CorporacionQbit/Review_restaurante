@@ -1,4 +1,12 @@
-import { IsString, IsOptional, IsNumber, Min, Max } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsNumber,
+  Min,
+  Max,
+  IsArray,
+  IsInt,
+} from 'class-validator';
 
 export class CreateRestaurantDto {
   @IsString()
@@ -37,4 +45,10 @@ export class CreateRestaurantDto {
   @Min(1)
   @Max(5)
   priceRange?: number;
+
+  // 🔹 NUEVO (NO rompe nada)
+  @IsOptional()
+  @IsArray()
+  @IsInt({ each: true })
+  categoryIds?: number[];
 }

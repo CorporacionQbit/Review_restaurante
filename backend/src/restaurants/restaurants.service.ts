@@ -32,17 +32,36 @@ export class RestaurantsService {
   // =========================
   // CREAR RESTAURANTE (OWNER)
   // =========================
-  async create(ownerUserId: number, dto: CreateRestaurantDto) {
-    const restaurant = this.restaurantRepo.create({
-      ownerUserId,
-      ...dto,
-      mapsUrl: null,
-      isPremium: false,
-      isApproved: false,
-    });
+ async create(ownerUserId: number, dto: CreateRestaurantDto) {
+  const { categoryIds, ...rest } = dto;
 
-    return this.restaurantRepo.save(restaurant);
+  const restaurant = this.restaurantRepo.create({
+    ownerUserId,
+    ...rest,
+    mapsUrl: null,
+    isPremium: false,
+    isApproved: false,
+  });
+
+  const savedRestaurant = await this.restaurantRepo.save(restaurant);
+
+  // 🔹 NUEVO (SIN modificar lógica existente)
+  if (categoryIds && categoryIds.length > 0) {
+    await this.restaurantRepo
+      .createQueryBuilder()
+      .insert()
+      .into('restaurant_categories')
+      .values(
+        categoryIds.map((categoryId) => ({
+          restaurant_id: savedRestaurant.restaurantId,
+          category_id: categoryId,
+        })),
+      )
+      .execute();
   }
+
+  return savedRestaurant;
+}
 
   // =========================
   // RESTAURANTES DEL OWNER

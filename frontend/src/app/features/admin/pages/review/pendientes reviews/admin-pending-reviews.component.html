@@ -1,0 +1,129 @@
+<div class="moderation-page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="title-group">
+      <h1>Moderación de reseñas</h1>
+      <p>Controla y valida las opiniones antes de que se publiquen</p>
+    </div>
+  </div>
+
+  <!-- CARD -->
+  <nz-card class="moderation-card">
+
+    <!-- FILTROS -->
+    <div class="filters">
+      <input
+        nz-input
+        placeholder="🔍 Buscar comentario..."
+        [(ngModel)]="searchText"
+        (ngModelChange)="applyFilters()"
+      />
+
+      <nz-select
+        nzAllowClear
+        nzPlaceHolder="⭐ Rating mínimo"
+        [(ngModel)]="minRating"
+        (ngModelChange)="applyFilters()"
+        style="width: 170px"
+      >
+        <nz-option
+          *ngFor="let r of [1,2,3,4,5]"
+          [nzValue]="r"
+          [nzLabel]="r + ' estrellas'">
+        </nz-option>
+      </nz-select>
+    </div>
+
+    <!-- TABLA -->
+    <nz-spin [nzSpinning]="loading">
+
+      <nz-table
+        class="reviews-table"
+        [nzData]="filteredReviews"
+        nzBordered
+        nzSize="middle">
+
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Restaurante</th>
+            <th>Rating</th>
+            <th>Comentario</th>
+            <th>Estado</th>
+            <th style="width: 220px">Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr
+            *ngFor="let r of filteredReviews"
+            [class.offensive]="isOffensive(r.reviewText)"
+          >
+            <td class="muted">#{{ r.reviewId }}</td>
+
+            <td class="user">
+              {{ r.user?.fullName || '—' }}
+            </td>
+
+            <td class="restaurant">
+              {{ r.restaurant?.name || '—' }}
+            </td>
+
+            <td>
+              <nz-rate
+                [ngModel]="r.rating"
+                nzDisabled>
+              </nz-rate>
+            </td>
+
+            <td class="review-text">
+              {{ r.reviewText || '—' }}
+            </td>
+
+            <td>
+              <span class="status pending">Pendiente</span>
+            </td>
+
+            <td>
+              <div class="actions">
+                <button
+                  nz-button
+                  nzSize="small"
+                  class="btn-approve"
+                  (click)="approve(r.reviewId)">
+                  Aprobar
+                </button>
+
+                <button
+                  nz-button
+                  nzSize="small"
+                  class="btn-reject"
+                  (click)="reject(r.reviewId)">
+                  Rechazar
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+
+      </nz-table>
+
+      <!-- VACÍO -->
+      <div *ngIf="!loading && filteredReviews.length === 0" class="empty">
+        No hay reseñas que coincidan con los filtros
+      </div>
+
+    </nz-spin>
+  </nz-card>
+</div>
+
+<ng-template #rejectTpl>
+  <textarea
+    nz-input
+    rows="4"
+    placeholder="Motivo del rechazo"
+    [(ngModel)]="rejectReason">
+  </textarea>
+</ng-template>

@@ -1,0 +1,19 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+
+  <label>Nombre de la categoría</label>
+
+  <input
+    nz-input
+    formControlName="name"
+    placeholder="Ej. Comida Gourmet" />
+
+  <div style="margin-top:16px; text-align:right">
+    <button
+      nz-button
+      nzType="primary"
+      [disabled]="form.invalid">
+      Guardar
+    </button>
+  </div>
+
+</form>

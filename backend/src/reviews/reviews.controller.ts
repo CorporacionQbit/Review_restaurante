@@ -191,20 +191,23 @@ async getPendingReviews(@Req() req: AuthRequest) {
 
   return this.reviewsService.getPendingReviews();
 }
-
-// PATCH /admin/reviews/:id/approve
 @Patch('admin/reviews/:id/approve')
 async approveReview(
   @Req() req: AuthRequest,
   @Param('id') id: string,
 ) {
+  console.log('REQ.USER =>', req.user); // 👈 CLAVE
+
   if (!req.user || req.user.role !== 'admin') {
     throw new ForbiddenException('Solo administradores');
   }
 
-  return this.reviewsService.approveReview(Number(id));
+  return this.reviewsService.approveReview(
+    Number(id),
+    req.user.userId,
+  );
 }
-// ADMIN: RECHAZAR RESEÑA (NO eliminar)
+
 @Patch('admin/reviews/:id/reject')
 async rejectReview(
   @Req() req: AuthRequest,
@@ -218,7 +221,16 @@ async rejectReview(
   return this.reviewsService.rejectReview(
     Number(id),
     body.reason,
+    req.user.userId,
   );
+}
+@Get('admin/reviews/moderation-history')
+async getModerationHistory(@Req() req: AuthRequest) {
+  if (!req.user || req.user.role !== 'admin') {
+    throw new ForbiddenException('Solo administradores');
+  }
+
+  return this.reviewsService.getModerationHistory();
 }
 
 }

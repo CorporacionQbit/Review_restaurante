@@ -13,6 +13,7 @@ import { ReviewReport } from './review-report.entity';
 
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
+import { ReviewModerationLog } from './review-moderation-log.entity';
 
 @Injectable()
 export class ReviewsService {
@@ -25,6 +26,9 @@ export class ReviewsService {
 
     @InjectRepository(ReviewReport)
     private readonly reportRepo: Repository<ReviewReport>,
+
+    @InjectRepository(ReviewModerationLog)
+    private readonly moderationRepo: Repository<ReviewModerationLog>,
   ) {}
 
   // ================= CREAR RESEÑA =================
@@ -192,7 +196,15 @@ export class ReviewsService {
 
     if (!review) throw new NotFoundException('Reseña no encontrada');
 
-    await this.reportRepo.update({ reviewId }, { isResolved: true });
+   const report = await this.reportRepo.findOne({
+  where: { reviewId },
+});
+
+if (report) {
+  report.isResolved = true;
+  await this.reportRepo.save(report);
+}
+
     await this.reviewRepo.remove(review);
 
     return { success: true };
@@ -218,7 +230,7 @@ async getPendingReviews() {
   });
 }
 
-async approveReview(reviewId: number) {
+async approveReview(reviewId: number, adminUserId: number) {
   const review = await this.reviewRepo.findOne({
     where: { reviewId },
   });
@@ -230,9 +242,22 @@ async approveReview(reviewId: number) {
   review.status = 'Aprobada';
   review.rejectionReason = null;
 
-  return this.reviewRepo.save(review);
+  await this.reviewRepo.save(review);
+
+  await this.moderationRepo.save({
+    reviewId,
+    adminUserId,
+    action: 'APROBADA',
+    reason: null,
+  });
+
+  return { success: true };
 }
-async rejectReview(reviewId: number, reason: string) {
+async rejectReview(
+  reviewId: number,
+  reason: string,
+  adminUserId: number,
+) {
   const review = await this.reviewRepo.findOne({
     where: { reviewId },
   });
@@ -244,13 +269,34 @@ async rejectReview(reviewId: number, reason: string) {
   review.status = 'Rechazada';
   review.rejectionReason = reason;
 
-  // resolver todos los reportes asociados
-  await this.reportRepo.update(
-    { reviewId },
-    { isResolved: true },
-  );
+  await this.reviewRepo.save(review);
 
-  return this.reviewRepo.save(review);
+  // ✅ SOLO SI EXISTE REPORTE
+  const report = await this.reportRepo.findOne({
+    where: { reviewId },
+  });
+
+  if (report) {
+    report.isResolved = true;
+    await this.reportRepo.save(report);
+  }
+
+  // LOG DE MODERACIÓN
+  await this.moderationRepo.save({
+    reviewId,
+    adminUserId,
+    action: 'RECHAZADA',
+    reason,
+  });
+
+  return { success: true };
+}
+
+async getModerationHistory() {
+  return this.moderationRepo.find({
+    relations: ['review', 'admin'],
+    order: { createdAt: 'DESC' },
+  });
 }
 
 

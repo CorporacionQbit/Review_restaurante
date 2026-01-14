@@ -62,15 +62,27 @@
           nzPlaceHolder="Rango"
           formControlName="priceRange">
           <nz-option [nzValue]="1" nzLabel="$"></nz-option>
-<nz-option [nzValue]="2" nzLabel="$$"></nz-option>
-<nz-option [nzValue]="3" nzLabel="$$$"></nz-option>
-<nz-option [nzValue]="4" nzLabel="$$$$"></nz-option>
-<nz-option [nzValue]="5" nzLabel="$$$$$"></nz-option>
-
+          <nz-option [nzValue]="2" nzLabel="$$"></nz-option>
+          <nz-option [nzValue]="3" nzLabel="$$$"></nz-option>
+          <nz-option [nzValue]="4" nzLabel="$$$$"></nz-option>
+          <nz-option [nzValue]="5" nzLabel="$$$$$"></nz-option>
         </nz-select>
       </div>
 
     </div>
+
+    <!-- 🔹 NUEVO: CATEGORÍAS -->
+    <label>Categorías *</label>
+    <nz-select
+      nzMode="multiple"
+      nzPlaceHolder="Selecciona una o más categorías"
+      formControlName="categoryIds">
+      <nz-option
+        *ngFor="let c of categories"
+        [nzValue]="c.categoryId"
+        [nzLabel]="c.name">
+      </nz-option>
+    </nz-select>
 
     <label>URL Google Maps</label>
     <input

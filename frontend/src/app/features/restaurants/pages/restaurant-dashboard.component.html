@@ -1,10 +1,14 @@
 <div class="dashboard" *ngIf="!loading">
 
   <!-- HEADER -->
-  <div class="header">
-    <h1>{{ restaurant.name }}</h1>
+  <header class="dashboard-header">
+    <div>
+      <h1>{{ restaurant.name }}</h1>
+      <p class="subtitle">Panel de configuración del restaurante</p>
+    </div>
 
     <nz-tag
+      class="status-tag"
       [nzColor]="
         restaurant.onboardingStatus === 'Aprobado'
           ? 'green'
@@ -14,58 +18,81 @@
       ">
       {{ restaurant.onboardingStatus }}
     </nz-tag>
-  </div>
+  </header>
 
   <!-- PROGRESS -->
-  <div class="progress-box">
-    <p>Progreso del restaurantesss</p>
+  <section class="progress-card">
+    <div class="progress-info">
+      <h3>Progreso de configuración</h3>
+      <span>{{ completionPercent() }}%</span>
+    </div>
+
     <nz-progress
       [nzPercent]="completionPercent()"
       nzStatus="active">
     </nz-progress>
-  </div>
+
+    <p class="progress-hint">
+      Completa la información para enviar tu restaurante a revisión.
+    </p>
+  </section>
 
   <!-- CHECKLIST -->
-  <div class="checklist">
+  <section class="checklist-grid">
 
-    <div class="item">
-      <span>📸 Imágenes</span>
-      <span>{{ checklist.images ? '✔' : '❌' }}</span>
-      <button nz-button nzSize="small" (click)="goImages()">
-        Gestionar
-      </button>
+    <div class="check-card">
+      <span class="icon">📸</span>
+      <div>
+        <strong>Imágene</strong>
+        <p>Fotos del restaurante</p>
+      </div>
+      <span class="state">{{ checklist.images ? '✔' : '❌' }}</span>
+      <button nz-button nzSize="small" (click)="goImages()">Gestionar</button>
     </div>
 
-    <div class="item">
-      <span>🕒 Horarios</span>
-      <span>{{ checklist.schedule ? '✔' : '❌' }}</span>
+    <div class="check-card">
+      <span class="icon">🕒</span>
+      <div>
+        <strong>Horarios</strong>
+        <p>Días y horas de atención</p>
+      </div>
+      <span class="state">{{ checklist.schedule ? '✔' : '❌' }}</span>
     </div>
 
-    <div class="item">
-      <span>🌐 Redes sociales</span>
-      <span>{{ checklist.socials ? '✔' : '❌' }}</span>
+    <div class="check-card">
+      <span class="icon">🌐</span>
+      <div>
+        <strong>Redes sociales</strong>
+        <p>Facebook, Instagram, etc.</p>
+      </div>
+      <span class="state">{{ checklist.socials ? '✔' : '❌' }}</span>
     </div>
 
-    <div class="item locked" *ngIf="!restaurant.isPremium">
-      <span>📄 Menú (Premium)</span>
-      <span>🔒</span>
-      <button nz-button nzType="link" (click)="goPremium()">
-        Hazte Premium
-      </button>
+    <!-- PREMIUM -->
+    <div class="check-card premium locked" *ngIf="!restaurant.isPremium">
+      <span class="icon">📄</span>
+      <div>
+        <strong>Menú</strong>
+        <p>Disponible solo en Premium</p>
+      </div>
+      <span class="state">🔒</span>
+      <button nz-button nzType="link" (click)="goPremium()">Hazte Premium</button>
     </div>
 
-    <div class="item" *ngIf="restaurant.isPremium">
-      <span>📄 Menú</span>
-      <span>{{ checklist.menu ? '✔' : '❌' }}</span>
-      <button nz-button nzSize="small" (click)="goMenu()">
-        Gestionar
-      </button>
+    <div class="check-card premium" *ngIf="restaurant.isPremium">
+      <span class="icon">📄</span>
+      <div>
+        <strong>Menú</strong>
+        <p>Archivo o enlace del menú</p>
+      </div>
+      <span class="state">{{ checklist.menu ? '✔' : '❌' }}</span>
+      <button nz-button nzSize="small" (click)="goMenu()">Gestionar</button>
     </div>
 
-  </div>
+  </section>
 
   <!-- ACTIONS -->
-  <div class="actions">
+  <footer class="dashboard-actions">
     <button
       nz-button
       nzType="primary"
@@ -81,6 +108,6 @@
       (click)="goPremium()">
       ⭐ Hazte Premium
     </button>
-  </div>
+  </footer>
 
 </div>

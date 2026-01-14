@@ -6,6 +6,8 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzCardModule } from 'ng-zorro-antd/card';
+
 
 import { AdminReviewReportsService } from '../review/admin-review-reports.service';
 
@@ -18,6 +20,7 @@ import { AdminReviewReportsService } from '../review/admin-review-reports.servic
     NzButtonModule,
     NzTagModule,
     NzModalModule,
+    NzCardModule
   ],
   templateUrl: './admin-review-reports.component.html',
   styleUrls: ['./admin-review-reports.component.css'],

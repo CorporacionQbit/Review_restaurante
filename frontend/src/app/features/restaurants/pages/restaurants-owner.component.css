@@ -1,86 +1,208 @@
-/* HEADER */
+/* =====================================================
+   ENTERPRISE DASHBOARD – MIS RESTAURANTES
+   Product-grade SaaS UI (FIXED PREMIUM BADGE)
+===================================================== */
+
+/* ================= ROOT ================= */
+:host {
+  display: block;
+  min-height: 100vh;
+  padding: 32px;
+  background:
+    radial-gradient(1200px 600px at 20% -200px, rgba(249,115,22,.14), transparent 60%),
+    radial-gradient(900px 500px at 90% 10%, rgba(59,130,246,.10), transparent 60%),
+    linear-gradient(180deg, #f8fafc, #eef2f7);
+}
+
+/* ================= PAGE HEADER ================= */
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 40px;
 }
 
 .page-header h1 {
-  font-size: 26px;
-  font-weight: 600;
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: -0.4px;
+  color: #0f172a;
 }
 
-/* GRID */
+.page-header button[nz-button] {
+  border-radius: 999px;
+  font-weight: 800;
+  padding: 0 22px;
+  box-shadow: 0 12px 28px rgba(59,130,246,.25);
+}
+
+/* ================= STATES ================= */
+.center,
+.empty {
+  text-align: center;
+  padding: 90px 0;
+  font-size: 16px;
+  color: #64748b;
+}
+
+/* ================= GRID ================= */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 28px;
 }
 
-/* CARD */
+/* ================= CARD ================= */
 .restaurant-card {
   cursor: pointer;
-  border-radius: 14px;
-  transition: all 0.25s ease;
+  border-radius: 26px;
   border: none;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  background: linear-gradient(180deg, #ffffff, #f9fafb);
+  box-shadow: 0 20px 48px rgba(15,23,42,.10);
+  transition: transform .35s ease, box-shadow .35s ease;
+  padding: 20px;
+  position: relative;
+  overflow: hidden; /* 🔒 FIX overflow */
 }
 
 .restaurant-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.12);
+  transform: translateY(-10px);
+  box-shadow: 0 42px 90px rgba(15,23,42,.20);
 }
 
-/* HEADER CARD */
+.restaurant-card:active {
+  transform: translateY(-4px);
+}
+
+/* ================= CARD HEADER ================= */
 .card-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: 12px;
   margin-bottom: 6px;
 }
 
 .card-header h3 {
   margin: 0;
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
 }
 
-/* META */
+/* =====================================================
+   🔥 PREMIUM BADGE – FIXED POSITION
+   Now behaves as secondary badge under status
+===================================================== */
+.badge-premium {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: linear-gradient(135deg, #fb923c, #f97316);
+  color: #fff;
+  padding: 4px 14px;
+  font-size: 11px;
+  border-radius: 999px;
+  font-weight: 900;
+  box-shadow: 0 8px 22px rgba(249,115,22,.45);
+
+  margin-top: 6px;       /* 👈 below status */
+  margin-bottom: 6px;
+  align-self: flex-start;
+
+  white-space: nowrap;
+  order: 2;              /* 👈 force order under nz-tag */
+}
+
+/* ================= META ================= */
 .meta {
   font-size: 14px;
-  color: #666;
-  margin-bottom: 8px;
+  color: #64748b;
+  margin-bottom: 10px;
 }
 
-/* STATS */
-.stats {
-  margin-top: 12px;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-/* PREMIUM BADGE */
-.badge-premium {
-  background: linear-gradient(135deg, #ffb347, #ffcc33);
-  color: #fff;
-  padding: 2px 10px;
+/* =====================================================
+   STATUS TAG (ANT) – PRIMARY BADGE
+===================================================== */
+nz-tag {
+  display: inline-flex !important;
+  align-items: center;
+  border-radius: 999px !important;
+  font-weight: 700;
   font-size: 12px;
-  border-radius: 12px;
-  font-weight: 600;
+  margin-bottom: 6px;
+  order: 1; /* 👈 always before Premium */
 }
 
-/* LOADING / EMPTY */
-.center,
-.empty {
-  text-align: center;
-  padding: 60px 0;
-  font-size: 16px;
-  color: #999;
+/* Aprobado */
+nz-tag[nzcolor="green"] {
+  background: #ecfdf5 !important;
+  color: #065f46 !important;
 }
+
+/* Pendiente */
+nz-tag[nzcolor="orange"] {
+  background: #fff7ed !important;
+  color: #9a3412 !important;
+}
+
+/* Rechazado */
+nz-tag[nzcolor="red"] {
+  background: #fef2f2 !important;
+  color: #991b1b !important;
+}
+
+/* ================= STATS ================= */
+.stats {
+  margin-top: 10px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #f59e0b;
+  transition: transform .25s ease;
+}
+
+.restaurant-card:hover .stats {
+  transform: scale(1.05);
+}
+
+/* ================= OWNER ACTIONS ================= */
 .owner-actions {
-  margin-top: 14px;
+  margin-top: 18px;
   display: flex;
-  gap: 8px;
+  gap: 10px;
   justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.owner-actions button[nz-button] {
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 0 14px;
+  opacity: .88;
+  transition: all .25s ease;
+}
+
+.owner-actions button:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  :host {
+    padding: 20px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .page-header h1 {
+    font-size: 26px;
+  }
 }

@@ -18,7 +18,7 @@ import { PostsModule } from './post/posts.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { AdminModule } from './admin/admin.module';
-
+import { CategoriesModule } from './category/categories.module';
 // ===== MIDDLEWARE =====
 import { AuthMiddleware } from './auth/auth.middleware';
 import { FavoritesModule } from './favorites/favorites.module';
@@ -57,6 +57,7 @@ import { FavoritesModule } from './favorites/favorites.module';
     FavoritesModule,
     AnalyticsModule,
     AdminModule,
+    CategoriesModule,
   ],
 })
 export class AppModule implements NestModule {
@@ -78,12 +79,18 @@ export class AppModule implements NestModule {
         { path: 'restaurants/search', method: RequestMethod.GET },
         { path: 'restaurants/:id', method: RequestMethod.GET },
         { path: 'restaurants/:restaurantId/reviews', method: RequestMethod.GET },
-      )
+         { path: 'categories', method: RequestMethod.GET },
+)
+      
 
       // =========================
       // 🔒 RUTAS PROTEGIDAS
       // =========================
       .forRoutes(
+        // ===== ADMIN CATEGORIES =====
+{ path: 'admin/categories', method: RequestMethod.ALL },
+{ path: 'admin/categories/:id', method: RequestMethod.ALL },
+
         // ===== FAVORITES (🔥 CLAVE) =====
         { path: 'favorites', method: RequestMethod.ALL },
         { path: 'favorites/:id', method: RequestMethod.ALL }, // 
@@ -107,12 +114,23 @@ export class AppModule implements NestModule {
         { path: 'reviews/:id/report', method: RequestMethod.ALL },
 
         // ===== ADMIN =====
-         { path: 'admin/dashboard', method: RequestMethod.ALL },
-  { path: 'admin/dashboard/metrics', method: RequestMethod.ALL },
+ // ===== ADMIN =====
+{ path: 'admin/dashboard', method: RequestMethod.ALL },
+{ path: 'admin/dashboard/metrics', method: RequestMethod.ALL },
 
-  { path: 'admin/review-reports', method: RequestMethod.ALL },
-  { path: 'admin/reviews/:id', method: RequestMethod.ALL },
-  { path: 'admin/review-reports/:id/resolve', method: RequestMethod.ALL },
+{ path: 'admin/categories', method: RequestMethod.ALL },
+{ path: 'admin/categories/:id', method: RequestMethod.ALL },
+
+{ path: 'admin/review-reports', method: RequestMethod.ALL },
+{ path: 'admin/reviews/:id', method: RequestMethod.ALL },
+{ path: 'admin/review-reports/:id/resolve', method: RequestMethod.ALL },
+{ path: 'admin/reviews/pending', method: RequestMethod.ALL },
+{ path: 'admin/reviews/moderation-history', method: RequestMethod.ALL },
+{ path: 'admin/reviews/:id/approve', method: RequestMethod.ALL },
+{ path: 'admin/reviews/:id/reject', method: RequestMethod.ALL },
+
+
+
         // ===== POSTS =====
         { path: 'posts', method: RequestMethod.ALL },
         { path: 'posts/:id', method: RequestMethod.ALL },

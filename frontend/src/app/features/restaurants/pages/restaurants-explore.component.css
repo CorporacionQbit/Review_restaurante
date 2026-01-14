@@ -1,203 +1,326 @@
-/* =========================
-   CONTAINER
-========================= */
-.explore-container {
-  max-width: 1280px;
-  margin: auto;
-  padding: 32px 20px 60px;
-  background: #f5f7fb;
+/* =====================================================
+   RESTAURANT EXPLORER – ENTERPRISE ORANGE (FINAL)
+===================================================== */
+:host {
+  display: block;
   min-height: 100vh;
+
+  /* PALETA CORPORATIVA */
+  --orange-main: #fb923c;
+  --orange-strong: #f97316;
+  --orange-soft: #fed7aa;
+
+  --bg-dark: #0f172a;
+  --bg-dark-soft: #1e293b;
+
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-light: #e5e7eb;
+
+  --card-bg: #ffffff;
+
+  --shadow-soft: 0 18px 40px rgba(15,23,42,.18);
+  --shadow-hover: 0 40px 90px rgba(15,23,42,.35);
+
+  /* FONDO GLOBAL */
+  background:
+    radial-gradient(
+      1000px 520px at 50% -200px,
+      rgba(251,146,60,.25),
+      transparent 60%
+    ),
+    linear-gradient(
+      180deg,
+      var(--bg-dark),
+      var(--bg-dark-soft)
+    );
 }
 
-/* =========================
-   HEADER
-========================= */
+/* =====================================================
+   CONTAINER
+===================================================== */
+.explore-container {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 72px 48px 120px;
+}
+
+/* =====================================================
+   HEADER – BUSINESS HERO
+===================================================== */
 .explore-header {
-  background: white;
-  border-radius: 20px;
-  padding: 28px;
-  box-shadow: 0 12px 30px rgba(0,0,0,.08);
-  margin-bottom: 36px;
+  background: linear-gradient(180deg, #ffffff, #fff7ed);
+  border-radius: 28px;
+  padding: 40px 48px;
+  box-shadow: var(--shadow-soft);
+  margin-bottom: 80px;
 }
 
-/* TOP BAR */
+/* HEADER TOP */
 .header-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 24px;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 /* TITLE */
 .header-title h1 {
-  font-size: 30px;
-  font-weight: 800;
+  font-size: 38px;
+  font-weight: 900;
   margin: 0;
+  color: var(--text-main);
 }
 
 .header-title p {
-  margin: 4px 0 0;
-  color: #6b7280;
-  font-size: 14px;
+  margin-top: 8px;
+  font-size: 15px;
+  color: var(--text-muted);
 }
 
-/* ACTIONS */
+/* =====================================================
+   PROFILE CHIP – ENTERPRISE
+===================================================== */
 .header-actions {
   display: flex;
   align-items: center;
   gap: 14px;
 }
 
-/* PROFILE CHIP */
 .profile-chip {
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: #eef5ff;
-  padding: 6px 14px;
+  gap: 12px;
+  padding: 8px 18px 8px 10px;
   border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    rgba(251,146,60,.18),
+    rgba(251,146,60,.10)
+  );
+  border: 1px solid rgba(251,146,60,.35);
   cursor: pointer;
-  transition: all .2s ease;
-  font-weight: 600;
+  font-weight: 700;
+  color: #7c2d12;
+  transition: all .25s ease;
 }
 
 .profile-chip:hover {
-  background: #dbeafe;
   transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(249,115,22,.25);
 }
 
 .profile-chip .avatar {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #1677ff, #69b1ff);
-  color: white;
+  background: linear-gradient(135deg, #fb923c, #f97316);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 900;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(249,115,22,.45);
 }
 
-/* =========================
-   FILTERS
-========================= */
-.filters {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr auto auto;
-  gap: 14px;
-}
-
-.filters button {
+.profile-chip span {
+  font-size: 14px;
   white-space: nowrap;
 }
 
-/* =========================
-   GRID
-========================= */
-.grid {
+/* =====================================================
+   FILTERS
+===================================================== */
+.filters {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 28px;
+  grid-template-columns: 2.4fr 1.2fr 1.2fr 1.2fr auto auto;
+  gap: 16px;
 }
 
-/* CARD */
+.filters input,
+.filters nz-select {
+  border-radius: 999px;
+}
+
+/* =====================================================
+   GRID
+===================================================== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 52px;
+}
+
+/* =====================================================
+   CARD – ENTERPRISE PREMIUM
+===================================================== */
 .card {
-  background: white;
-  border-radius: 18px;
+  background: var(--card-bg);
+  border-radius: 28px;
   overflow: hidden;
-  box-shadow: 0 10px 24px rgba(0,0,0,.08);
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(251,146,60,.18);
   cursor: pointer;
-  transition: transform .25s ease, box-shadow .25s ease;
+  transition: all .4s ease;
+  position: relative;
 }
 
 .card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 40px rgba(0,0,0,.15);
+  transform: translateY(-12px);
+  box-shadow: var(--shadow-hover);
 }
 
-/* IMAGE */
+/* CTA VISUAL */
+.card::after {
+  content: "Ver restaurante →";
+  position: absolute;
+  bottom: 18px;
+  right: 22px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--orange-strong);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: all .3s ease;
+}
+
+.card:hover::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =====================================================
+   IMAGE / PLACEHOLDER
+===================================================== */
+.image,
+.placeholder {
+  height: 220px;
+  position: relative;
+}
+
 .image {
-  height: 170px;
   background-size: cover;
   background-position: center;
 }
 
+.image::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  background: linear-gradient(
+    to top,
+    rgba(15,23,42,.55),
+    rgba(15,23,42,.25),
+    transparent
+  );
+}
+
+/* PLACEHOLDER */
 .placeholder {
-  height: 170px;
-  background: linear-gradient(135deg, #6a7bd1, #7c5cbf);
+  background: linear-gradient(135deg, #fb923c, #f97316);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 52px;
+  font-size: 56px;
+  font-weight: 900;
   color: #fff;
-  font-weight: 800;
 }
 
-/* BODY */
+/* =====================================================
+   CARD BODY
+===================================================== */
 .card-body {
-  padding: 18px;
+  padding: 26px 26px 38px;
+  text-align: center;
 }
 
 .card-body h3 {
-  margin: 0 0 6px;
-  font-size: 17px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 6px;
+  color: var(--text-main);
 }
 
 .card-body p {
-  color: #6b7280;
   font-size: 14px;
-  min-height: 38px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
 }
 
-/* RATING */
+/* =====================================================
+   RATING
+===================================================== */
 .rating {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #ff9800;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 800;
+  color: var(--orange-strong);
 }
 
-.star {
-  margin-right: 2px;
-}
-
-.muted {
-  color: #777;
-  margin-left: 6px;
-}
-
-/* BADGE */
+/* =====================================================
+   PREMIUM BADGE
+===================================================== */
 .badge {
-  display: inline-block;
-  margin-top: 12px;
-  background: linear-gradient(135deg, gold, orange);
-  color: #000;
-  font-size: 12px;
-  padding: 5px 12px;
+  margin-top: 18px;
+  padding: 8px 22px;
   border-radius: 999px;
   font-weight: 800;
+  font-size: 12px;
+  color: #7c2d12;
+  background: linear-gradient(135deg, #fb923c, #f97316);
+  box-shadow: 0 10px 24px rgba(249,115,22,.45);
 }
 
-/* =========================
+/* =====================================================
    PAGINATION
-========================= */
+===================================================== */
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 18px;
-  margin: 48px 0 0;
+  gap: 22px;
+  margin-top: 90px;
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
-@media (max-width: 1100px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.pagination span {
+  font-weight: 800;
+  color: var(--text-light);
+}
 
+/* =====================================================
+   FOOTER DEL COMPONENTE
+===================================================== */
+.app-footer {
+  margin-top: 160px;
+  padding: 100px 20px 80px;
+  text-align: center;
+  color: var(--text-light);
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(249,115,22,.25),
+    #020617
+  );
+}
+
+.app-footer h4 {
+  font-size: 22px;
+  font-weight: 900;
+  margin-bottom: 12px;
+}
+
+.app-footer p {
+  font-size: 14px;
+  color: #cbd5f5;
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+@media (max-width: 1100px) {
   .filters {
     grid-template-columns: 1fr;
   }
@@ -209,11 +332,11 @@
 }
 
 @media (max-width: 600px) {
-  .grid {
-    grid-template-columns: 1fr;
+  .explore-header {
+    padding: 28px;
   }
 
-  .explore-header {
-    padding: 20px;
+  .header-title h1 {
+    font-size: 30px;
   }
 }

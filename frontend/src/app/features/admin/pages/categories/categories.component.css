@@ -1,0 +1,246 @@
+/* =====================================================
+   VARIABLES – TEMA NARANJA PREMIUM
+===================================================== */
+:host {
+  --primary: #fb923c;
+  --primary-strong: #f97316;
+  --primary-soft: #ffedd5;
+
+  --danger: #ef4444;
+  --danger-soft: #fee2e2;
+
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --border: #e5e7eb;
+
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+
+  display: block;
+  background: linear-gradient(
+    180deg,
+    #f5f7fb 0%,
+    #eef2f7 100%
+  );
+}
+
+/* =====================================================
+   PAGE
+===================================================== */
+.categories-page {
+  padding: 32px;
+}
+
+/* =====================================================
+   HEADER – IGUAL A MODERACIÓN
+===================================================== */
+.page-header {
+  background: linear-gradient(
+    135deg,
+    #fb923c 0%,
+    #fdba74 50%,
+    #ffedd5 100%
+  );
+  border-radius: 18px;
+  padding: 28px;
+  margin-bottom: 28px;
+  box-shadow:
+    0 18px 40px rgba(249, 115, 22, 0.35);
+  text-align: center;
+  position: relative;
+}
+
+/* TÍTULO */
+.title-group h1 {
+  margin: 0;
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+/* SUBTÍTULO */
+.title-group p {
+  margin-top: 6px;
+  font-size: 0.95rem;
+  color: #1f2937;
+}
+
+/* BOTÓN NUEVA CATEGORÍA (FLOAT DERECHO) */
+.header {
+  position: absolute;
+  right: 24px;
+  top: 24px;
+}
+
+.header button[nzType="primary"] {
+  background: #ffffff;
+  color: #f97316;
+  border-radius: 999px;
+  font-weight: 700;
+  padding: 10px 18px;
+  border: none;
+  box-shadow:
+    0 8px 20px rgba(0,0,0,0.15);
+  transition: all .2s ease;
+}
+
+.header button[nzType="primary"]:hover {
+  transform: translateY(-2px);
+  background: #fff7ed;
+}
+
+/* =====================================================
+   CARD GRANDE (MISMO CONCEPTO QUE MODERACIÓN)
+===================================================== */
+.categories-table {
+  background: linear-gradient(
+    180deg,
+    #fb923c,
+    #fdba74
+  );
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow:
+    0 22px 48px rgba(249, 115, 22, 0.45);
+}
+
+/* =====================================================
+   TABLA CONTENIDA
+===================================================== */
+.categories-table .ant-table {
+  background: #ffffff;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* CABECERA */
+.categories-table .ant-table-thead > tr > th {
+  background: #f8fafc;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* FILAS */
+.categories-table .ant-table-tbody > tr {
+  position: relative;
+}
+
+.categories-table .ant-table-tbody > tr > td {
+  padding: 18px 20px;
+  font-size: 15px;
+  color: var(--text-main);
+  border-bottom: 1px solid var(--border);
+  background: #ffffff;
+  transition: background .2s ease;
+}
+
+/* INDICADOR LATERAL NARANJA */
+.categories-table .ant-table-tbody > tr::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 15%;
+  bottom: 15%;
+  width: 5px;
+  background: transparent;
+  border-radius: 4px;
+  transition: background .2s ease;
+}
+
+.categories-table .ant-table-tbody > tr:hover::before {
+  background: linear-gradient(
+    180deg,
+    #fb923c,
+    #f97316
+  );
+}
+
+/* HOVER */
+.categories-table .ant-table-tbody > tr:hover > td {
+  background: #fff7ed;
+}
+
+/* ID */
+.categories-table .ant-table-tbody > tr > td:first-child {
+  color: #f97316;
+  font-weight: 800;
+}
+
+/* =====================================================
+   ACCIONES – ESTILO MODERACIÓN
+===================================================== */
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* EDITAR */
+.actions button:not([nzDanger]) {
+  background: #dcfce7;
+  color: #15803d;
+  border-radius: 999px;
+  border: none;
+  font-size: 13px;
+  padding: 6px 14px;
+  font-weight: 800;
+  box-shadow: 0 6px 14px rgba(22,163,74,0.25);
+}
+
+/* ELIMINAR */
+.actions button[nzDanger] {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-radius: 999px;
+  border: none;
+  font-size: 13px;
+  padding: 6px 14px;
+  font-weight: 800;
+  box-shadow: 0 6px 14px rgba(239,68,68,0.25);
+}
+
+/* =====================================================
+   PAGINACIÓN
+===================================================== */
+.ant-pagination-item-active {
+  border-color: #f97316;
+}
+
+.ant-pagination-item-active a {
+  color: #f97316;
+  font-weight: 700;
+}
+
+/* =====================================================
+   EMPTY
+===================================================== */
+.categories-table .ant-empty-description {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+@media (max-width: 768px) {
+  .categories-page {
+    padding: 16px;
+  }
+
+  .header {
+    position: static;
+    margin-top: 16px;
+    text-align: center;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .actions button {
+    width: 100%;
+  }
+}

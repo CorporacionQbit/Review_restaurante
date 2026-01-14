@@ -8,6 +8,7 @@ import { ReviewReport } from './review-report.entity';
 
 import { ReviewsService } from './reviews.service';
 import { ReviewsController } from './reviews.controller';
+import { ReviewModerationLog } from './review-moderation-log.entity';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ReviewsController } from './reviews.controller';
       Review,
       Restaurant,
       ReviewReport,   
+      ReviewModerationLog,
     ]),
   ],
   controllers: [ReviewsController],

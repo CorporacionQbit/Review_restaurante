@@ -6,10 +6,7 @@
 
     <ul nz-menu nzTheme="dark" nzMode="inline">
 
-      <li nz-menu-item routerLink="/restaurants/explore">
-        <span nz-icon nzType="search"></span>
-        Explorar
-      </li>
+    
 
       <!-- OWNER -->
       <li *ngIf="role === 'owner'" nz-menu-item routerLink="/restaurants">
@@ -38,8 +35,16 @@
   Reseñas reportadas
 </li>
 
+<li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/reviews-pending">
+  <span nz-icon nzType="check-circle"></span>
+  Moderar reseñas
+</li>
 
 
+<li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/categories">
+  <span nz-icon nzType="check-circle"></span>
+  Categorias
+</li>
 
     </ul>
   </nz-sider>

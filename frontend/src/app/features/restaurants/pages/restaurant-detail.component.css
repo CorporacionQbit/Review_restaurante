@@ -1,61 +1,164 @@
-/* ===== BASE ===== */
-.restaurant-detail-container {
-  max-width: 1280px;
-  margin: auto;
-  padding: 24px;
-  background: #f5f7fb;
+/* =====================================================
+   ENTERPRISE REDESIGN – RESTAURANT DETAIL
+   Concept: Layered Corporate Product UI
+===================================================== */
+
+:root {
+  --brand: #f97316;
+  --brand-soft: #fff3e6;
+
+  --bg-main: #f1f5f9;
+  --bg-layer: #ffffff;
+
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+
+  --border: rgba(15,23,42,.08);
+
+  --shadow-sm: 0 6px 18px rgba(15,23,42,.08);
+  --shadow-md: 0 18px 42px rgba(15,23,42,.12);
+  --shadow-lg: 0 40px 90px rgba(15,23,42,.18);
+
+  --radius-xl: 28px;
+  --radius-lg: 22px;
+  --radius-md: 16px;
 }
 
-/* ===== HEADER ===== */
+/* =====================================================
+   PAGE BACKGROUND (LAYERED DEPTH)
+===================================================== */
+.restaurant-detail-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      1200px 600px at 20% -200px,
+      rgba(249,115,22,.18),
+      transparent 60%
+    ),
+    linear-gradient(180deg, #f8fafc, #eef2f7);
+  display: flex;
+  justify-content: center;
+}
+
+.restaurant-detail-container {
+  width: 100%;
+  max-width: 1320px;
+  padding: 48px 32px 140px;
+}
+
+/* =====================================================
+   HEADER – CORPORATE HERO CARD
+===================================================== */
 .restaurant-header {
-  margin-bottom: 28px;
+  position: relative;
+  background: linear-gradient(180deg, #ffffff, #fff7ed);
+  border-radius: var(--radius-xl);
+  padding: 44px 48px 40px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 56px;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .restaurant-title {
-  font-size: 3.2rem;
+  font-size: 44px;
   font-weight: 900;
-  color: #111827;
-  margin-bottom: 10px;
+  letter-spacing: -0.6px;
+  color: var(--text-main);
 }
 
-.restaurant-meta {
+/* FAVORITE BUTTON */
+.favorite-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: var(--shadow-sm);
   display: flex;
   align-items: center;
-  gap: 14px;
-  color: #6b7280;
-  margin-bottom: 12px;
+  justify-content: center;
+  font-size: 22px;
+  cursor: pointer;
+  transition: all .25s ease;
 }
 
-.restaurant-description {
-  max-width: 800px;
-  color: #374151;
-  margin-bottom: 16px;
+.favorite-btn:hover {
+  transform: scale(1.1);
+}
+
+.favorite-btn.active {
+  background: linear-gradient(135deg, #ff4d4f, #ff7875);
+  color: #fff;
+}
+
+/* META */
+.restaurant-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 14px;
+  font-size: 14px;
+  color: var(--text-muted);
+  align-items: center;
 }
 
 .badge-premium {
-  background: linear-gradient(135deg, gold, orange);
-  padding: 6px 14px;
+  background: linear-gradient(135deg, #fde68a, var(--brand));
+  color: #7c2d12;
+  padding: 6px 16px;
   border-radius: 999px;
+  font-weight: 800;
+  font-size: 12px;
+}
+
+.badge-status {
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  font-size: 12px;
   font-weight: 700;
-  color: #000;
 }
 
+/* DESCRIPTION */
+.restaurant-description {
+  margin-top: 18px;
+  max-width: 820px;
+  line-height: 1.7;
+  color: #374151;
+}
+
+/* CTA */
 .cta-btn {
-  background: #1677ff;
-  color: white;
-  border: none;
-  padding: 12px 26px;
+  margin-top: 22px;
+  padding: 14px 30px;
   border-radius: 999px;
-  font-weight: 600;
+  background: linear-gradient(135deg, var(--brand), #fb923c);
+  color: #fff;
+  border: none;
+  font-weight: 800;
   cursor: pointer;
+  box-shadow: 0 12px 32px rgba(249,115,22,.35);
+  transition: transform .2s ease;
 }
 
-/* ===== HERO ===== */
+.cta-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* =====================================================
+   HERO IMAGE – FLOATING BLOCK
+===================================================== */
 .hero {
   height: 420px;
-  border-radius: 24px;
+  border-radius: var(--radius-xl);
   overflow: hidden;
-  margin-bottom: 40px;
+  box-shadow: var(--shadow-lg);
+  margin-bottom: 64px;
+  transform: translateY(-28px);
 }
 
 .hero-image,
@@ -67,76 +170,90 @@
 }
 
 .hero-placeholder {
+  background: linear-gradient(135deg, var(--brand), #fb923c);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 5rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, #3b82f6, #60a5fa);
-  color: white;
+  font-size: 96px;
+  font-weight: 900;
+  color: #fff;
 }
 
-/* ===== INFO ===== */
+/* =====================================================
+   INFO STRIP – BUSINESS CARD
+===================================================== */
 .restaurant-info {
+  background: var(--bg-layer);
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  box-shadow: var(--shadow-md);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-  background: white;
-  padding: 24px;
-  border-radius: 22px;
-  margin-bottom: 40px;
+  gap: 24px;
+  margin-bottom: 56px;
 }
 
 .info-item {
   display: flex;
   gap: 14px;
+  font-size: 14px;
 }
 
 .icon {
-  font-size: 1.4rem;
+  font-size: 20px;
 }
 
-/* ===== LAYOUT ===== */
+/* =====================================================
+   MAIN LAYOUT
+===================================================== */
 .content {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 36px;
+  grid-template-columns: 2.3fr 1fr;
+  gap: 40px;
 }
 
-/* ===== SECTIONS ===== */
+/* =====================================================
+   MAIN CONTENT CARDS
+===================================================== */
 .gallery-section,
 .reviews-section,
 .review-form,
-.sidebar-box {
-  background: white;
-  padding: 26px;
-  border-radius: 22px;
-  margin-bottom: 32px;
+.posts-section {
+  background: var(--bg-layer);
+  padding: 32px;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  margin-bottom: 40px;
 }
 
-/* ===== GALERÍA ===== */
+/* =====================================================
+   GALLERY
+===================================================== */
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
 }
 
 .gallery-item {
-  height: 150px;
-  border-radius: 16px;
+  height: 160px;
+  border-radius: var(--radius-md);
   background-size: cover;
-  cursor: pointer;
+  background-position: center;
   position: relative;
+  overflow: hidden;
+  cursor: pointer;
 }
 
 .gallery-item .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,.4);
-  color: white;
+  background: rgba(15,23,42,.6);
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-weight: 800;
   opacity: 0;
   transition: .25s;
 }
@@ -145,108 +262,133 @@
   opacity: 1;
 }
 
-/* ===== RESEÑAS ===== */
+/* =====================================================
+   REVIEWS – TIMELINE STYLE
+===================================================== */
 .reviews-section {
-  background: #fff7ed;
+  background: var(--brand-soft);
 }
 
 .review-card {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 22px;
   display: flex;
   gap: 18px;
-  background: white;
-  padding: 20px;
-  border-radius: 18px;
   margin-bottom: 18px;
+  border: 1px solid var(--border);
 }
 
 .avatar {
   width: 54px;
   height: 54px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #3b82f6, #60a5fa);
-  color: white;
+  background: linear-gradient(135deg, var(--brand), #fb923c);
+  color: #fff;
+  font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
 }
 
 .date {
-  font-size: .85rem;
-  color: #6b7280;
+  font-size: 12px;
+  color: var(--text-muted);
 }
 
-/* ===== FORM ===== */
+/* =====================================================
+   REVIEW FORM
+===================================================== */
 .review-form {
-  background: #eef7ff;
+  background: linear-gradient(180deg, #eef7ff, #ffffff);
 }
 
-/* ===== SIDEBAR ===== */
+/* =====================================================
+   SIDEBAR – CORPORATE PANELS
+===================================================== */
+.sidebar-box {
+  background: var(--bg-layer);
+  padding: 26px;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  margin-bottom: 32px;
+}
+
 .sidebar-box iframe {
   width: 100%;
   height: 220px;
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   border: none;
 }
 
 .menu-card,
 .post-card {
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: var(--radius-md);
   display: flex;
-  gap: 12px;
-  padding: 14px;
-  background: white;
-  border-radius: 14px;
+  gap: 14px;
   margin-bottom: 12px;
+  border: 1px solid var(--border);
 }
 
 .menu-action {
   margin-left: auto;
-  font-weight: 600;
-  color: #1677ff;
+  font-weight: 800;
+  color: var(--brand);
 }
 
 .sidebar-premium {
-  background: linear-gradient(135deg, gold, orange);
-  padding: 16px;
+  background: linear-gradient(135deg, var(--brand), #fb923c);
+  padding: 18px;
   border-radius: 999px;
   text-align: center;
-  font-weight: 800;
+  font-weight: 900;
+  color: #fff;
 }
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 900px) {
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+@media (max-width: 980px) {
   .content {
     grid-template-columns: 1fr;
   }
 
+  .hero {
+    height: 300px;
+    transform: none;
+  }
+
   .restaurant-title {
-    font-size: 2.2rem;
+    font-size: 32px;
   }
 }
-/* ===============================
-   LIGHTBOX
-================================ */
+/* =====================================================
+   LIGHTBOX – MODAL EMERGENTE (FIX)
+===================================================== */
+
 .lightbox {
   position: fixed;
   inset: 0;
   z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .lightbox-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
 }
 
 .lightbox-content {
   position: relative;
   z-index: 2;
-  max-width: 90%;
-  max-height: 90%;
-  margin: auto;
-  top: 50%;
-  transform: translateY(-50%);
+  max-width: 90vw;
+  max-height: 90vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -254,82 +396,44 @@
 
 .lightbox-content img {
   max-width: 100%;
-  max-height: 90vh;
-  border-radius: 16px;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+  max-height: 100%;
+  border-radius: 18px;
+  box-shadow: 0 40px 120px rgba(0,0,0,.6);
 }
 
 /* BOTONES */
-.lightbox-close {
-  position: absolute;
-  top: -50px;
-  right: 0;
-  font-size: 28px;
-  background: none;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
+.lightbox-close,
 .lightbox-prev,
 .lightbox-next {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 50px;
-  background: none;
-  color: white;
+  background: rgba(0,0,0,.6);
+  color: #fff;
   border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 22px;
   cursor: pointer;
-  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-close {
+  top: -18px;
+  right: -18px;
 }
 
 .lightbox-prev {
-  left: -70px;
+  left: -60px;
 }
 
 .lightbox-next {
-  right: -70px;
-}
-/* ===== FAVORITE BUTTON ===== */
-.header-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  right: -60px;
 }
 
-.favorite-btn {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  cursor: pointer;
-  box-shadow: 0 6px 18px rgba(0,0,0,.25);
-  transition: transform .2s ease, box-shadow .2s ease;
+.lightbox-close:hover,
+.lightbox-prev:hover,
+.lightbox-next:hover {
+  background: rgba(0,0,0,.85);
 }
-
-.favorite-btn:hover {
-  transform: scale(1.1);
-}
-
-.favorite-btn.active {
-  background: linear-gradient(135deg, #ff4d4f, #ff7875);
-  color: white;
-}
-/* ===== FIX LAYOUT CON SIDEBAR ===== */
-.restaurant-detail-page {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.restaurant-detail-container {
-  width: 100%;
-  max-width: 1280px;
-}
-
-

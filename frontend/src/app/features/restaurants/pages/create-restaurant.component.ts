@@ -6,6 +6,7 @@ import {
   ReactiveFormsModule,
   FormGroup,
 } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -32,9 +33,14 @@ export class CreateRestaurantComponent implements OnInit {
   form!: FormGroup;
   loading = false;
 
+  categories: any[] = [];
+
+  private API_URL = 'http://localhost:3000';
+
   constructor(
     private fb: FormBuilder,
     private restaurantsService: RestaurantsService,
+    private http: HttpClient,
     private message: NzMessageService
   ) {}
 
@@ -49,26 +55,54 @@ export class CreateRestaurantComponent implements OnInit {
       zone: [''],
       mapsUrl: [''],
       priceRange: [null],
+
+      // categorías seleccionadas por el dueño
+      categoryIds: [[], Validators.required],
+    });
+
+    this.loadCategories();
+  }
+
+  // 🔹 CATEGORÍAS PÚBLICAS (OWNER)
+  loadCategories(): void {
+    this.http.get<any[]>(`${this.API_URL}/categories`).subscribe({
+      next: (data) => {
+        this.categories = data;
+      },
+      error: () => {
+        this.message.error('Error cargando categorías');
+      },
     });
   }
 
   submit(): void {
-    if (this.form.invalid) {
-      this.message.warning('Completa los campos obligatorios');
-      return;
-    }
-
-    this.loading = true;
-
-    this.restaurantsService.createRestaurant(this.form.value).subscribe({
-      next: () => {
-        this.message.success('Restaurante creado correctamente');
-        this.loading = false;
-      },
-      error: () => {
-        this.message.error('Error al crear el restaurante');
-        this.loading = false;
-      },
-    });
+  if (this.form.invalid) {
+    this.message.warning('Completa los campos obligatorios');
+    return;
   }
+
+  this.loading = true;
+
+  const raw = this.form.value;
+
+  const payload = {
+    ...raw,
+    priceRange: raw.priceRange ? Number(raw.priceRange) : null,
+    zone: raw.zone ? String(raw.zone) : null,
+    categoryIds: (raw.categoryIds || []).map((id: any) => Number(id)),
+  };
+
+  this.restaurantsService.createRestaurant(payload).subscribe({
+    next: () => {
+      this.message.success('Restaurante creado correctamente');
+      this.loading = false;
+    },
+    error: (err) => {
+      console.error('BACKEND ERROR:', err);
+      this.message.error('Error al crear el restaurante');
+      this.loading = false;
+    },
+  });
+}
+
 }

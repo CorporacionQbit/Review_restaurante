@@ -1,0 +1,49 @@
+
+
+
+/* Contenedor del formulario */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Label */
+label {
+  font-weight: 500;
+  color: #1f2937; /* gris oscuro */
+}
+
+/* Input */
+input[nz-input] {
+  height: 40px;
+  border-radius: 6px;
+}
+
+/* Footer del modal */
+.modal-footer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* Botón Guardar */
+button[nz-button] {
+  min-width: 110px;
+}
+
+/* Estado inválido visual */
+input.ng-invalid.ng-touched {
+  border-color: #ff4d4f;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  button[nz-button] {
+    width: 100%;
+  }
+}
+body {
+  background: red !important;
+}
