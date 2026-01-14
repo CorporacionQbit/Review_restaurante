@@ -83,4 +83,6 @@ export const RESTAURANTS_ROUTES: Routes = [
       import('./pages/subscription/subscription.component')
         .then(m => m.SubscriptionComponent),
   },
+  
+
 ];

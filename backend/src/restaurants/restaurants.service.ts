@@ -285,19 +285,96 @@ export class RestaurantsService {
   // =========================
   // VALIDACIÓN (ADMIN)
   // =========================
-  async validateRestaurant(id: number, dto: ValidateRestaurantDto) {
-    const restaurant = await this.restaurantRepo.findOne({
-      where: { restaurantId: id },
+  // =========================
+// VALIDACIÓN (ADMIN)
+// =========================
+async validateRestaurant(id: number, dto: ValidateRestaurantDto) {
+  const restaurant = await this.restaurantRepo.findOne({
+    where: { restaurantId: id },
+  });
+
+  if (!restaurant) {
+    throw new NotFoundException('Restaurante no encontrado');
+  }
+
+  if (dto.isApproved) {
+    restaurant.isApproved = true;
+    restaurant.onboardingStatus = 'Aprobado';
+  } else {
+    restaurant.isApproved = false;
+    restaurant.onboardingStatus = 'Rechazado';
+  }
+
+  restaurant.isPremium =
+    dto.isPremium ?? restaurant.isPremium;
+
+  restaurant.onboardingComment =
+    dto.onboardingComment ?? null;
+
+  return this.restaurantRepo.save(restaurant);
+}
+
+
+// ADMIN – RESTAURANTES PENDIENTES (PAGINADO)
+
+async findPendingRestaurants(
+  page = 1,
+  limit = 10,
+) {
+  const [data, total] =
+    await this.restaurantRepo.findAndCount({
+      where: {
+        isApproved: false,
+        onboardingStatus: 'Pendiente',
+      },
+      relations: ['owner', 'images'],
+      order: { restaurantId: 'DESC' },
+      skip: (page - 1) * limit,
+      take: limit,
     });
 
-    if (!restaurant) {
-      throw new NotFoundException('Restaurante no encontrado');
-    }
+  return {
+    data,
+    meta: {
+      total,
+      page,
+      limit,
+      lastPage: Math.ceil(total / limit),
+    },
+  };
+}
 
-    restaurant.isApproved = dto.isApproved;
-    restaurant.isPremium = dto.isPremium ?? restaurant.isPremium;
-    restaurant.onboardingComment = dto.onboardingComment ?? null;
+async findHistory(pagination: PaginationQueryDto) {
+  const page = pagination.page ?? 1;
+  const limit = pagination.limit ?? 10;
 
-    return this.restaurantRepo.save(restaurant);
-  }
+  const qb = this.restaurantRepo
+    .createQueryBuilder('r')
+    .leftJoinAndSelect('r.owner', 'owner')
+    .where('r.onboardingStatus IN (:...statuses)', {
+      statuses: ['Aprobado', 'Rechazado'],
+    })
+    .orderBy('r.restaurantId', 'DESC')
+    .skip((page - 1) * limit)
+    .take(limit);
+
+  const [data, total] = await qb.getManyAndCount();
+
+  return {
+    data: data.map(r => ({
+      restaurantId: r.restaurantId,
+      name: r.name,
+      city: r.city,
+      onboardingStatus: r.onboardingStatus,
+      onboardingComment: r.onboardingComment,
+      owner: {
+        userId: r.owner.userId,
+        email: r.owner.email,
+        fullName: r.owner.fullName,
+      },
+    })),
+    meta: buildPaginationMeta(total, page, limit),
+  };
+}
+
 }

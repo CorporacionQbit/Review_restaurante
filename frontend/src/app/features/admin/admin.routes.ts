@@ -27,4 +27,18 @@ export const ADMIN_ROUTES: Routes = [
       import('./pages/categories/categories.component')
         .then(m => m.CategoriesPageComponent),
   },
+  {
+  path: 'restaurants-approval',
+  canActivate: [authGuard, roleGuard(['admin'])],
+  loadComponent: () =>
+    import('./pages/aprobacion/restaurants-approval.component')
+      .then(m => m.RestaurantsApprovalComponent),
+},
+{
+  path: 'restaurants-history',
+  loadComponent: () =>
+    import('./pages/Historial-restaurante/restaurants-history.component')
+      .then(m => m.RestaurantsHistoryComponent),
+},
+
 ];

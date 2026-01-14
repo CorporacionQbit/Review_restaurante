@@ -46,6 +46,18 @@
   Categorias
 </li>
 
+<li *ngIf="role === 'admin'"
+    nz-menu-item
+    routerLink="/admin/restaurants-approval">
+  <span nz-icon nzType="shop"></span>
+  Aprobar restaurantes
+</li>
+
+<li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/restaurants-history">
+  <span nz-icon nzType="history"></span>
+  Historial restaurantes
+</li>
+
     </ul>
   </nz-sider>
 

@@ -78,7 +78,7 @@ export class Restaurant {
     length: 20,
     default: 'Pendiente',
   })
-  onboardingStatus: 'Pendiente' | 'EnRevision' | 'Aprobado';
+  onboardingStatus: 'Pendiente' | 'EnRevision' | 'Aprobado'| 'Rechazado';
 
   @Column({ name: 'onboarding_comment', type: 'text', nullable: true })
   onboardingComment: string | null;

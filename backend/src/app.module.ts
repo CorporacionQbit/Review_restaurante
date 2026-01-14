@@ -107,6 +107,9 @@ export class AppModule implements NestModule {
          { path: 'restaurants/owner/my-restaurants', method: RequestMethod.ALL },
         { path: 'restaurants/my-restaurants', method: RequestMethod.ALL },
         { path: 'restaurants/:id/images', method: RequestMethod.ALL },
+        { path: 'restaurants/admin/history', method: RequestMethod.ALL },
+
+        { path: 'restaurants/admin/pending', method: RequestMethod.ALL },
         { path: 'restaurants/:id/validate', method: RequestMethod.ALL },
 
         // ===== REVIEWS =====

@@ -1,0 +1,60 @@
+<div class="approval-page">
+
+  <!-- HERO -->
+  <div class="approval-hero">
+    <h1>🍽️ Restaurantes pendientes de aprobación</h1>
+    <p>Valida y controla los restaurantes antes de que se publiquen</p>
+  </div>
+
+  <!-- CARD -->
+  <div class="approval-card">
+
+    <nz-table
+      [nzData]="restaurants"
+      [nzLoading]="loading"
+      nzBordered>
+
+      <thead>
+        <tr>
+          <th>Restaurante</th>
+          <th>Dueño</th>
+          <th>Ciudad</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let r of restaurants">
+          <td class="restaurant-name">{{ r.name }}</td>
+          <td class="owner-email">{{ r.owner.email }}</td>
+          <td>{{ r.city || '—' }}</td>
+          <td>
+            <span class="status pending">
+              {{ r.onboardingStatus }}
+            </span>
+          </td>
+          <td class="actions">
+            <button
+              nz-button
+              nzType="primary"
+              class="btn-approve"
+              (click)="approve(r)">
+              Aprobar
+            </button>
+
+            <button
+              nz-button
+              nzDanger
+              class="btn-reject"
+              (click)="openReject(r)">
+              Rechazar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+
+    
+  </div>
+</div>

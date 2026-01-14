@@ -1,0 +1,59 @@
+<div class="history-page">
+
+  <!-- HERO -->
+  <div class="history-hero">
+    <h1>📚 Historial de restaurantes</h1>
+    <p>Restaurantes aprobados y rechazados</p>
+  </div>
+
+  <!-- CARD -->
+  <div class="history-card">
+
+    <nz-table
+      [nzData]="restaurants"
+      [nzLoading]="loading"
+      [nzShowPagination]="false"
+      nzBordered>
+
+      <thead>
+        <tr>
+          <th>Restaurante</th>
+          <th>Dueño</th>
+          <th>Ciudad</th>
+          <th>Estado</th>
+          <th>Comentario</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let r of restaurants">
+          <td class="restaurant-name">{{ r.name }}</td>
+          <td>{{ r.owner.email }}</td>
+          <td>{{ r.city || '—' }}</td>
+          <td>
+            <nz-tag
+              [nzColor]="
+                r.onboardingStatus === 'Aprobado'
+                  ? 'green'
+                  : 'red'
+              ">
+              {{ r.onboardingStatus }}
+            </nz-tag>
+          </td>
+          <td class="comment">
+            {{ r.onboardingComment || '—' }}
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+
+    <nz-pagination
+      class="pagination"
+      [nzPageIndex]="page"
+      [nzTotal]="total"
+      [nzPageSize]="limit"
+      (nzPageIndexChange)="load($event)">
+    </nz-pagination>
+
+  </div>
+</div>

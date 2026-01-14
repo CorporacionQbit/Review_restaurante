@@ -144,5 +144,36 @@ async search(@Query() query: SearchRestaurantsDto) {
     }
     return this.service.validateRestaurant(Number(id), dto);
   }
+ 
+@Get('admin/pending')
+async pendingRestaurants(
+  @Req() req: AuthRequest,
+  @Query('page') page?: string,
+  @Query('limit') limit?: string,
+) {
+  if (!req.user || req.user.role !== 'admin') {
+    throw new ForbiddenException('Solo administradores');
+  }
+
+  return this.service.findPendingRestaurants(
+    Number(page ?? 1),
+    Number(limit ?? 10),
+  );
+}
+// =========================
+// ADMIN – HISTORIAL
+// =========================
+@Get('admin/history')
+async history(
+  @Req() req: AuthRequest,
+  @Query() pagination: PaginationQueryDto,
+) {
+  if (!req.user || req.user.role !== 'admin') {
+    throw new ForbiddenException('Solo administradores');
+  }
+
+  return this.service.findHistory(pagination);
+}
+
 }
 
