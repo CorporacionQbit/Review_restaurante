@@ -20,5 +20,12 @@ export class AdminOwnersService {
     `${this.baseUrl}/users/admin/owners/${userId}/restaurants`,
   );
 }
+toggleOwnerStatus(userId: number, active: boolean) {
+  const action = active ? 'deactivate' : 'activate';
+  return this.http.patch(
+    `${this.baseUrl}/users/admin/owners/${userId}/${action}`,
+    {}
+  );
+}
 
 }

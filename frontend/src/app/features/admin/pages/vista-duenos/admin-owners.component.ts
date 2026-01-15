@@ -121,5 +121,25 @@ export class AdminOwnersComponent implements OnInit {
   this.restaurantsModalVisible = false;
   this.restaurants = [];
 }
+toggleOwner(owner: any): void {
+  if (!owner?.userId) return;
+
+  const confirmMsg = owner.isActive
+    ? '¿Deseas DESACTIVAR esta cuenta?'
+    : '¿Deseas ACTIVAR esta cuenta?';
+
+  if (!confirm(confirmMsg)) return;
+
+  this.service.toggleOwnerStatus(owner.userId, owner.isActive).subscribe({
+    next: () => {
+      // Actualiza el estado local sin recargar toda la tabla
+      owner.isActive = !owner.isActive;
+    },
+    error: (err) => {
+      console.error('Error cambiando estado del owner', err);
+      alert('No se pudo actualizar el estado del dueño');
+    },
+  });
+}
 
 }

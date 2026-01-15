@@ -103,6 +103,10 @@ export class AppModule implements NestModule {
         { path: 'users/admin/owners/:userId/restaurants', method: RequestMethod.ALL },
 
         { path: 'users/admin/owners', method: RequestMethod.ALL },
+        // ===== USERS (ADMIN OWNER STATUS) =====
+{ path: 'users/admin/owners/:userId/activate', method: RequestMethod.PATCH },
+{ path: 'users/admin/owners/:userId/deactivate', method: RequestMethod.PATCH },
+
 
         // ===== RESTAURANTS =====
         { path: 'restaurants', method: RequestMethod.ALL },

@@ -87,5 +87,28 @@ async getOwnerRestaurants(
 
   return this.usersService.findRestaurantsByOwner(+userId);
 }
+@Patch('admin/owners/:userId/activate')
+async activateOwner(
+  @Req() req: AuthRequest,
+  @Param('userId') userId: string,
+) {
+  if (!req.user || req.user.role !== 'admin') {
+    throw new ForbiddenException('Solo administradores');
+  }
+
+  return this.usersService.setOwnerActive(+userId, true);
+}
+
+@Patch('admin/owners/:userId/deactivate')
+async deactivateOwner(
+  @Req() req: AuthRequest,
+  @Param('userId') userId: string,
+) {
+  if (!req.user || req.user.role !== 'admin') {
+    throw new ForbiddenException('Solo administradores');
+  }
+
+  return this.usersService.setOwnerActive(+userId, false);
+}
 
 }

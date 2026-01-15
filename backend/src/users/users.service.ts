@@ -115,4 +115,19 @@ export class UsersService {
   async findRestaurantsByOwner(userId: number) {
     return this.restaurantsService.findByOwner(userId);
   }
+  // ===============================
+// ADMIN - CAMBIAR ESTADO DEL OWNER
+// ===============================
+async setOwnerActive(userId: number, active: boolean) {
+  const user = await this.findById(userId);
+
+  if (!user) {
+    throw new NotFoundException('Usuario no encontrado');
+  }
+
+  user.isActive = active;
+  return this.usersRepo.save(user);
+}
+
+
 }

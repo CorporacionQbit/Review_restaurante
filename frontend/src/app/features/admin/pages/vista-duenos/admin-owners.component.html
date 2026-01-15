@@ -1,6 +1,11 @@
 <h1 class="page-title">👤 Dueños de restaurantes</h1>
 
-<nz-table nzBordered [nzData]="owners" [nzLoading]="loading">
+
+<nz-table
+  nzBordered
+  [nzData]="owners"
+  [nzLoading]="loading"
+>
   <thead>
     <tr>
       <th>Nombre</th>
@@ -18,40 +23,62 @@
     <tr *ngFor="let o of owners">
       <td>{{ o.fullName }}</td>
       <td>{{ o.email }}</td>
+
       <td>
         <nz-tag [nzColor]="o.isActive ? 'green' : 'red'">
           {{ o.isActive ? 'Cuenta activa' : 'Cuenta desactivada' }}
         </nz-tag>
       </td>
+
       <td>{{ o.totalrestaurants }}</td>
       <td>{{ o.approved }}</td>
       <td>{{ o.pending }}</td>
       <td>{{ o.rejected }}</td>
-      <td>
-        <button nz-button nzType="primary" nzSize="small"
-          (click)="openRestaurants(o)">
+
+      <td style="display:flex; gap:6px;">
+        <!-- VER RESTAURANTES -->
+        <button
+          nz-button
+          nzType="primary"
+          nzSize="small"
+          (click)="openRestaurants(o)"
+        >
           Ver restaurantes
+        </button>
+
+        <!-- ACTIVAR / DESACTIVAR -->
+        <button
+          nz-button
+          nzSize="small"
+          nzDanger
+          [nzType]="o.isActive ? 'default' : 'primary'"
+          (click)="toggleOwner(o)"
+        >
+          {{ o.isActive ? 'Desactivar cuenta' : 'Activar cuenta' }}
         </button>
       </td>
     </tr>
   </tbody>
 </nz-table>
 
+
 <nz-pagination
+  style="margin-top:16px; text-align:right;"
   [nzPageIndex]="page"
   [nzTotal]="total"
   [nzPageSize]="limit"
-  (nzPageIndexChange)="loadOwners($event)">
+  (nzPageIndexChange)="loadOwners($event)"
+>
 </nz-pagination>
 
-<!-- TEMPLATE DEL MODAL -->
+
 <ng-template #restaurantsTpl>
   <nz-table
     nzSize="small"
     [nzData]="restaurants"
     [nzLoading]="restaurantsLoading"
-    [nzFrontPagination]="false">
-
+    [nzFrontPagination]="false"
+  >
     <thead>
       <tr>
         <th>Nombre</th>
@@ -74,7 +101,8 @@
                 : r.onboardingStatus === 'Pendiente'
                 ? 'orange'
                 : 'red'
-            ">
+            "
+          >
             {{ r.onboardingStatus }}
           </nz-tag>
         </td>
@@ -82,11 +110,14 @@
     </tbody>
   </nz-table>
 
-  <div *ngIf="!restaurantsLoading && restaurants.length === 0"
-    style="text-align:center; padding:16px; color:#999;">
+  <div
+    *ngIf="!restaurantsLoading && restaurants.length === 0"
+    style="text-align:center; padding:16px; color:#999;"
+  >
     Este dueño no tiene restaurantes registrados
   </div>
 </ng-template>
+
 
 <nz-modal
   [(nzVisible)]="restaurantsModalVisible"
@@ -94,6 +125,6 @@
   [nzContent]="restaurantsTpl"
   [nzFooter]="null"
   nzWidth="900px"
-  (nzOnCancel)="closeRestaurantsModal()">
+  (nzOnCancel)="closeRestaurantsModal()"
+>
 </nz-modal>
-
