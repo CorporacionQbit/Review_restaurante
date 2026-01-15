@@ -88,8 +88,8 @@ export class AppModule implements NestModule {
       // =========================
       .forRoutes(
         // ===== ADMIN CATEGORIES =====
-{ path: 'admin/categories', method: RequestMethod.ALL },
-{ path: 'admin/categories/:id', method: RequestMethod.ALL },
+        { path: 'admin/categories', method: RequestMethod.ALL },
+        { path: 'admin/categories/:id', method: RequestMethod.ALL },
 
         // ===== FAVORITES (🔥 CLAVE) =====
         { path: 'favorites', method: RequestMethod.ALL },
@@ -100,6 +100,9 @@ export class AppModule implements NestModule {
         { path: 'users/me/convert-to-owner', method: RequestMethod.ALL },
         { path: 'users/me/reviews', method: RequestMethod.ALL },
         { path: 'users/:id', method: RequestMethod.ALL },
+        { path: 'users/admin/owners/:userId/restaurants', method: RequestMethod.ALL },
+
+        { path: 'users/admin/owners', method: RequestMethod.ALL },
 
         // ===== RESTAURANTS =====
         { path: 'restaurants', method: RequestMethod.ALL },

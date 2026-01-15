@@ -57,7 +57,10 @@
   <span nz-icon nzType="history"></span>
   Historial restaurantes
 </li>
-
+<li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/admin-owners">
+  <span nz-icon nzType="team"></span>
+  Usuarios Dueños
+</li>
     </ul>
   </nz-sider>
 

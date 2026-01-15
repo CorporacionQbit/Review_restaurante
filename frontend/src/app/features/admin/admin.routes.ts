@@ -40,5 +40,12 @@ export const ADMIN_ROUTES: Routes = [
     import('./pages/Historial-restaurante/restaurants-history.component')
       .then(m => m.RestaurantsHistoryComponent),
 },
+{
+  path: 'admin-owners',
+  canActivate: [authGuard, roleGuard(['admin'])],
+  loadComponent: () =>
+    import('./pages/vista-duenos/admin-owners.component')
+      .then(m => m.AdminOwnersComponent),
+}
 
 ];

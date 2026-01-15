@@ -9,9 +9,10 @@ import {
   Body,
   Post,
   UnauthorizedException,
+  Param,
 } from '@nestjs/common';
 import type { AuthRequest } from '../auth/auth.middleware';
-
+import { ForbiddenException, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update.dto';
 
@@ -62,4 +63,29 @@ export class UsersController {
 
     return this.usersService.convertToOwner(req.user.userId);
   }
+  
+  @Get('admin/owners')
+async getOwnersWithRestaurants(
+  @Req() req: AuthRequest,
+  @Query('page') page = 1,
+  @Query('limit') limit = 10,
+) {
+  if (!req.user || req.user.role !== 'admin') {
+    throw new ForbiddenException('Solo administradores');
+  }
+
+  return this.usersService.findOwnersWithRestaurants(+page, +limit);
+}
+@Get('admin/owners/:userId/restaurants')
+async getOwnerRestaurants(
+  @Req() req: AuthRequest,
+  @Param('userId') userId: string,
+) {
+  if (!req.user || req.user.role !== 'admin') {
+    throw new ForbiddenException('Solo administradores');
+  }
+
+  return this.usersService.findRestaurantsByOwner(+userId);
+}
+
 }

@@ -1,0 +1,11 @@
+.page-title {
+  font-size: 26px;
+  font-weight: 900;
+  margin-bottom: 24px;
+  color: #0f172a;
+}
+
+.pagination {
+  margin-top: 16px;
+  text-align: right;
+}

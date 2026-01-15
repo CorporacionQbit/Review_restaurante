@@ -6,12 +6,14 @@ import { Repository } from 'typeorm';
 
 import { User } from './user.entity';
 import { UpdateUserDto } from './dto/update.dto';
+import { RestaurantsService } from 'src/restaurants/restaurants.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepo: Repository<User>,
+    private readonly restaurantsService: RestaurantsService,
   ) {}
 
   findAll() {
@@ -76,4 +78,41 @@ export class UsersService {
   async save(user: User) {
   return this.usersRepo.save(user);
 }
+ async findOwnersWithRestaurants(page: number, limit: number) {
+    const qb = this.usersRepo
+      .createQueryBuilder('u')
+      .leftJoin('restaurants', 'r', 'r.owner_user_id = u.user_id')
+      .select([
+        'u.user_id AS "userId"',
+        'u.email AS "email"',
+        'u.full_name AS "fullName"',
+        'u.is_active AS "isActive"',
+        'COUNT(r.restaurant_id) AS "totalRestaurants"',
+        `SUM(CASE WHEN r.onboarding_status = 'Aprobado' THEN 1 ELSE 0 END) AS "approved"`,
+        `SUM(CASE WHEN r.onboarding_status = 'Pendiente' THEN 1 ELSE 0 END) AS "pending"`,
+        `SUM(CASE WHEN r.onboarding_status = 'Rechazado' THEN 1 ELSE 0 END) AS "rejected"`,
+      ])
+      .where('u.role = :role', { role: 'owner' })
+      .groupBy('u.user_id')
+      .offset((page - 1) * limit)
+      .limit(limit);
+
+    const data = await qb.getRawMany();
+
+    const total = await this.usersRepo.count({
+      where: { role: 'owner' },
+    });
+
+    return {
+      data,
+      meta: { total, page, limit },
+    };
+  }
+
+  // =========================
+  // RESTAURANTES DE UN OWNER
+  // =========================
+  async findRestaurantsByOwner(userId: number) {
+    return this.restaurantsService.findByOwner(userId);
+  }
 }
