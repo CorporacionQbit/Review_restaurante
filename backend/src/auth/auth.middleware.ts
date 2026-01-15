@@ -1,6 +1,11 @@
-import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NestMiddleware,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response, NextFunction } from 'express';
+import { UsersService } from '../users/users.service';
 
 export interface AuthRequest extends Request {
   user?: {
@@ -14,7 +19,10 @@ export interface AuthRequest extends Request {
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly usersService: UsersService,
+  ) {}
 
   async use(req: AuthRequest, res: Response, next: NextFunction) {
     const authHeader = req.headers['authorization'];
@@ -28,17 +36,27 @@ export class AuthMiddleware implements NestMiddleware {
     try {
       const payload = await this.jwtService.verifyAsync(token);
 
+      const user = await this.usersService.findById(payload.sub);
+
+      if (!user || !user.isActive) {
+        throw new UnauthorizedException(
+          'Tu cuenta está desactivada. Contacta al administrador.',
+        );
+      }
+
       req.user = {
-        userId: payload.sub,
-        email: payload.email,
-        role: payload.role ?? 'client',
-        isRestaurantOwner: payload.isRestaurantOwner ?? false,
+        userId: user.userId,
+        email: user.email,
+        role: user.role,
+        isRestaurantOwner: user.role === 'owner',
         restaurantIds: payload.restaurantIds ?? [],
       };
 
       return next();
     } catch {
-      throw new UnauthorizedException('Token inválido o expirado');
+      throw new UnauthorizedException(
+        'Token inválido, expirado o cuenta desactivada',
+      );
     }
   }
 }

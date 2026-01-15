@@ -1,5 +1,3 @@
-// src/auth/auth.service.ts
-
 import {
   Injectable,
   BadRequestException,
@@ -21,7 +19,6 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
- //Registro del cliente
   async register(email: string, password: string, fullName: string) {
     const existing = await this.usersService.findByEmail(email);
     if (existing) {
@@ -30,7 +27,6 @@ export class AuthService {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // Registro siempre como CLIENTE
     const user = await this.usersService.createUser({
       email,
       passwordHash,
@@ -55,11 +51,16 @@ export class AuthService {
     };
   }
 
-  // Login general, como usuario 
   async login(email: string, password: string) {
     const user = await this.usersService.findByEmail(email);
     if (!user) {
       throw new UnauthorizedException('Credenciales inválidas');
+    }
+
+    if (!user.isActive) {
+      throw new UnauthorizedException(
+        'Tu cuenta está desactivada. Contacta al administrador.',
+      );
     }
 
     const ok = await bcrypt.compare(password, user.passwordHash);
@@ -67,13 +68,10 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
-    // Rol REAL desde la BD
-    const role: UserRole = (user.role as UserRole) ?? 'client';
-
     const token = await this.signToken({
       userId: user.userId,
       email: user.email,
-      role: user.role,                    // ✔ IMPORTANTE
+      role: user.role,
       isRestaurantOwner: user.role === 'owner',
       restaurantIds: [],
     });
@@ -88,11 +86,16 @@ export class AuthService {
     };
   }
 
-  //login de restaurante solo si es dueño 
   async loginRestaurant(email: string, password: string) {
     const user = await this.usersService.findByEmail(email);
     if (!user) {
       throw new UnauthorizedException('Credenciales inválidas');
+    }
+
+    if (!user.isActive) {
+      throw new UnauthorizedException(
+        'Tu cuenta está desactivada. Contacta al administrador.',
+      );
     }
 
     const ok = await bcrypt.compare(password, user.passwordHash);
@@ -101,24 +104,18 @@ export class AuthService {
     }
 
     const restaurants = await this.restaurantsService.findByOwner(user.userId);
-
     if (!restaurants || restaurants.length === 0) {
       throw new UnauthorizedException(
         'Este usuario no es dueño de ningún restaurante',
       );
     }
 
-    const restaurantIds = restaurants.map((r) => r.restaurantId);
-
-    const dbRole = (user.role as UserRole) ?? 'client';
-    const effectiveRole: UserRole = dbRole === 'admin' ? 'admin' : 'owner';
-
     const token = await this.signToken({
       userId: user.userId,
       email: user.email,
-      role: effectiveRole,
+      role: user.role === 'admin' ? 'admin' : 'owner',
       isRestaurantOwner: true,
-      restaurantIds,
+      restaurantIds: restaurants.map(r => r.restaurantId),
     });
 
     return {
@@ -127,16 +124,11 @@ export class AuthService {
         email: user.email,
         fullName: user.fullName,
       },
-      restaurants: restaurants.map((r) => ({
-        id: r.restaurantId,
-        name: r.name,
-      })),
+      restaurants,
       accessToken: token,
     };
   }
 
-
-  //Genearion de token
   private signToken(payload: {
     userId: number;
     email: string;
@@ -152,46 +144,47 @@ export class AuthService {
       restaurantIds: payload.restaurantIds,
     });
   }
- async loginWithGoogle(googleUser: {
-  email: string;
-  firstName: string;
-  lastName: string;
-  googleId: string;
-}) {
-  // 1️⃣ Buscar usuario por email
-  let user = await this.usersService.findByEmail(googleUser.email);
 
-  // 2️⃣ Si NO existe, crearlo
-  if (!user) {
-    user = await this.usersService.createUser({
-      email: googleUser.email,
-      passwordHash: '', // 👈 no usa password
-      fullName: `${googleUser.firstName} ${googleUser.lastName}`,
+  async loginWithGoogle(googleUser: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    googleId: string;
+  }) {
+    let user = await this.usersService.findByEmail(googleUser.email);
+
+    if (!user) {
+      user = await this.usersService.createUser({
+        email: googleUser.email,
+        passwordHash: '',
+        fullName: `${googleUser.firstName} ${googleUser.lastName}`,
+      });
+
+      user.role = 'client';
+      await this.usersService.save(user);
+    }
+
+    if (!user.isActive) {
+      throw new UnauthorizedException(
+        'Tu cuenta está desactivada. Contacta al administrador.',
+      );
+    }
+
+    const token = await this.signToken({
+      userId: user.userId,
+      email: user.email,
+      role: user.role,
+      isRestaurantOwner: user.role === 'owner',
+      restaurantIds: [],
     });
 
-    // método de registro
-    user.registrationMethod = 'google';
-    user.role = 'client';
-
-    await this.usersService.save(user); // 👈 necesitas este método
+    return {
+      user: {
+        id: user.userId,
+        email: user.email,
+        fullName: user.fullName,
+      },
+      accessToken: token,
+    };
   }
-
-  // 3️⃣ Generar JWT
-  const token = await this.signToken({
-    userId: user.userId,
-    email: user.email,
-    role: user.role,
-    isRestaurantOwner: user.role === 'owner',
-    restaurantIds: [],
-  });
-
-  return {
-    user: {
-      id: user.userId,
-      email: user.email,
-      fullName: user.fullName,
-    },
-    accessToken: token,
-  };
-}
 }
