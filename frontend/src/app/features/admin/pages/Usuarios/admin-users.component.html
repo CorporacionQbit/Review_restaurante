@@ -1,0 +1,81 @@
+<h1 class="page-title">👥 Usuarios (Clientes)</h1>
+
+<!-- FILTROS -->
+<div style="display:flex; gap:12px; margin-bottom:16px">
+  <input
+    nz-input
+    placeholder="Buscar por nombre o email"
+    [(ngModel)]="filters.search"
+    (ngModelChange)="applyFilters()"
+    style="width:260px"
+  />
+
+  <nz-select
+    nzAllowClear
+    placeholder="Estado"
+    [(ngModel)]="filters.status"
+    (ngModelChange)="applyFilters()"
+    style="width:180px"
+  >
+    <nz-option nzValue="active" nzLabel="Activo"></nz-option>
+    <nz-option nzValue="inactive" nzLabel="Desactivado"></nz-option>
+  </nz-select>
+
+  <button nz-button (click)="resetFilters()">Limpiar</button>
+</div>
+
+<!-- TABLA -->
+<nz-table nzBordered [nzData]="filteredUsers" [nzLoading]="loading">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Email</th>
+      <th>Rol</th>
+      <th>Estado</th>
+      <th style="width:260px">Acciones</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let u of filteredUsers">
+      <td>{{ u.fullName }}</td>
+      <td>{{ u.email }}</td>
+
+      <td>
+        <nz-tag nzColor="blue">{{ u.role }}</nz-tag>
+      </td>
+
+      <td>
+        <nz-tag [nzColor]="u.isActive ? 'green' : 'red'">
+          {{ u.isActive ? 'Activo' : 'Desactivado' }}
+        </nz-tag>
+      </td>
+
+      <td style="display:flex; gap:6px">
+        <button
+          nz-button
+          nzSize="small"
+          [nzDanger]="u.isActive"
+          (click)="toggleUser(u)">
+          {{ u.isActive ? 'Desactivar' : 'Activar' }}
+        </button>
+
+        <button
+          nz-button
+          nzSize="small"
+          nzType="primary"
+          (click)="convertToOwner(u)">
+          Pasar a dueño
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>
+
+<nz-pagination
+  style="margin-top:16px; text-align:right"
+  [nzPageIndex]="page"
+  [nzTotal]="total"
+  [nzPageSize]="limit"
+  (nzPageIndexChange)="loadUsers($event)">
+</nz-pagination>

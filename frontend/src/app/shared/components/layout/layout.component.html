@@ -61,6 +61,10 @@
   <span nz-icon nzType="team"></span>
   Usuarios Dueños
 </li>
+<li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/admin-users">
+  <span nz-icon nzType="team"></span>
+  Clientes
+</li>
     </ul>
   </nz-sider>
 

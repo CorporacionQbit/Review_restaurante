@@ -110,5 +110,28 @@ async deactivateOwner(
 
   return this.usersService.setOwnerActive(+userId, false);
 }
+@Get('admin/clients')
+async getClients(
+  @Req() req: AuthRequest,
+  @Query('page') page = 1,
+  @Query('limit') limit = 10,
+) {
+  if (!req.user || req.user.role !== 'admin') {
+    throw new ForbiddenException('Solo administradores');
+  }
+
+  return this.usersService.findClients(+page, +limit);
+}
+@Post('admin/clients/:userId/convert-to-owner')
+async convertClientToOwner(
+  @Req() req: AuthRequest,
+  @Param('userId') userId: string,
+) {
+  if (!req.user || req.user.role !== 'admin') {
+    throw new ForbiddenException('Solo administradores');
+  }
+
+  return this.usersService.convertToOwner(+userId);
+}
 
 }

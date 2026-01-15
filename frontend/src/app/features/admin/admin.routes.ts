@@ -46,6 +46,14 @@ export const ADMIN_ROUTES: Routes = [
   loadComponent: () =>
     import('./pages/vista-duenos/admin-owners.component')
       .then(m => m.AdminOwnersComponent),
+},
+
+{
+  path: 'admin-users',
+  canActivate: [authGuard, roleGuard(['admin'])],
+  loadComponent: () =>
+    import('./pages/Usuarios/admin-users.component')
+      .then(m => m.AdminUsersComponent),
 }
 
 ];

@@ -128,6 +128,31 @@ async setOwnerActive(userId: number, active: boolean) {
   user.isActive = active;
   return this.usersRepo.save(user);
 }
+async findClients(page: number, limit: number) {
+  const qb = this.usersRepo
+    .createQueryBuilder('u')
+    .select([
+      'u.user_id AS "userId"',
+      'u.email AS "email"',
+      'u.full_name AS "fullName"',
+      'u.role AS "role"',
+      'u.is_active AS "isActive"',
+    ])
+    .where('u.role = :role', { role: 'client' })
+    .offset((page - 1) * limit)
+    .limit(limit);
+
+  const data = await qb.getRawMany();
+
+  const total = await this.usersRepo.count({
+    where: { role: 'client' },
+  });
+
+  return {
+    data,
+    meta: { total, page, limit },
+  };
+}
 
 
 }
