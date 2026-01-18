@@ -15,7 +15,7 @@ import { FilterRestaurantsDto } from './dto/filter-restaurants.dto';
 import { ValidateRestaurantDto } from './dto/validate-restaurant.dto';
 import { PaginationQueryDto } from '../filters/dto/pagination-query.dto';
 import { buildPaginationMeta } from '../filters/paginate';
-
+import { RestaurantDocument } from './restaurant-document.entity';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -27,6 +27,10 @@ export class RestaurantsService {
 
     @InjectRepository(RestaurantImage)
     private readonly imageRepo: Repository<RestaurantImage>,
+
+    
+@InjectRepository(RestaurantDocument)
+private readonly documentRepo: Repository<RestaurantDocument>,
   ) {}
 
   // =========================
@@ -376,5 +380,48 @@ async findHistory(pagination: PaginationQueryDto) {
     meta: buildPaginationMeta(total, page, limit),
   };
 }
+async uploadDocument(
+  restaurantId: number,
+  ownerUserId: number,
+  docType: 'RTU' | 'PATENTE',
+  file: Express.Multer.File,
+) {
+  const restaurant = await this.restaurantRepo.findOne({
+    where: {
+      restaurantId,
+      ownerUserId,
+      onboardingStatus: 'Pendiente', // ✅ CLAVE
+    },
+  });
+
+  if (!restaurant) {
+    throw new ForbiddenException(
+      'No puedes subir documentos a este restaurante',
+    );
+  }
+
+  const document = this.documentRepo.create({
+    restaurant,
+    docType,
+    fileUrl: `uploads/restaurants/documents/${file.filename}`,
+    isVerified: false,
+  });
+
+  return this.documentRepo.save(document);
+}
+// =========================
+// OBTENER DOCUMENTOS (ADMIN)
+// =========================
+async getDocumentsByRestaurant(restaurantId: number) {
+  return this.documentRepo.find({
+    where: {
+      restaurant: { restaurantId },
+    },
+    order: {
+      docType: 'ASC',
+    },
+  });
+}
+
 
 }

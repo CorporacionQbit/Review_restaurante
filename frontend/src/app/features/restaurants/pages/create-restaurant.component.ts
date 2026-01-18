@@ -32,8 +32,13 @@ export class CreateRestaurantComponent implements OnInit {
 
   form!: FormGroup;
   loading = false;
-
   categories: any[] = [];
+
+  // 🔹 Archivos de documentos
+  files: {
+    RTU?: File;
+    PATENTE?: File;
+  } = {};
 
   private API_URL = 'http://localhost:3000';
 
@@ -55,54 +60,94 @@ export class CreateRestaurantComponent implements OnInit {
       zone: [''],
       mapsUrl: [''],
       priceRange: [null],
-
-      // categorías seleccionadas por el dueño
       categoryIds: [[], Validators.required],
     });
 
     this.loadCategories();
   }
 
-  // 🔹 CATEGORÍAS PÚBLICAS (OWNER)
+  // =========================
+  // CARGAR CATEGORÍAS
+  // =========================
   loadCategories(): void {
     this.http.get<any[]>(`${this.API_URL}/categories`).subscribe({
-      next: (data) => {
-        this.categories = data;
+      next: (data) => (this.categories = data),
+      error: () => this.message.error('Error cargando categorías'),
+    });
+  }
+
+  // =========================
+  // CAPTURAR ARCHIVOS
+  // =========================
+  onFile(event: Event, type: 'RTU' | 'PATENTE') {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.files[type] = input.files[0];
+    }
+  }
+
+  // =========================
+  // SUBMIT (CREAR + DOCUMENTOS)
+  // =========================
+  submit(): void {
+    if (this.form.invalid) {
+      this.message.warning('Completa los campos obligatorios');
+      return;
+    }
+
+    if (!this.files.RTU || !this.files.PATENTE) {
+      this.message.warning('Debes subir RTU y Patente');
+      return;
+    }
+
+    this.loading = true;
+
+    const raw = this.form.value;
+
+    const payload = {
+      ...raw,
+      priceRange: raw.priceRange ? Number(raw.priceRange) : null,
+      zone: raw.zone || null,
+      categoryIds: raw.categoryIds.map((id: any) => Number(id)),
+    };
+
+    // 1️⃣ Crear restaurante
+    this.restaurantsService.createRestaurant(payload).subscribe({
+      next: (restaurant: any) => {
+        const id = restaurant.restaurantId;
+
+        // 2️⃣ Subir documentos
+        this.uploadDocument(id, 'RTU', this.files.RTU!);
+        this.uploadDocument(id, 'PATENTE', this.files.PATENTE!);
+
+        this.message.success('Restaurante creado y documentos enviados');
+        this.loading = false;
       },
       error: () => {
-        this.message.error('Error cargando categorías');
+        this.message.error('Error al crear el restaurante');
+        this.loading = false;
       },
     });
   }
 
-  submit(): void {
-  if (this.form.invalid) {
-    this.message.warning('Completa los campos obligatorios');
-    return;
+  // =========================
+  // SUBIR DOCUMENTO
+  // =========================
+  uploadDocument(
+    restaurantId: number,
+    type: 'RTU' | 'PATENTE',
+    file: File
+  ) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.http.post(
+      `${this.API_URL}/restaurants/${restaurantId}/documents/${type}`,
+      formData
+    ).subscribe({
+      error: () => {
+        this.message.error(`Error subiendo ${type}`);
+      },
+    });
   }
-
-  this.loading = true;
-
-  const raw = this.form.value;
-
-  const payload = {
-    ...raw,
-    priceRange: raw.priceRange ? Number(raw.priceRange) : null,
-    zone: raw.zone ? String(raw.zone) : null,
-    categoryIds: (raw.categoryIds || []).map((id: any) => Number(id)),
-  };
-
-  this.restaurantsService.createRestaurant(payload).subscribe({
-    next: () => {
-      this.message.success('Restaurante creado correctamente');
-      this.loading = false;
-    },
-    error: (err) => {
-      console.error('BACKEND ERROR:', err);
-      this.message.error('Error al crear el restaurante');
-      this.loading = false;
-    },
-  });
-}
-
 }

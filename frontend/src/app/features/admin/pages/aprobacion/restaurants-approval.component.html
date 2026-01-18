@@ -35,6 +35,15 @@
             </span>
           </td>
           <td class="actions">
+
+            <button
+              nz-button
+              nzType="default"
+              class="btn-docs"
+              (click)="openDocuments(r)">
+              📄 Ver documentos
+            </button>
+
             <button
               nz-button
               nzType="primary"
@@ -54,7 +63,42 @@
         </tr>
       </tbody>
     </nz-table>
-
-    
   </div>
+
+  <!-- 📄 MODAL DOCUMENTOS -->
+  <nz-modal
+    [(nzVisible)]="documentsModalVisible"
+    nzTitle="📄 Documentos del restaurante"
+    (nzOnCancel)="documentsModalVisible = false"
+    [nzFooter]="null"
+    nzWidth="600px">
+
+    <ng-container *nzModalContent>
+
+      <div *ngIf="documentsLoading">Cargando documentos...</div>
+
+      <div *ngIf="!documentsLoading && documents.length === 0">
+        No hay documentos subidos.
+      </div>
+
+      <div *ngFor="let d of documents" class="document-row">
+        <div>
+          <strong>{{ d.docType }}</strong>
+          <span
+            class="badge"
+            [class.verified]="d.isVerified">
+            {{ d.isVerified ? 'Verificado' : 'Pendiente' }}
+          </span>
+        </div>
+
+        <a
+          [href]="apiUrl + '/' + d.fileUrl"
+          target="_blank">
+          Ver documento
+        </a>
+      </div>
+
+    </ng-container>
+  </nz-modal>
+
 </div>

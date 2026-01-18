@@ -15,8 +15,10 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { SearchRestaurantsDto } from './dto/search-restaurants.dto';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
+import { SearchRestaurantsDto } from './dto/search-restaurants.dto';
 import type { AuthRequest } from '../auth/auth.middleware';
 import { RestaurantsService } from './restaurants.service';
 import { CreateRestaurantDto } from './dto/create.dto';
@@ -68,13 +70,13 @@ export class RestaurantsController {
   // =========================
   // SEARCH + PAGINACIÓN (PÚBLICO)
   // =========================
-@Get('search')
-async search(@Query() query: SearchRestaurantsDto) {
-  return this.service.findWithFilters(query, {
-    page: query.page,
-    limit: query.limit,
-  });
-}
+  @Get('search')
+  async search(@Query() query: SearchRestaurantsDto) {
+    return this.service.findWithFilters(query, {
+      page: query.page,
+      limit: query.limit,
+    });
+  }
 
   // =========================
   // OBTENER RESTAURANTE POR ID (PÚBLICO)
@@ -131,6 +133,49 @@ async search(@Query() query: SearchRestaurantsDto) {
   }
 
   // =========================
+  // SUBIR DOCUMENTO (OWNER)
+  // =========================
+  @Post(':id/documents/:type')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads/restaurants/documents',
+        filename: (_req, file, cb) => {
+          const ext = extname(file.originalname);
+          const name = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+          cb(null, name);
+        },
+      }),
+      limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+    }),
+  )
+  async uploadDocument(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('type') type: 'RTU' | 'PATENTE',
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!req.user || req.user.role !== 'owner') {
+      throw new ForbiddenException('Solo dueños pueden subir documentos');
+    }
+
+    if (!['RTU', 'PATENTE'].includes(type)) {
+      throw new BadRequestException('Tipo de documento inválido');
+    }
+
+    if (!file) {
+      throw new BadRequestException('Archivo requerido');
+    }
+
+    return this.service.uploadDocument(
+      Number(id),
+      req.user.userId,
+      type,
+      file,
+    );
+  }
+
+  // =========================
   // VALIDAR RESTAURANTE (ADMIN)
   // =========================
   @Patch(':id/validate')
@@ -144,36 +189,53 @@ async search(@Query() query: SearchRestaurantsDto) {
     }
     return this.service.validateRestaurant(Number(id), dto);
   }
- 
-@Get('admin/pending')
-async pendingRestaurants(
+
+  // =========================
+  // ADMIN – PENDIENTES
+  // =========================
+  @Get('admin/pending')
+  async pendingRestaurants(
+    @Req() req: AuthRequest,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    if (!req.user || req.user.role !== 'admin') {
+      throw new ForbiddenException('Solo administradores');
+    }
+
+    return this.service.findPendingRestaurants(
+      Number(page ?? 1),
+      Number(limit ?? 10),
+    );
+  }
+
+  // =========================
+  // ADMIN – HISTORIAL
+  // =========================
+  @Get('admin/history')
+  async history(
+    @Req() req: AuthRequest,
+    @Query() pagination: PaginationQueryDto,
+  ) {
+    if (!req.user || req.user.role !== 'admin') {
+      throw new ForbiddenException('Solo administradores');
+    }
+
+    return this.service.findHistory(pagination);
+  }
+  // =========================
+// VER DOCUMENTOS (ADMIN)
+// =========================
+@Get(':id/documents')
+async getDocuments(
   @Req() req: AuthRequest,
-  @Query('page') page?: string,
-  @Query('limit') limit?: string,
+  @Param('id') id: string,
 ) {
   if (!req.user || req.user.role !== 'admin') {
     throw new ForbiddenException('Solo administradores');
   }
 
-  return this.service.findPendingRestaurants(
-    Number(page ?? 1),
-    Number(limit ?? 10),
-  );
-}
-// =========================
-// ADMIN – HISTORIAL
-// =========================
-@Get('admin/history')
-async history(
-  @Req() req: AuthRequest,
-  @Query() pagination: PaginationQueryDto,
-) {
-  if (!req.user || req.user.role !== 'admin') {
-    throw new ForbiddenException('Solo administradores');
-  }
-
-  return this.service.findHistory(pagination);
+  return this.service.getDocumentsByRestaurant(Number(id));
 }
 
 }
-

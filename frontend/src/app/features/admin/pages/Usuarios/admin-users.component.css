@@ -1,0 +1,199 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  padding: 32px;
+  background:
+    radial-gradient(1200px 600px at 20% -200px, rgba(249,115,22,.18), transparent 60%),
+    radial-gradient(900px 500px at 90% 10%, rgba(59,130,246,.10), transparent 60%),
+    linear-gradient(180deg, #f8fafc, #eef2f7);
+}
+
+/* ================= PAGE TITLE / HERO ================= */
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 28px 32px;
+  margin-bottom: 28px;
+
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -0.4px;
+
+  color: #0f172a;
+  background: linear-gradient(135deg, #fb923c, #f59e0b);
+  border-radius: 20px;
+
+  box-shadow:
+    0 18px 50px rgba(249,115,22,.35),
+    inset 0 1px 0 rgba(255,255,255,.35);
+}
+
+/* Subtitle look if added later */
+.page-title + p {
+  margin-top: -14px;
+  margin-bottom: 24px;
+  color: #475569;
+}
+
+/* ================= FILTER BAR ================= */
+.page-title + div {
+  background: #ffffff;
+  padding: 18px 20px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  box-shadow:
+    0 10px 30px rgba(15,23,42,.06);
+}
+
+input[nz-input],
+nz-select {
+  border-radius: 12px !important;
+}
+
+/* ================= TABLE CARD ================= */
+nz-table {
+  display: block;
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+
+  box-shadow:
+    0 22px 60px rgba(15,23,42,.08);
+}
+
+/* ================= TABLE HEAD ================= */
+nz-table thead th {
+  background: #f8fafc;
+  font-weight: 800;
+  font-size: 13px;
+  color: #334155;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+
+  padding: 16px 18px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* ================= TABLE BODY ================= */
+nz-table tbody tr {
+  transition: background .2s ease, transform .15s ease;
+}
+
+nz-table tbody tr:hover {
+  background: #f9fafb;
+  transform: translateY(-1px);
+}
+
+nz-table td {
+  padding: 16px 18px;
+  vertical-align: middle;
+  font-size: 14px;
+  color: #0f172a;
+}
+
+/* ================= TAGS ================= */
+nz-tag {
+  border-radius: 999px !important;
+  padding: 4px 12px !important;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* Role */
+nz-tag[nzcolor="blue"] {
+  background: rgba(59,130,246,.15);
+  color: #1d4ed8;
+  border: none;
+}
+
+/* Active */
+nz-tag[nzcolor="green"] {
+  background: rgba(34,197,94,.18);
+  color: #166534;
+  border: none;
+}
+
+/* Inactive */
+nz-tag[nzcolor="red"] {
+  background: rgba(239,68,68,.18);
+  color: #7f1d1d;
+  border: none;
+}
+
+/* ================= ACTION BUTTONS ================= */
+td[style*="display:flex"] {
+  align-items: center;
+}
+
+button[nz-button] {
+  border-radius: 999px;
+  font-weight: 700;
+  padding: 6px 16px;
+  transition: all .2s ease;
+}
+
+/* Activate / Deactivate */
+button[nz-button][nzdanger] {
+  background: #ffffff;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+}
+
+button[nz-button][nzdanger]:hover {
+  background: #fee2e2;
+  transform: translateY(-1px);
+}
+
+/* Primary – Convert to owner */
+button[nz-button][nztype="primary"] {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border: none;
+  box-shadow: 0 10px 26px rgba(59,130,246,.35);
+}
+
+button[nz-button][nztype="primary"]:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 36px rgba(59,130,246,.45);
+}
+
+/* ================= PAGINATION ================= */
+nz-pagination {
+  margin-top: 22px;
+  text-align: right;
+}
+
+nz-pagination .ant-pagination-item {
+  border-radius: 10px;
+}
+
+nz-pagination .ant-pagination-item-active {
+  background: #3b82f6;
+  border-color: #3b82f6;
+}
+
+nz-pagination .ant-pagination-item-active a {
+  color: #ffffff;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+  :host {
+    padding: 16px;
+  }
+
+  .page-title {
+    font-size: 22px;
+    padding: 22px;
+  }
+
+  nz-table td {
+    font-size: 13px;
+  }
+}

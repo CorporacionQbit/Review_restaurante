@@ -68,40 +68,40 @@ export class RestaurantDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-  this.restaurantId = Number(this.route.snapshot.paramMap.get('id'));
-  if (!this.restaurantId) return;
+    this.restaurantId = Number(this.route.snapshot.paramMap.get('id'));
+    if (!this.restaurantId) return;
 
-  this.loadRestaurant();
-  this.loadReviews();
-}
-
+    this.loadRestaurant();
+    this.loadReviews();
+  }
 
   /* =========================
      RESTAURANTE
   ========================= */
- loadRestaurant(): void {
-  this.service.getRestaurantById(this.restaurantId).subscribe({
-    next: (res) => {
-      this.restaurant = res;
+  loadRestaurant(): void {
+    this.service.getRestaurantById(this.restaurantId).subscribe({
+      next: (res) => {
+        this.restaurant = res;
 
-      if (res?.mapsUrl) {
-        this.safeMapUrl =
-          this.sanitizer.bypassSecurityTrustResourceUrl(res.mapsUrl);
-      }
+        if (res?.mapsUrl) {
+          this.safeMapUrl =
+            this.sanitizer.bypassSecurityTrustResourceUrl(res.mapsUrl);
+        }
 
-      // ✅ SOLO cargar posts si cumple condiciones
-      if (res?.isPremium) {
-  this.loadPosts();
-}
+        // ✅ SOLO cargar posts SI:
+        // - es premium
+        // - el usuario está logueado
+        if (res?.isPremium && this.auth.isLoggedIn()) {
+          this.loadPosts();
+        }
 
-
-      this.checkIfFavorite();
-    },
-    error: () => {
-      this.message.error('No se pudo cargar el restaurante');
-    },
-  });
-}
+        this.checkIfFavorite();
+      },
+      error: () => {
+        this.message.error('No se pudo cargar el restaurante');
+      },
+    });
+  }
 
   /* =========================
      RESEÑAS
@@ -167,21 +167,6 @@ export class RestaurantDetailComponent implements OnInit {
         this.posts = [];
       },
     });
-  }
-
-  /* =========================
-     GALERÍA
-  ========================= */
-  openImage(i: number) { this.activeImageIndex = i; }
-  closeImage() { this.activeImageIndex = null; }
-  nextImage() {
-    this.activeImageIndex =
-      (this.activeImageIndex! + 1) % this.restaurant.images.length;
-  }
-  prevImage() {
-    this.activeImageIndex =
-      (this.activeImageIndex! - 1 + this.restaurant.images.length) %
-      this.restaurant.images.length;
   }
 
   /* =========================

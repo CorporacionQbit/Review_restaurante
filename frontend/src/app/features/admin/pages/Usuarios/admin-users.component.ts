@@ -28,6 +28,7 @@ import { AdminUsersService } from './admin-users.service';
     NzSelectModule,
   ],
   templateUrl: './admin-users.component.html',
+  styleUrls: ['./admin-users.component.css'],
 })
 export class AdminUsersComponent implements OnInit {
   loading = true;

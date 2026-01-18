@@ -8,7 +8,6 @@ export interface AdminDashboardMetrics {
   pendingReviews: number;
 }
 
-// ✅ INTERFACE FUERA DE LA CLASE
 export interface PendingRestaurant {
   restaurantId: number;
   name: string;
@@ -23,6 +22,13 @@ export interface PendingRestaurant {
   };
 }
 
+export interface RestaurantDocument {
+  documentId: number;
+  docType: 'RTU' | 'PATENTE';
+  fileUrl: string;
+  isVerified: boolean;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminService {
   constructor(private api: ApiService) {}
@@ -33,25 +39,21 @@ export class AdminService {
     );
   }
 
-  // =========================
   // 🍽️ RESTAURANTES PENDIENTES
-  // =========================
-
- getPendingRestaurants(page = 1, limit = 10) {
-  return this.api.get<{
-    data: PendingRestaurant[];
-    meta: {
-      total: number;
-      page: number;
-      limit: number;
-      lastPage: number;
-    };
-  }>(
-    '/restaurants/admin/pending',
-    { page, limit }
-  );
-}
-
+  getPendingRestaurants(page = 1, limit = 10) {
+    return this.api.get<{
+      data: PendingRestaurant[];
+      meta: {
+        total: number;
+        page: number;
+        limit: number;
+        lastPage: number;
+      };
+    }>(
+      '/restaurants/admin/pending',
+      { page, limit }
+    );
+  }
 
   approveRestaurant(restaurantId: number, isPremium = false) {
     return this.api.patch(
@@ -75,11 +77,18 @@ export class AdminService {
       }
     );
   }
-  getRestaurantsHistory(page = 1, limit = 10) {
-  return this.api.get<any>(
-    '/restaurants/admin/history',
-    { page, limit }
-  );
-}
 
+  // ✅ NUEVO – OBTENER DOCUMENTOS
+  getRestaurantDocuments(restaurantId: number) {
+    return this.api.get<RestaurantDocument[]>(
+      `/restaurants/${restaurantId}/documents`
+    );
+  }
+
+  getRestaurantsHistory(page = 1, limit = 10) {
+    return this.api.get<any>(
+      '/restaurants/admin/history',
+      { page, limit }
+    );
+  }
 }

@@ -1,7 +1,7 @@
 import { Routes, UrlSegment } from '@angular/router';
 import { LayoutComponent } from './shared/components/layout/layout.component';
 
-/* 🔒 matcher SOLO numérico */
+/* 🔓 matcher SOLO numérico */
 export function numericIdMatcher(segments: UrlSegment[]) {
   if (
     segments.length === 2 &&
@@ -20,14 +20,18 @@ export function numericIdMatcher(segments: UrlSegment[]) {
 
 export const routes: Routes = [
 
+  // =========================
   // HOME
+  // =========================
   {
     path: '',
     redirectTo: 'restaurants/explore',
     pathMatch: 'full',
   },
 
-  // 🔓 EXPLORAR
+  // =========================
+  // 🔓 EXPLORAR (PÚBLICO)
+  // =========================
   {
     path: 'restaurants/explore',
     loadComponent: () =>
@@ -35,7 +39,9 @@ export const routes: Routes = [
         .then(m => m.RestaurantsExploreComponent),
   },
 
-  // 🔓 DETALLE PUBLICO (SOLO NUMÉRICO)
+  // =========================
+  // 🔓 DETALLE PÚBLICO (⚠️ DEBE IR AQUÍ)
+  // =========================
   {
     matcher: numericIdMatcher,
     loadComponent: () =>
@@ -43,7 +49,9 @@ export const routes: Routes = [
         .then(m => m.RestaurantDetailComponent),
   },
 
+  // =========================
   // 🔐 AUTH
+  // =========================
   {
     path: 'auth',
     loadChildren: () =>
@@ -51,7 +59,9 @@ export const routes: Routes = [
         .then(m => m.AUTH_ROUTES),
   },
 
-  // 🔒 AREA PRIVADA (LAYOUT)
+  // =========================
+  // 🔒 ÁREA PRIVADA (LAYOUT)
+  // =========================
   {
     path: '',
     component: LayoutComponent,
@@ -94,7 +104,9 @@ export const routes: Routes = [
     ],
   },
 
+  // =========================
   // 404
+  // =========================
   {
     path: '**',
     redirectTo: '',

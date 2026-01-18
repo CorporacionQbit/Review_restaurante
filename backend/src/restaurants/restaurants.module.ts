@@ -7,12 +7,14 @@ import { Restaurant } from './restaurant.entity';
 import { RestaurantImage } from './restaurant-image.entity';
 import { RestaurantsService } from './restaurants.service';
 import { RestaurantsController } from './restaurant.controller';
+import { RestaurantDocument } from './restaurant-document.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Restaurant, RestaurantImage]),
+    TypeOrmModule.forFeature([Restaurant, RestaurantImage,RestaurantDocument]),
     MulterModule.register({
       dest: './uploads/restaurants',
+      
     }),
   ],
   controllers: [RestaurantsController],

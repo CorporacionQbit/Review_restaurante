@@ -7,10 +7,10 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { FormsModule } from '@angular/forms';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 
-
 import {
   AdminService,
   PendingRestaurant,
+  RestaurantDocument,
 } from '../admin.service';
 
 @Component({
@@ -29,16 +29,23 @@ import {
   styleUrls: ['./restaurants-approval.component.scss'],
 })
 export class RestaurantsApprovalComponent implements OnInit {
- loading = true;
-restaurants: PendingRestaurant[] = [];
 
-page = 1;
-limit = 10;
-total = 0;
+  loading = true;
+  restaurants: PendingRestaurant[] = [];
+
+  page = 1;
+  limit = 10;
+  total = 0;
 
   rejectModalVisible = false;
   rejectComment = '';
   selectedRestaurant: PendingRestaurant | null = null;
+
+  // 🔹 DOCUMENTOS
+  documentsModalVisible = false;
+  documentsLoading = false;
+  documents: RestaurantDocument[] = [];
+  apiUrl = 'http://localhost:3000';
 
   constructor(private adminService: AdminService) {}
 
@@ -47,22 +54,22 @@ total = 0;
   }
 
   load(page = this.page) {
-  this.loading = true;
-  this.page = page;
+    this.loading = true;
+    this.page = page;
 
-  this.adminService
-    .getPendingRestaurants(this.page, this.limit)
-    .subscribe({
-      next: (res) => {
-        this.restaurants = res.data;
-        this.total = res.meta.total;
-        this.loading = false;
-      },
-      error: () => {
-        this.loading = false;
-      },
-    });
-}
+    this.adminService
+      .getPendingRestaurants(this.page, this.limit)
+      .subscribe({
+        next: (res) => {
+          this.restaurants = res.data;
+          this.total = res.meta.total;
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        },
+      });
+  }
 
   approve(r: PendingRestaurant) {
     this.adminService.approveRestaurant(r.restaurantId).subscribe({
@@ -88,6 +95,27 @@ total = 0;
         next: () => {
           this.rejectModalVisible = false;
           this.load();
+        },
+      });
+  }
+
+  // =========================
+  // 📄 VER DOCUMENTOS
+  // =========================
+  openDocuments(r: PendingRestaurant) {
+    this.documentsModalVisible = true;
+    this.documentsLoading = true;
+    this.documents = [];
+
+    this.adminService
+      .getRestaurantDocuments(r.restaurantId)
+      .subscribe({
+        next: (docs) => {
+          this.documents = docs;
+          this.documentsLoading = false;
+        },
+        error: () => {
+          this.documentsLoading = false;
         },
       });
   }

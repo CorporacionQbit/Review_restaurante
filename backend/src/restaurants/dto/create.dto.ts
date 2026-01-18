@@ -7,6 +7,7 @@ import {
   IsArray,
   IsInt,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateRestaurantDto {
   @IsString()
@@ -41,14 +42,16 @@ export class CreateRestaurantDto {
   mapsUrl?: string;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(1)
   @Max(5)
   priceRange?: number;
 
-  // 🔹 NUEVO (NO rompe nada)
+  // ✅ FIX REAL AQUÍ
   @IsOptional()
   @IsArray()
+  @Type(() => Number)
   @IsInt({ each: true })
   categoryIds?: number[];
 }

@@ -122,3 +122,28 @@ nz-table td {
   display: flex;
   justify-content: flex-end;
 }
+.btn-docs {
+  border-radius: 999px;
+}
+
+.document-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.badge {
+  margin-left: 10px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  background: #fde68a;
+  color: #92400e;
+}
+
+.badge.verified {
+  background: #bbf7d0;
+  color: #065f46;
+}

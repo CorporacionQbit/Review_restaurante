@@ -1,5 +1,4 @@
 <div class="create-page">
-
   <div class="create-card">
 
     <!-- HEADER -->
@@ -21,18 +20,12 @@
 
         <div class="field">
           <label>Nombre *</label>
-          <input
-            nz-input
-            placeholder="Nombre del restaurante"
-            formControlName="name" />
+          <input nz-input formControlName="name" />
         </div>
 
         <div class="field">
           <label>Categorías *</label>
-          <nz-select
-            nzMode="multiple"
-            nzPlaceHolder="Selecciona una o más categorías"
-            formControlName="categoryIds">
+          <nz-select nzMode="multiple" formControlName="categoryIds">
             <nz-option
               *ngFor="let c of categories"
               [nzValue]="c.categoryId"
@@ -43,9 +36,7 @@
 
         <div class="field">
           <label>Precio</label>
-          <nz-select
-            nzPlaceHolder="Rango de precios"
-            formControlName="priceRange">
+          <nz-select formControlName="priceRange">
             <nz-option [nzValue]="1" nzLabel="$"></nz-option>
             <nz-option [nzValue]="2" nzLabel="$$"></nz-option>
             <nz-option [nzValue]="3" nzLabel="$$$"></nz-option>
@@ -56,61 +47,22 @@
       </section>
 
       <!-- =====================
-           CONTACTO & UBICACIÓN
+           CONTACTO
       ====================== -->
       <section class="section">
         <h3>Contacto y ubicación</h3>
 
         <div class="grid-2">
-          <div class="field">
-            <label>Teléfono</label>
-            <input
-              nz-input
-              placeholder="Teléfono"
-              formControlName="phoneNumber" />
-          </div>
-
-          <div class="field">
-            <label>Email</label>
-            <input
-              nz-input
-              placeholder="Email"
-              formControlName="email" />
-          </div>
+          <input nz-input placeholder="Teléfono" formControlName="phoneNumber" />
+          <input nz-input placeholder="Email" formControlName="email" />
         </div>
 
-        <div class="field">
-          <label>Dirección</label>
-          <input
-            nz-input
-            placeholder="Dirección"
-            formControlName="address" />
-        </div>
+        <input nz-input placeholder="Dirección" formControlName="address" />
 
         <div class="grid-3">
-          <div class="field">
-            <label>Ciudad</label>
-            <input
-              nz-input
-              placeholder="Ciudad"
-              formControlName="city" />
-          </div>
-
-          <div class="field">
-            <label>Zona</label>
-            <input
-              nz-input
-              placeholder="Zona"
-              formControlName="zone" />
-          </div>
-
-          <div class="field">
-            <label>Google Maps</label>
-            <input
-              nz-input
-              placeholder="https://maps.google.com/..."
-              formControlName="mapsUrl" />
-          </div>
+          <input nz-input placeholder="Ciudad" formControlName="city" />
+          <input nz-input placeholder="Zona" formControlName="zone" />
+          <input nz-input placeholder="Google Maps" formControlName="mapsUrl" />
         </div>
       </section>
 
@@ -119,31 +71,35 @@
       ====================== -->
       <section class="section">
         <h3>Descripción</h3>
+        <textarea
+          nz-input
+          rows="3"
+          formControlName="description">
+        </textarea>
+      </section>
+
+      <!-- =====================
+           DOCUMENTOS
+      ====================== -->
+      <section class="section">
+        <h3>Documentos requeridos</h3>
 
         <div class="field">
-          <label>Descripción (opcional)</label>
-          <textarea
-            nz-input
-            rows="3"
-            placeholder="Cuéntales a tus clientes qué hace especial tu restaurante"
-            formControlName="description">
-          </textarea>
-          <small>
-            Esta información será visible públicamente.
-          </small>
+          <label>RTU *</label>
+          <input type="file" (change)="onFile($event, 'RTU')" />
+        </div>
+
+        <div class="field">
+          <label>Patente *</label>
+          <input type="file" (change)="onFile($event, 'PATENTE')" />
         </div>
       </section>
 
       <!-- CTA -->
-      <button
-        nz-button
-        nzType="primary"
-        nzBlock
-        [disabled]="loading">
-        {{ loading ? 'Creando restaurante…' : 'Crear restaurante y empezar' }}
+      <button nz-button nzType="primary" nzBlock [disabled]="loading">
+        {{ loading ? 'Creando restaurante…' : 'Crear restaurante' }}
       </button>
 
     </form>
   </div>
-
 </div>
