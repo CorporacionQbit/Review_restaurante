@@ -258,29 +258,21 @@
   margin-left: 6px;
 }
 
-/* =====================================================
-   EMPTY + SKELETON
-===================================================== */
+/*EMPTY + SKELETON */
 .empty {
   text-align: center;
   color: var(--text-muted);
   padding: 40px;
 }
 
-/* =====================================================
-   ANIMATIONS
-===================================================== */
+/* ANIMATIONS*/
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* =====================================================
-   RESPONSIVE
-===================================================== */
-/* =====================================================
-   MOBILE FIX – PROFILE RESPONSIVE (NO OVERFLOW)
-===================================================== */
+/* RESPONSIVE */
+
 @media (max-width: 768px) {
 
   /* Evita scroll horizontal global */

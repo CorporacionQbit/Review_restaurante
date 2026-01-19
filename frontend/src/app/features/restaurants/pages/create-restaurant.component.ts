@@ -34,7 +34,7 @@ export class CreateRestaurantComponent implements OnInit {
   loading = false;
   categories: any[] = [];
 
-  // 🔹 Archivos de documentos
+  // Archivos de documentos
   files: {
     RTU?: File;
     PATENTE?: File;
@@ -111,12 +111,12 @@ export class CreateRestaurantComponent implements OnInit {
       categoryIds: raw.categoryIds.map((id: any) => Number(id)),
     };
 
-    // 1️⃣ Crear restaurante
+    //  Crear restaurante
     this.restaurantsService.createRestaurant(payload).subscribe({
       next: (restaurant: any) => {
         const id = restaurant.restaurantId;
 
-        // 2️⃣ Subir documentos
+        //  Subir documentos
         this.uploadDocument(id, 'RTU', this.files.RTU!);
         this.uploadDocument(id, 'PATENTE', this.files.PATENTE!);
 

@@ -16,12 +16,12 @@ export class ProfileService {
     return this.http.get(`${this.API_URL}/users/me`);
   }
 
-  // ⭐ Mis reseñas
+  //  Mis reseñas
   getMyReviews(): Observable<any[]> {
     return this.http.get<any[]>(`${this.API_URL}/users/me/reviews`);
   }
 
-  // ✏️ Editar reseña
+  //  Editar reseña
   updateReview(reviewId: number, data: any): Observable<any> {
     return this.http.patch(
       `${this.API_URL}/reviews/${reviewId}`,
@@ -29,7 +29,7 @@ export class ProfileService {
     );
   }
 
-  // 🗑️ Eliminar reseña
+  //  Eliminar reseña
   deleteReview(reviewId: number): Observable<any> {
     return this.http.delete(
       `${this.API_URL}/reviews/${reviewId}`

@@ -74,21 +74,21 @@ export class RestaurantDashboardComponent implements OnInit {
       completed++;
     }
 
-    // 🗺️ Ubicación
+    // Ubicación
     if (this.restaurant.mapsUrl) {
       completed++;
     }
 
-    // ⭐ Funcionalidades Premium
+    //  Funcionalidades Premium
     if (this.restaurant.isPremium) {
       total += 2;
 
-      // 📄 Menú
+      //  Menú
       if (this.restaurant.menus?.length > 0) {
         completed++;
       }
 
-      // 📰 Posts
+      //  Posts
       if (this.restaurant.posts?.length > 0) {
         completed++;
       }
@@ -97,9 +97,6 @@ export class RestaurantDashboardComponent implements OnInit {
     this.progress = Math.round((completed / total) * 100);
   }
 
-  // =========================
-  // TEXTO DINÁMICO DE AYUDA
-  // =========================
   get missingSteps(): string {
     if (!this.restaurant) return '';
 

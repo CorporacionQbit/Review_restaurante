@@ -1,7 +1,3 @@
-/* =====================================================
-   ENTERPRISE REDESIGN – RESTAURANT DETAIL
-   Concept: Layered Corporate Product UI
-===================================================== */
 
 :root {
   --brand: #f97316;
@@ -46,9 +42,8 @@
   padding: 48px 32px 140px;
 }
 
-/* =====================================================
-   HEADER – CORPORATE HERO CARD
-===================================================== */
+/*
+   HEADER  */
 .restaurant-header {
   position: relative;
   background: linear-gradient(180deg, #ffffff, #fff7ed);
@@ -149,9 +144,8 @@
   transform: translateY(-2px);
 }
 
-/* =====================================================
-   HERO IMAGE – FLOATING BLOCK
-===================================================== */
+/*
+   HERO IMAGE  */
 .hero {
   height: 420px;
   border-radius: var(--radius-xl);
@@ -179,9 +173,6 @@
   color: #fff;
 }
 
-/* =====================================================
-   INFO STRIP – BUSINESS CARD
-===================================================== */
 .restaurant-info {
   background: var(--bg-layer);
   border-radius: var(--radius-xl);
@@ -263,7 +254,7 @@
 }
 
 /* =====================================================
-   REVIEWS – TIMELINE STYLE
+   REVIEWS
 ===================================================== */
 .reviews-section {
   background: var(--brand-soft);
@@ -304,7 +295,7 @@
 }
 
 /* =====================================================
-   SIDEBAR – CORPORATE PANELS
+   SIDEBAR
 ===================================================== */
 .sidebar-box {
   background: var(--bg-layer);
@@ -365,7 +356,7 @@
   }
 }
 /* =====================================================
-   LIGHTBOX – MODAL EMERGENTE (FIX)
+   LIGHTBOX 
 ===================================================== */
 
 .lightbox {
