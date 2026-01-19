@@ -10,9 +10,8 @@
     class="sidebar">
 
     <!-- LOGO -->
-    <div class="logo" [class.collapsed]="collapsed">
-      <span *ngIf="!collapsed">Reviews</span>
-      <span *ngIf="collapsed">R</span>
+    <div class="logo">
+      <span class="logo-text">Reviews</span>
     </div>
 
     <!-- MENU -->
@@ -21,58 +20,58 @@
       <!-- OWNER -->
       <li *ngIf="role === 'owner'" nz-menu-item routerLink="/restaurants">
         <span nz-icon nzType="home"></span>
-        <span *ngIf="!collapsed">Mis Restaurantes</span>
+        <span class="menu-text">Mis Restaurantes</span>
       </li>
 
       <li *ngIf="role === 'owner'" nz-menu-item routerLink="/restaurants/create">
         <span nz-icon nzType="plus-circle"></span>
-        <span *ngIf="!collapsed">Crear restaurante</span>
+        <span class="menu-text">Crear restaurante</span>
       </li>
 
       <li *ngIf="role === 'owner'" nz-menu-item routerLink="/analytics">
         <span nz-icon nzType="bar-chart"></span>
-        <span *ngIf="!collapsed">Analytics</span>
+        <span class="menu-text">Analytics</span>
       </li>
 
       <!-- ADMIN -->
       <li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin">
         <span nz-icon nzType="tool"></span>
-        <span *ngIf="!collapsed">Administración</span>
+        <span class="menu-text">Administración</span>
       </li>
 
       <li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/reviews-reports">
         <span nz-icon nzType="flag"></span>
-        <span *ngIf="!collapsed">Reseñas reportadas</span>
+        <span class="menu-text">Reseñas reportadas</span>
       </li>
 
       <li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/reviews-pending">
         <span nz-icon nzType="check-circle"></span>
-        <span *ngIf="!collapsed">Moderar reseñas</span>
+        <span class="menu-text">Moderar reseñas</span>
       </li>
 
       <li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/categories">
         <span nz-icon nzType="appstore"></span>
-        <span *ngIf="!collapsed">Categorías</span>
+        <span class="menu-text">Categorías</span>
       </li>
 
       <li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/restaurants-approval">
         <span nz-icon nzType="shop"></span>
-        <span *ngIf="!collapsed">Aprobar restaurantes</span>
+        <span class="menu-text">Aprobar restaurantes</span>
       </li>
 
       <li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/restaurants-history">
         <span nz-icon nzType="history"></span>
-        <span *ngIf="!collapsed">Historial restaurantes</span>
+        <span class="menu-text">Historial restaurantes</span>
       </li>
 
       <li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/admin-owners">
         <span nz-icon nzType="team"></span>
-        <span *ngIf="!collapsed">Usuarios Dueños</span>
+        <span class="menu-text">Usuarios Dueños</span>
       </li>
 
       <li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/admin-users">
         <span nz-icon nzType="user"></span>
-        <span *ngIf="!collapsed">Clientes</span>
+        <span class="menu-text">Clientes</span>
       </li>
     </ul>
   </nz-sider>
@@ -80,19 +79,14 @@
   <!-- MAIN -->
   <nz-layout>
 
-    <!-- HEADER -->
     <nz-header class="header">
-      <button nz-button nzType="link" (click)="logout()">
-        Salir
-      </button>
+      <button nz-button nzType="link" (click)="logout()">Salir</button>
     </nz-header>
 
-    <!-- CONTENT -->
     <nz-content class="content">
       <router-outlet></router-outlet>
     </nz-content>
 
-    <!-- FOOTER -->
     <nz-footer class="footer">
       Reviews ©2025
     </nz-footer>
