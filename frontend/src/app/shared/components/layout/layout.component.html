@@ -1,70 +1,79 @@
-<nz-layout style="min-height: 100vh">
+<nz-layout class="app-layout">
 
   <!-- SIDEBAR -->
-  <nz-sider nzTheme="dark" nzCollapsible nzWidth="220px">
-    <div class="logo">Reviews</div>
+  <nz-sider
+    nzTheme="dark"
+    nzCollapsible
+    [nzCollapsed]="collapsed"
+    [nzCollapsedWidth]="72"
+    [nzWidth]="220"
+    class="sidebar">
 
+    <!-- LOGO -->
+    <div class="logo" [class.collapsed]="collapsed">
+      <span *ngIf="!collapsed">Reviews</span>
+      <span *ngIf="collapsed">R</span>
+    </div>
+
+    <!-- MENU -->
     <ul nz-menu nzTheme="dark" nzMode="inline">
-
-    
 
       <!-- OWNER -->
       <li *ngIf="role === 'owner'" nz-menu-item routerLink="/restaurants">
         <span nz-icon nzType="home"></span>
-        Mis Restaurantes
+        <span *ngIf="!collapsed">Mis Restaurantes</span>
       </li>
 
       <li *ngIf="role === 'owner'" nz-menu-item routerLink="/restaurants/create">
         <span nz-icon nzType="plus-circle"></span>
-        Crear restaurante
+        <span *ngIf="!collapsed">Crear restaurante</span>
       </li>
-      <!-- OWNER -->
-<li *ngIf="role === 'owner'" nz-menu-item routerLink="/analytics">
-  <span nz-icon nzType="bar-chart"></span>
-  Analytics
-</li>
 
+      <li *ngIf="role === 'owner'" nz-menu-item routerLink="/analytics">
+        <span nz-icon nzType="bar-chart"></span>
+        <span *ngIf="!collapsed">Analytics</span>
+      </li>
 
       <!-- ADMIN -->
       <li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin">
         <span nz-icon nzType="tool"></span>
-        Administración
+        <span *ngIf="!collapsed">Administración</span>
       </li>
-<li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/reviews-reports">
-  <span nz-icon nzType="flag"></span>
-  Reseñas reportadas
-</li>
 
-<li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/reviews-pending">
-  <span nz-icon nzType="check-circle"></span>
-  Moderar reseñas
-</li>
+      <li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/reviews-reports">
+        <span nz-icon nzType="flag"></span>
+        <span *ngIf="!collapsed">Reseñas reportadas</span>
+      </li>
 
+      <li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/reviews-pending">
+        <span nz-icon nzType="check-circle"></span>
+        <span *ngIf="!collapsed">Moderar reseñas</span>
+      </li>
 
-<li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/categories">
-  <span nz-icon nzType="check-circle"></span>
-  Categorias
-</li>
+      <li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/categories">
+        <span nz-icon nzType="appstore"></span>
+        <span *ngIf="!collapsed">Categorías</span>
+      </li>
 
-<li *ngIf="role === 'admin'"
-    nz-menu-item
-    routerLink="/admin/restaurants-approval">
-  <span nz-icon nzType="shop"></span>
-  Aprobar restaurantes
-</li>
+      <li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/restaurants-approval">
+        <span nz-icon nzType="shop"></span>
+        <span *ngIf="!collapsed">Aprobar restaurantes</span>
+      </li>
 
-<li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/restaurants-history">
-  <span nz-icon nzType="history"></span>
-  Historial restaurantes
-</li>
-<li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/admin-owners">
-  <span nz-icon nzType="team"></span>
-  Usuarios Dueños
-</li>
-<li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/admin-users">
-  <span nz-icon nzType="team"></span>
-  Clientes
-</li>
+      <li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/restaurants-history">
+        <span nz-icon nzType="history"></span>
+        <span *ngIf="!collapsed">Historial restaurantes</span>
+      </li>
+
+      <li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/admin-owners">
+        <span nz-icon nzType="team"></span>
+        <span *ngIf="!collapsed">Usuarios Dueños</span>
+      </li>
+
+      <li *ngIf="role === 'admin'" nz-menu-item routerLink="/admin/admin-users">
+        <span nz-icon nzType="user"></span>
+        <span *ngIf="!collapsed">Clientes</span>
+      </li>
     </ul>
   </nz-sider>
 

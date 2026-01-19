@@ -7,6 +7,8 @@
   padding: 24px;
   background: #f5f7fa;
   min-height: 100vh;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 /* ===== HERO HEADER ===== */
@@ -29,7 +31,7 @@
   opacity: .95;
 }
 
-/* Orange variant (Pendientes / Historial) */
+/* Orange variant */
 .admin-hero.orange {
   background: linear-gradient(135deg, #fb923c, #f59e0b);
   color: #1f2937;
@@ -43,12 +45,13 @@
   box-shadow:
     0 18px 40px rgba(15,23,42,.08),
     inset 0 1px 0 rgba(255,255,255,.8);
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
-/* ===== TABLE ===== */
+/* ===== TABLE (DESKTOP DEFAULT) ===== */
 nz-table {
   border-radius: 14px;
-  overflow: hidden;
 }
 
 nz-table th {
@@ -56,11 +59,13 @@ nz-table th {
   font-weight: 700;
   font-size: 13px;
   color: #334155;
+  white-space: nowrap;
 }
 
 nz-table td {
   font-size: 13px;
   color: #1f2937;
+  white-space: nowrap;
 }
 
 nz-table tr:hover td {
@@ -83,10 +88,60 @@ nz-tag {
 .comment {
   max-width: 360px;
   color: #475569;
+  white-space: normal;
+  word-break: break-word;
 }
 
 /* ===== PAGINATION ===== */
 .admin-pagination {
   margin-top: 18px;
   text-align: right;
+}
+
+/* =====================================================
+   MOBILE – HORIZONTAL SCROLL ONLY (✔ CORRECT)
+===================================================== */
+@media (max-width: 768px) {
+
+  :host {
+    padding: 16px;
+  }
+
+  /* Evita scroll en layout */
+  .admin-page,
+  .admin-card {
+    overflow-x: hidden;
+  }
+
+  /* Contenedor scrolleable */
+  nz-table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Tabla más ancha que viewport */
+  nz-table table {
+    min-width: 720px;
+    table-layout: fixed;
+  }
+
+  /* Header único (no clonado) */
+  nz-table .ant-table-header {
+    display: none !important;
+  }
+
+  nz-table thead {
+    position: static !important;
+  }
+
+  nz-table .ant-table-body {
+    overflow: visible !important;
+  }
+
+  /* Centrar paginación */
+  .admin-pagination {
+    text-align: center;
+  }
 }

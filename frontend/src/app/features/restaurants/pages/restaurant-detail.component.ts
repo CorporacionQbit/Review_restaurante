@@ -50,6 +50,7 @@ export class RestaurantDetailComponent implements OnInit {
   isFavorite = false;
   favoriteLoading = false;
 
+  // ✅ LIGHTBOX
   activeImageIndex: number | null = null;
 
   restaurantId!: number;
@@ -88,9 +89,6 @@ export class RestaurantDetailComponent implements OnInit {
             this.sanitizer.bypassSecurityTrustResourceUrl(res.mapsUrl);
         }
 
-        // ✅ SOLO cargar posts SI:
-        // - es premium
-        // - el usuario está logueado
         if (res?.isPremium && this.auth.isLoggedIn()) {
           this.loadPosts();
         }
@@ -211,5 +209,34 @@ export class RestaurantDetailComponent implements OnInit {
 
   isLoggedIn(): boolean {
     return this.auth.isLoggedIn();
+  }
+
+  /* =========================
+     GALERÍA / LIGHTBOX
+  ========================= */
+  openImage(index: number): void {
+    this.activeImageIndex = index;
+  }
+
+  closeImage(): void {
+    this.activeImageIndex = null;
+  }
+
+  prevImage(): void {
+    if (!this.restaurant?.images?.length || this.activeImageIndex === null) return;
+
+    this.activeImageIndex =
+      this.activeImageIndex === 0
+        ? this.restaurant.images.length - 1
+        : this.activeImageIndex - 1;
+  }
+
+  nextImage(): void {
+    if (!this.restaurant?.images?.length || this.activeImageIndex === null) return;
+
+    this.activeImageIndex =
+      this.activeImageIndex === this.restaurant.images.length - 1
+        ? 0
+        : this.activeImageIndex + 1;
   }
 }

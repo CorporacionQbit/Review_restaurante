@@ -26,6 +26,24 @@
 
   display: block;
   background: linear-gradient(180deg,#f5f7fb,#eef2f7);
+
+  /* 🚫 PREVIENE SCROLL HORIZONTAL */
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* =====================================================
+   CONTENCIÓN GLOBAL (CLAVE PARA MÓVIL)
+===================================================== */
+nz-spin,
+.kpi-grid,
+.actions,
+.charts,
+.chart,
+.ant-card {
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 /* =====================================================
@@ -34,7 +52,7 @@
 .title {
   font-size: 1.8rem;
   font-weight: 800;
-  margin-bottom: 36px;
+  margin-bottom: 32px;
   color: var(--text-main);
   letter-spacing: -0.02em;
 }
@@ -46,94 +64,76 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 28px;
-  margin-bottom: 40px;
+  margin-bottom: 36px;
 }
 
 /* =====================================================
-   KPI CARD – COLOR + PROFUNDIDAD
+   KPI CARD
 ===================================================== */
 .kpi-card.ant-card {
   border-radius: 20px;
   border: none;
-  padding: 26px;
+  padding: 24px;
   position: relative;
   overflow: hidden;
   box-shadow: var(--shadow-soft);
   transition: transform .25s ease, box-shadow .25s ease;
 }
 
-/* Hover elegante */
 .kpi-card.ant-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-6px);
   box-shadow: var(--shadow-hover);
 }
 
-/* FONDOS SUAVES POR KPI */
+/* Fondos KPI */
 .kpi-card.users {
   background: linear-gradient(135deg, var(--primary-soft), #ffffff 60%) !important;
 }
-
 .kpi-card.restaurants {
   background: linear-gradient(135deg, var(--success-soft), #ffffff 60%) !important;
 }
-
 .kpi-card.pending {
   background: linear-gradient(135deg, var(--warning-soft), #ffffff 60%) !important;
 }
-
 .kpi-card.reviews {
   background: linear-gradient(135deg, var(--danger-soft), #ffffff 60%) !important;
 }
 
-/* BARRA LATERAL PREMIUM */
+/* Barra lateral KPI */
 .kpi-card::before {
   content: "";
   position: absolute;
   left: 0;
-  top: 14%;
-  bottom: 14%;
-  width: 6px;
+  top: 16%;
+  bottom: 16%;
+  width: 5px;
   border-radius: 6px;
 }
 
-.kpi-card.users::before {
-  background: linear-gradient(#2563eb,#60a5fa);
-}
-
-.kpi-card.restaurants::before {
-  background: linear-gradient(#22c55e,#4ade80);
-}
-
-.kpi-card.pending::before {
-  background: linear-gradient(#f59e0b,#fbbf24);
-}
-
-.kpi-card.reviews::before {
-  background: linear-gradient(#ef4444,#f87171);
-}
+.kpi-card.users::before { background: #2563eb; }
+.kpi-card.restaurants::before { background: #22c55e; }
+.kpi-card.pending::before { background: #f59e0b; }
+.kpi-card.reviews::before { background: #ef4444; }
 
 /* KPI CONTENT */
 .kpi {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 18px;
 }
 
-/* ICONOS KPI */
 .kpi .icon {
-  width: 60px;
-  height: 60px;
-  border-radius: 18px;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
+  font-size: 24px;
   background: rgba(255,255,255,.95);
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.04);
   color: var(--primary);
 }
 
-/* TEXTO KPI */
 .label {
   font-size: 13px;
   color: var(--text-muted);
@@ -141,26 +141,26 @@
 }
 
 .value {
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 800;
-  margin: 4px 0 0;
+  margin: 2px 0 0;
   color: var(--text-main);
 }
 
 /* =====================================================
-   ACTIONS – MÁS PRESENCIA
+   ACTIONS
 ===================================================== */
 .actions {
   display: grid;
   grid-template-columns: repeat(3,1fr);
-  gap: 28px;
-  margin-bottom: 40px;
+  gap: 24px;
+  margin-bottom: 36px;
 }
 
 .action-card.ant-card {
   border-radius: 20px;
   border: none;
-  padding: 26px;
+  padding: 22px;
   cursor: pointer;
   background: linear-gradient(135deg,#f8fafc,#ffffff) !important;
   box-shadow: var(--shadow-soft);
@@ -168,31 +168,26 @@
 }
 
 .action-card.ant-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-6px);
   box-shadow: var(--shadow-hover);
 }
 
-.action-card:active {
-  transform: scale(.97);
-}
-
-/* ICONOS ACTIONS */
 .action-content {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 16px;
 }
 
 .action-content .icon {
-  width: 54px;
-  height: 54px;
-  border-radius: 16px;
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
   background: var(--primary-soft);
   color: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 22px;
 }
 
 .action-card.warning .icon {
@@ -200,22 +195,20 @@
   color: #d97706;
 }
 
-/* TEXTO ACTIONS */
 .action-card h4 {
   margin: 0;
   font-weight: 700;
-  font-size: 16px;
-  color: var(--text-main);
+  font-size: 15px;
 }
 
 .action-card p {
-  margin-top: 6px;
+  margin-top: 4px;
   font-size: 13px;
   color: var(--text-muted);
 }
 
 /* =====================================================
-   CHARTS – DOMINANTES
+   CHARTS
 ===================================================== */
 .charts {
   display: grid;
@@ -226,20 +219,29 @@
 .chart-card.ant-card {
   border-radius: 20px;
   border: none;
-  padding: 28px;
+  padding: 24px;
   background: linear-gradient(180deg,#ffffff,#f8fafc) !important;
   box-shadow: var(--shadow-soft);
 }
 
 .chart {
-  height: 320px;
+  width: 100%;
+  max-width: 100%;
+  height: 300px;
+  overflow: hidden;
 }
 
 /* =====================================================
-   RESPONSIVE REAL
+   RESPONSIVE
 ===================================================== */
+
+/* TABLET */
 @media (max-width: 1200px) {
   .kpi-grid {
+    grid-template-columns: repeat(2,1fr);
+  }
+
+  .actions {
     grid-template-columns: repeat(2,1fr);
   }
 
@@ -248,13 +250,49 @@
   }
 }
 
+/* MOBILE */
 @media (max-width: 768px) {
-  .kpi-grid,
+
+  .title {
+    font-size: 1.4rem;
+    margin-bottom: 24px;
+  }
+
+  .kpi-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .kpi-card.ant-card {
+    padding: 18px;
+  }
+
+  .kpi .icon {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+
+  .value {
+    font-size: 26px;
+  }
+
   .actions {
     grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .action-card.ant-card {
+    padding: 18px;
+  }
+
+  .charts {
+    gap: 20px;
   }
 
   .chart {
-    height: 260px;
+    height: 220px;
   }
 }

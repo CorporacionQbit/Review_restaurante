@@ -1,18 +1,17 @@
-/* =====================================================
-   VARIABLES GLOBALES DEL LAYOUT
-===================================================== */
 :host {
   --sidebar-bg: linear-gradient(180deg, #0f172a, #020617);
   --sidebar-accent: #fb923c;
-
   --text-light: #e5e7eb;
   --text-muted: #94a3b8;
 }
 
-/* =====================================================
-   SIDEBAR
-===================================================== */
-nz-sider {
+/* ================= LAYOUT ================= */
+.app-layout {
+  min-height: 100vh;
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar {
   background: var(--sidebar-bg) !important;
   box-shadow: inset -1px 0 0 rgba(255,255,255,0.05);
 }
@@ -22,15 +21,18 @@ nz-sider {
   height: 64px;
   line-height: 64px;
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 900;
   text-align: center;
   color: white;
   background: linear-gradient(135deg, #fb923c, #f97316);
+  transition: all .3s ease;
 }
 
-/* =====================================================
-   MENU
-===================================================== */
+.logo.collapsed {
+  font-size: 22px;
+}
+
+/* ================= MENU ================= */
 ul[nz-menu] {
   background: transparent !important;
   padding-top: 12px;
@@ -40,6 +42,9 @@ li[nz-menu-item] {
   margin: 4px 10px;
   border-radius: 10px;
   color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 12px;
   transition: all .2s ease;
 }
 
@@ -56,9 +61,7 @@ li[nz-menu-item].ant-menu-item-selected {
   );
 }
 
-/* =====================================================
-   HEADER
-===================================================== */
+/* ================= HEADER ================= */
 .header {
   background: #ffffff;
   height: 64px;
@@ -72,15 +75,12 @@ li[nz-menu-item].ant-menu-item-selected {
   z-index: 10;
 }
 
-/* =====================================================
-   CONTENT (🔥 CLAVE)
-===================================================== */
+/* ================= CONTENT ================= */
 .content {
   padding: 0;
   background: transparent;
 }
 
-/* 🔥 FONDO GLOBAL REAL */
 nz-content {
   min-height: calc(100vh - 64px);
   background:
@@ -88,22 +88,11 @@ nz-content {
     linear-gradient(180deg, #0f172a, #1e293b);
 }
 
-/* =====================================================
-   FOOTER
-===================================================== */
+/* ================= FOOTER ================= */
 .footer {
   text-align: center;
   font-size: 13px;
   color: var(--text-muted);
   background: transparent;
   padding: 16px 0;
-}
-
-/* =====================================================
-   RESPONSIVE
-===================================================== */
-@media (max-width: 768px) {
-  .logo {
-    font-size: 18px;
-  }
 }

@@ -17,11 +17,7 @@
   --text-muted: #64748b;
 
   display: block;
-  background: linear-gradient(
-    180deg,
-    #f5f7fb 0%,
-    #eef2f7 100%
-  );
+  background: linear-gradient(180deg, #f5f7fb 0%, #eef2f7 100%);
 }
 
 /* =====================================================
@@ -29,10 +25,11 @@
 ===================================================== */
 .categories-page {
   padding: 32px;
+  max-width: 100%;
 }
 
 /* =====================================================
-   HEADER – IGUAL A MODERACIÓN
+   HEADER
 ===================================================== */
 .page-header {
   background: linear-gradient(
@@ -44,13 +41,11 @@
   border-radius: 18px;
   padding: 28px;
   margin-bottom: 28px;
-  box-shadow:
-    0 18px 40px rgba(249, 115, 22, 0.35);
+  box-shadow: 0 18px 40px rgba(249,115,22,.35);
   text-align: center;
   position: relative;
 }
 
-/* TÍTULO */
 .title-group h1 {
   margin: 0;
   font-size: 2.1rem;
@@ -58,14 +53,13 @@
   color: #0f172a;
 }
 
-/* SUBTÍTULO */
 .title-group p {
   margin-top: 6px;
-  font-size: 0.95rem;
+  font-size: .95rem;
   color: #1f2937;
 }
 
-/* BOTÓN NUEVA CATEGORÍA (FLOAT DERECHO) */
+/* BOTÓN */
 .header {
   position: absolute;
   right: 24px;
@@ -79,41 +73,34 @@
   font-weight: 700;
   padding: 10px 18px;
   border: none;
-  box-shadow:
-    0 8px 20px rgba(0,0,0,0.15);
-  transition: all .2s ease;
-}
-
-.header button[nzType="primary"]:hover {
-  transform: translateY(-2px);
-  background: #fff7ed;
+  box-shadow: 0 8px 20px rgba(0,0,0,.15);
 }
 
 /* =====================================================
-   CARD GRANDE (MISMO CONCEPTO QUE MODERACIÓN)
+   CONTENEDOR TABLA (CLAVE)
 ===================================================== */
 .categories-table {
-  background: linear-gradient(
-    180deg,
-    #fb923c,
-    #fdba74
-  );
+  background: linear-gradient(180deg, #fb923c, #fdba74);
   border-radius: 18px;
   padding: 14px;
-  box-shadow:
-    0 22px 48px rgba(249, 115, 22, 0.45);
+  box-shadow: 0 22px 48px rgba(249,115,22,.45);
 }
 
-/* =====================================================
-   TABLA CONTENIDA
-===================================================== */
+/* SOLO ESTE ELEMENTO PODRÁ HACER SCROLL */
 .categories-table .ant-table {
   background: #ffffff;
   border-radius: 14px;
-  overflow: hidden;
+  overflow-x: auto;
 }
 
-/* CABECERA */
+/* =====================================================
+   TABLA
+===================================================== */
+.categories-table table {
+  min-width: 600px; /* 🔥 obliga scroll solo en móvil */
+  border-collapse: separate;
+}
+
 .categories-table .ant-table-thead > tr > th {
   background: #f8fafc;
   color: #475569;
@@ -122,11 +109,6 @@
   text-transform: uppercase;
   padding: 16px 20px;
   border-bottom: 1px solid var(--border);
-}
-
-/* FILAS */
-.categories-table .ant-table-tbody > tr {
-  position: relative;
 }
 
 .categories-table .ant-table-tbody > tr > td {
@@ -138,47 +120,26 @@
   transition: background .2s ease;
 }
 
-/* INDICADOR LATERAL NARANJA */
-.categories-table .ant-table-tbody > tr::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 15%;
-  bottom: 15%;
-  width: 5px;
-  background: transparent;
-  border-radius: 4px;
-  transition: background .2s ease;
-}
-
-.categories-table .ant-table-tbody > tr:hover::before {
-  background: linear-gradient(
-    180deg,
-    #fb923c,
-    #f97316
-  );
-}
-
-/* HOVER */
-.categories-table .ant-table-tbody > tr:hover > td {
-  background: #fff7ed;
-}
-
 /* ID */
 .categories-table .ant-table-tbody > tr > td:first-child {
   color: #f97316;
   font-weight: 800;
 }
 
+/* Hover */
+.categories-table .ant-table-tbody > tr:hover > td {
+  background: #fff7ed;
+}
+
 /* =====================================================
-   ACCIONES – ESTILO MODERACIÓN
+   ACCIONES
 ===================================================== */
 .actions {
   display: flex;
   gap: 12px;
+  white-space: nowrap;
 }
 
-/* EDITAR */
 .actions button:not([nzDanger]) {
   background: #dcfce7;
   color: #15803d;
@@ -187,10 +148,9 @@
   font-size: 13px;
   padding: 6px 14px;
   font-weight: 800;
-  box-shadow: 0 6px 14px rgba(22,163,74,0.25);
+  box-shadow: 0 6px 14px rgba(22,163,74,.25);
 }
 
-/* ELIMINAR */
 .actions button[nzDanger] {
   background: #fee2e2;
   color: #b91c1c;
@@ -199,33 +159,14 @@
   font-size: 13px;
   padding: 6px 14px;
   font-weight: 800;
-  box-shadow: 0 6px 14px rgba(239,68,68,0.25);
+  box-shadow: 0 6px 14px rgba(239,68,68,.25);
 }
 
 /* =====================================================
-   PAGINACIÓN
-===================================================== */
-.ant-pagination-item-active {
-  border-color: #f97316;
-}
-
-.ant-pagination-item-active a {
-  color: #f97316;
-  font-weight: 700;
-}
-
-/* =====================================================
-   EMPTY
-===================================================== */
-.categories-table .ant-empty-description {
-  color: var(--text-muted);
-  font-size: 14px;
-}
-
-/* =====================================================
-   RESPONSIVE
+   MOBILE
 ===================================================== */
 @media (max-width: 768px) {
+
   .categories-page {
     padding: 16px;
   }
@@ -236,11 +177,19 @@
     text-align: center;
   }
 
-  .actions {
-    flex-direction: column;
+  /* 👇 SOLO LA TABLA SCROLLEA */
+  .categories-table .ant-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
-  .actions button {
-    width: 100%;
+  /* Scroll visible y usable */
+  .categories-table .ant-table::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .categories-table .ant-table::-webkit-scrollbar-thumb {
+    background: #fb923c;
+    border-radius: 6px;
   }
 }

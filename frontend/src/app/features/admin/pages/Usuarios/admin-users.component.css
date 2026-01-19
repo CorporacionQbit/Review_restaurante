@@ -200,3 +200,43 @@ nz-table[nzloading="true"] td {
   .page-title { font-size: 20px; }
   nz-table td { font-size: 13px; }
 }
+/* =====================================================
+   MOBILE – USERS TABLE (HORIZONTAL SCROLL ONLY)
+===================================================== */
+@media (max-width: 900px) {
+
+  /* Evita scroll global */
+  :host {
+    overflow-x: hidden;
+  }
+
+  /* Card contenedora */
+  nz-table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* La tabla debe ser más ancha que el viewport */
+  nz-table table {
+    min-width: 760px;
+    table-layout: fixed;
+  }
+
+  /* Evita saltos raros */
+  nz-table th,
+  nz-table td {
+    white-space: nowrap;
+  }
+
+  /* Acciones siempre visibles */
+  td[style*="display:flex"] {
+    min-width: 240px;
+  }
+
+  /* Paginación centrada */
+  nz-pagination {
+    text-align: center;
+  }
+}
