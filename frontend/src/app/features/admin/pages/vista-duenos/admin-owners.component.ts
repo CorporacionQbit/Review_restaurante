@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -21,6 +21,7 @@ import { AdminOwnersService } from './admin-owners.service';
   ],
   templateUrl: './admin-owners.component.html',
   styleUrls: ['./admin-owners.component.scss'],
+   encapsulation: ViewEncapsulation.None,
 })
 export class AdminOwnersComponent implements OnInit {
   loading = true;
@@ -47,25 +48,22 @@ export class AdminOwnersComponent implements OnInit {
     this.service.getOwners(this.page, this.limit).subscribe({
       next: (res) => {
         this.owners = res.data.map((o: any) => {
-          // ✅ USER ID robusto
           const userId =
+            o.userId ??
             o.userid ??
             o.user_id ??
-            o.userId ??
             null;
 
-          // ✅ IS ACTIVE robusto
           const isActive =
+            o.isActive ??
             o.isactive ??
             o.is_active ??
-            o.isActive ??
             false;
 
-          // ✅ FULL NAME robusto
           const fullName =
+            o.fullName ??
             o.fullname ??
             o.full_name ??
-            o.fullName ??
             '—';
 
           return {
@@ -74,8 +72,8 @@ export class AdminOwnersComponent implements OnInit {
             email: o.email,
             isActive: Boolean(isActive),
             totalrestaurants: Number(
-              o.totalrestaurants ??
               o.totalRestaurants ??
+              o.totalrestaurants ??
               0
             ),
             approved: Number(o.approved ?? 0),
@@ -117,29 +115,29 @@ export class AdminOwnersComponent implements OnInit {
       },
     });
   }
+
   closeRestaurantsModal(): void {
-  this.restaurantsModalVisible = false;
-  this.restaurants = [];
-}
-toggleOwner(owner: any): void {
-  if (!owner?.userId) return;
+    this.restaurantsModalVisible = false;
+    this.restaurants = [];
+  }
 
-  const confirmMsg = owner.isActive
-    ? '¿Deseas DESACTIVAR esta cuenta?'
-    : '¿Deseas ACTIVAR esta cuenta?';
+  toggleOwner(owner: any): void {
+    if (!owner?.userId) return;
 
-  if (!confirm(confirmMsg)) return;
+    const confirmMsg = owner.isActive
+      ? '¿Deseas DESACTIVAR esta cuenta?'
+      : '¿Deseas ACTIVAR esta cuenta?';
 
-  this.service.toggleOwnerStatus(owner.userId, owner.isActive).subscribe({
-    next: () => {
-      // Actualiza el estado local sin recargar toda la tabla
-      owner.isActive = !owner.isActive;
-    },
-    error: (err) => {
-      console.error('Error cambiando estado del owner', err);
-      alert('No se pudo actualizar el estado del dueño');
-    },
-  });
-}
+    if (!confirm(confirmMsg)) return;
 
+    this.service.toggleOwnerStatus(owner.userId, owner.isActive).subscribe({
+      next: () => {
+        owner.isActive = !owner.isActive;
+      },
+      error: (err) => {
+        console.error('Error cambiando estado del owner', err);
+        alert('No se pudo actualizar el estado del dueño');
+      },
+    });
+  }
 }

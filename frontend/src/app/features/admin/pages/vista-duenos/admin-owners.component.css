@@ -1,11 +1,93 @@
-.page-title {
-  font-size: 26px;
-  font-weight: 900;
-  margin-bottom: 24px;
-  color: #0f172a;
+
+:host {
+  display: block;
+  padding: 24px;
+  background: #f5f7fa;
+  min-height: 100vh;
 }
 
-.pagination {
+/* ===== HEADER ===== */
+.admin-header {
+  height: 56px;
+  border-radius: 14px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+}
+
+.admin-header.orange {
+  background: linear-gradient(90deg, #ff9f1c, #f59e0b);
+  color: #1f2937;
+}
+
+/* ===== CARD ===== */
+.admin-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 16px 16px 20px;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.08),
+    inset 0 1px 0 rgba(255,255,255,.6);
+}
+
+/* ===== TABLE ===== */
+nz-table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+nz-table th {
+  background: #f8fafc;
+  font-weight: 700;
+  font-size: 13px;
+  color: #334155;
+}
+
+nz-table td {
+  font-size: 13px;
+  color: #1f2937;
+}
+
+/* Hover fila */
+nz-table tr:hover td {
+  background: #f9fafb;
+}
+
+/* ===== TAGS ===== */
+nz-tag {
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 2px 10px;
+}
+
+/* ===== ACTIONS ===== */
+.actions {
+  display: flex;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.actions button[nz-button] {
+  border-radius: 8px;
+  font-size: 12px;
+  height: 28px;
+  padding: 0 10px;
+}
+
+/* ===== PAGINATION ===== */
+.admin-pagination {
   margin-top: 16px;
   text-align: right;
+}
+
+/* ===== EMPTY ===== */
+.empty {
+  padding: 24px;
+  text-align: center;
+  color: #94a3b8;
 }

@@ -1,55 +1,42 @@
+
 :host {
   display: block;
   min-height: 100vh;
-  padding: 32px;
+  padding: 28px;
   background:
-    radial-gradient(1200px 600px at 20% -200px, rgba(249,115,22,.18), transparent 60%),
-    radial-gradient(900px 500px at 90% 10%, rgba(59,130,246,.10), transparent 60%),
+    radial-gradient(1100px 520px at 15% -200px, rgba(249,115,22,.14), transparent 60%),
+    radial-gradient(900px 500px at 90% 10%, rgba(59,130,246,.08), transparent 60%),
     linear-gradient(180deg, #f8fafc, #eef2f7);
 }
 
-/* ================= PAGE TITLE / HERO ================= */
+/* ================= PAGE TITLE ================= */
 .page-title {
   display: flex;
   align-items: center;
   gap: 12px;
-
-  padding: 28px 32px;
-  margin-bottom: 28px;
-
-  font-size: 28px;
-  font-weight: 900;
-  letter-spacing: -0.4px;
-
+  padding: 20px 26px;
+  margin-bottom: 22px;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
   color: #0f172a;
   background: linear-gradient(135deg, #fb923c, #f59e0b);
-  border-radius: 20px;
-
+  border-radius: 18px;
   box-shadow:
-    0 18px 50px rgba(249,115,22,.35),
+    0 12px 36px rgba(249,115,22,.28),
     inset 0 1px 0 rgba(255,255,255,.35);
 }
 
-/* Subtitle look if added later */
-.page-title + p {
-  margin-top: -14px;
-  margin-bottom: 24px;
-  color: #475569;
-}
-
-/* ================= FILTER BAR ================= */
+/* ================= FILTER TOOLBAR ================= */
 .page-title + div {
   background: #ffffff;
-  padding: 18px 20px;
-  border-radius: 16px;
-  margin-bottom: 20px;
-
+  padding: 14px 18px;
+  border-radius: 14px;
+  margin-bottom: 18px;
   display: flex;
   align-items: center;
   gap: 12px;
-
-  box-shadow:
-    0 10px 30px rgba(15,23,42,.06);
+  box-shadow: 0 8px 22px rgba(15,23,42,.06);
 }
 
 input[nz-input],
@@ -61,70 +48,70 @@ nz-select {
 nz-table {
   display: block;
   background: #ffffff;
-  border-radius: 20px;
+  border-radius: 18px;
   overflow: hidden;
+  box-shadow: 0 18px 50px rgba(15,23,42,.08);
+}
 
-  box-shadow:
-    0 22px 60px rgba(15,23,42,.08);
+/* ================= REMOVE INTERNAL PAGINATION ================= */
+/* 🔥 ESTA ES LA CLAVE DEL PROBLEMA */
+nz-table .ant-pagination {
+  display: none !important;
 }
 
 /* ================= TABLE HEAD ================= */
 nz-table thead th {
-  background: #f8fafc;
+  background: #f9fafb;
   font-weight: 800;
-  font-size: 13px;
+  font-size: 12px;
   color: #334155;
   text-transform: uppercase;
-  letter-spacing: .04em;
-
-  padding: 16px 18px;
+  letter-spacing: .05em;
+  padding: 14px 16px;
   border-bottom: 1px solid #e5e7eb;
 }
 
 /* ================= TABLE BODY ================= */
 nz-table tbody tr {
-  transition: background .2s ease, transform .15s ease;
+  transition: background .15s ease, transform .12s ease;
 }
 
 nz-table tbody tr:hover {
-  background: #f9fafb;
-  transform: translateY(-1px);
+  background: #f8fafc;
 }
 
 nz-table td {
-  padding: 16px 18px;
-  vertical-align: middle;
+  padding: 14px 16px;
   font-size: 14px;
   color: #0f172a;
+}
+
+/* ================= INACTIVE ROW ================= */
+nz-table tbody tr:has(nz-tag[nzcolor="red"]) {
+  opacity: .65;
 }
 
 /* ================= TAGS ================= */
 nz-tag {
   border-radius: 999px !important;
-  padding: 4px 12px !important;
+  padding: 3px 12px !important;
   font-weight: 700;
   font-size: 12px;
 }
 
-/* Role */
 nz-tag[nzcolor="blue"] {
-  background: rgba(59,130,246,.15);
+  background: rgba(59,130,246,.14);
   color: #1d4ed8;
-  border: none;
 }
 
-/* Active */
 nz-tag[nzcolor="green"] {
-  background: rgba(34,197,94,.18);
+  background: rgba(34,197,94,.16);
   color: #166534;
-  border: none;
 }
 
-/* Inactive */
 nz-tag[nzcolor="red"] {
-  background: rgba(239,68,68,.18);
+  background: rgba(239,68,68,.16);
   color: #7f1d1d;
-  border: none;
 }
 
 /* ================= ACTION BUTTONS ================= */
@@ -134,12 +121,16 @@ td[style*="display:flex"] {
 
 button[nz-button] {
   border-radius: 999px;
-  font-weight: 700;
-  padding: 6px 16px;
-  transition: all .2s ease;
+  font-weight: 600;
+  padding: 5px 14px;
+  transition: transform .12s ease, box-shadow .12s ease;
 }
 
-/* Activate / Deactivate */
+button[nz-button]:active {
+  transform: scale(.96);
+}
+
+/* Secondary */
 button[nz-button][nzdanger] {
   background: #ffffff;
   border: 1px solid #fecaca;
@@ -148,24 +139,22 @@ button[nz-button][nzdanger] {
 
 button[nz-button][nzdanger]:hover {
   background: #fee2e2;
-  transform: translateY(-1px);
 }
 
-/* Primary – Convert to owner */
+/* Primary */
 button[nz-button][nztype="primary"] {
   background: linear-gradient(135deg, #3b82f6, #2563eb);
   border: none;
-  box-shadow: 0 10px 26px rgba(59,130,246,.35);
+  box-shadow: 0 8px 22px rgba(59,130,246,.32);
 }
 
 button[nz-button][nztype="primary"]:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 14px 36px rgba(59,130,246,.45);
+  box-shadow: 0 12px 30px rgba(59,130,246,.42);
 }
 
-/* ================= PAGINATION ================= */
+/* ================= EXTERNAL PAGINATION ================= */
 nz-pagination {
-  margin-top: 22px;
+  margin-top: 18px;
   text-align: right;
 }
 
@@ -182,18 +171,32 @@ nz-pagination .ant-pagination-item-active a {
   color: #ffffff;
 }
 
+/* ================= SKELETON LOADERS ================= */
+nz-table[nzloading="true"] tbody tr {
+  pointer-events: none;
+}
+
+nz-table[nzloading="true"] td {
+  color: transparent !important;
+  background: linear-gradient(
+    100deg,
+    #f1f5f9 40%,
+    #e5e7eb 50%,
+    #f1f5f9 60%
+  );
+  background-size: 200% 100%;
+  animation: skeleton 1.2s ease-in-out infinite;
+  border-radius: 6px;
+}
+
+@keyframes skeleton {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 /* ================= RESPONSIVE ================= */
 @media (max-width: 900px) {
-  :host {
-    padding: 16px;
-  }
-
-  .page-title {
-    font-size: 22px;
-    padding: 22px;
-  }
-
-  nz-table td {
-    font-size: 13px;
-  }
+  :host { padding: 16px; }
+  .page-title { font-size: 20px; }
+  nz-table td { font-size: 13px; }
 }

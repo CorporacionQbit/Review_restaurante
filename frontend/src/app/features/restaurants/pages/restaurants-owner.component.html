@@ -1,10 +1,18 @@
-<div class="page-header">
-  <h1>Mis restaurantes</h1>
+<div class="page-header centered">
+  <div class="title-block">
+    <h1>Mis restaurantes</h1>
+    <p>Administra y gestiona tus restaurantes</p>
+  </div>
 
-  <button nz-button nzType="primary" (click)="goToCreate()">
+  <button
+    nz-button
+    nzType="primary"
+    class="create-btn"
+    (click)="goToCreate()">
     + Crear nuevo restaurante
   </button>
 </div>
+
 
 <!-- LOADING -->
 <div *ngIf="loading" class="center">

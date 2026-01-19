@@ -6,7 +6,7 @@
     nz-input
     placeholder="Buscar por nombre o email"
     [(ngModel)]="filters.search"
-    (ngModelChange)="applyFilters()"
+    (ngModelChange)="loadUsers(1)"
     style="width:260px"
   />
 
@@ -14,7 +14,7 @@
     nzAllowClear
     placeholder="Estado"
     [(ngModel)]="filters.status"
-    (ngModelChange)="applyFilters()"
+    (ngModelChange)="loadUsers(1)"
     style="width:180px"
   >
     <nz-option nzValue="active" nzLabel="Activo"></nz-option>
@@ -25,7 +25,12 @@
 </div>
 
 <!-- TABLA -->
-<nz-table nzBordered [nzData]="filteredUsers" [nzLoading]="loading">
+<nz-table
+  nzBordered
+  [nzData]="users"
+  [nzLoading]="loading"
+  [nzShowPagination]="false">
+
   <thead>
     <tr>
       <th>Nombre</th>
@@ -37,7 +42,7 @@
   </thead>
 
   <tbody>
-    <tr *ngFor="let u of filteredUsers">
+    <tr *ngFor="let u of users">
       <td>{{ u.fullName }}</td>
       <td>{{ u.email }}</td>
 
@@ -72,6 +77,7 @@
   </tbody>
 </nz-table>
 
+<!-- PAGINACIÓN ÚNICA Y CORRECTA -->
 <nz-pagination
   style="margin-top:16px; text-align:right"
   [nzPageIndex]="page"

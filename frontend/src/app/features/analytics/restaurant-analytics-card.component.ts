@@ -43,13 +43,17 @@ export class RestaurantAnalyticsCardComponent implements OnChanges {
 
   ngOnChanges(): void {
     if (this.restaurant && this.active) {
-      this.loadData();
+      // esperar a que el slide esté visible
+      setTimeout(() => this.loadData(), 100);
     }
   }
 
   private loadData(): void {
     this.loading = true;
 
+    // ======================
+    // SUMMARY (KPIs)
+    // ======================
     this.analyticsService
       .getRestaurantSummary(this.restaurant.restaurantId, this.range)
       .subscribe(res => {
@@ -57,22 +61,49 @@ export class RestaurantAnalyticsCardComponent implements OnChanges {
         this.cdr.detectChanges();
       });
 
+    // ======================
+    // TIMELINE (CHART)
+    // ======================
     this.analyticsService
       .getRestaurantTimeline(this.restaurant.restaurantId, this.range)
       .subscribe({
         next: rows => {
-          const data =
+          if (!rows || rows.length === 0) {
+            this.destroyChart();
+            this.loading = false;
+            return;
+          }
+
+          const hasData = rows.some(
+            r => r.views > 0 || r.clickMap > 0 || r.clickWebsite > 0
+          );
+
+          if (!hasData) {
+            this.destroyChart();
+            this.loading = false;
+            return;
+          }
+
+          const grouped =
             this.groupBy === 'month'
               ? this.groupByMonth(rows)
               : this.groupByDay(rows);
 
-          setTimeout(() => this.renderChart(data));
+          const normalized = this.normalizeRows(grouped);
+
+          setTimeout(() => this.renderChart(normalized));
           this.loading = false;
         },
-        error: () => (this.loading = false),
+        error: () => {
+          this.destroyChart();
+          this.loading = false;
+        },
       });
   }
 
+  // ======================
+  // GROUPING
+  // ======================
   private groupByDay(rows: any[]) {
     return rows.map(r => ({
       label: new Date(r.date).toLocaleDateString('es-GT', {
@@ -113,12 +144,25 @@ export class RestaurantAnalyticsCardComponent implements OnChanges {
     return Array.from(map.values());
   }
 
-  private renderChart(rows: any[]): void {
-    if (!this.chartCanvas) return;
+  // ======================
+  // NORMALIZATION (CLAVE)
+  // ======================
+  private normalizeRows(rows: any[]) {
+    return rows.map(r => ({
+      label: r.label,
+      views: Number(r.views) || 0,
+      clickMap: Number(r.clickMap) || 0,
+      clickWebsite: Number(r.clickWebsite) || 0,
+    }));
+  }
 
-    if (this.chart) {
-      this.chart.destroy();
-    }
+  // ======================
+  // CHART
+  // ======================
+  private renderChart(rows: any[]): void {
+    if (!this.chartCanvas || !this.active) return;
+
+    this.destroyChart();
 
     this.chart = new Chart(this.chartCanvas.nativeElement, {
       type: 'bar',
@@ -156,5 +200,12 @@ export class RestaurantAnalyticsCardComponent implements OnChanges {
         },
       },
     });
+  }
+
+  private destroyChart(): void {
+    if (this.chart) {
+      this.chart.destroy();
+      this.chart = undefined;
+    }
   }
 }

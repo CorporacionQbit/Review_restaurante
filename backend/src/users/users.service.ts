@@ -16,6 +16,9 @@ export class UsersService {
     private readonly restaurantsService: RestaurantsService,
   ) {}
 
+  // =========================
+  // BÁSICOS
+  // =========================
   findAll() {
     return this.usersRepo.find();
   }
@@ -37,6 +40,13 @@ export class UsersService {
     return this.usersRepo.save(user);
   }
 
+  async save(user: User) {
+    return this.usersRepo.save(user);
+  }
+
+  // =========================
+  // PERFIL
+  // =========================
   async updateProfile(userId: number, dto: UpdateUserDto) {
     const user = await this.findById(userId);
 
@@ -64,7 +74,9 @@ export class UsersService {
     return this.usersRepo.save(user);
   }
 
-//convertir de usuario a dueño
+  // =========================
+  // CONVERTIR A OWNER
+  // =========================
   async convertToOwner(userId: number) {
     const user = await this.findById(userId);
 
@@ -75,10 +87,15 @@ export class UsersService {
     user.role = 'owner';
     return this.usersRepo.save(user);
   }
-  async save(user: User) {
-  return this.usersRepo.save(user);
-}
- async findOwnersWithRestaurants(page: number, limit: number) {
+
+  // =========================
+  // ADMIN - OWNERS CON MÉTRICAS
+  // =========================
+  async findOwnersWithRestaurants(
+    page: number,
+    limit: number,
+    status?: 'active' | 'inactive',
+  ) {
     const qb = this.usersRepo
       .createQueryBuilder('u')
       .leftJoin('restaurants', 'r', 'r.owner_user_id = u.user_id')
@@ -92,16 +109,24 @@ export class UsersService {
         `SUM(CASE WHEN r.onboarding_status = 'Pendiente' THEN 1 ELSE 0 END) AS "pending"`,
         `SUM(CASE WHEN r.onboarding_status = 'Rechazado' THEN 1 ELSE 0 END) AS "rejected"`,
       ])
-      .where('u.role = :role', { role: 'owner' })
-      .groupBy('u.user_id')
-      .offset((page - 1) * limit)
-      .limit(limit);
+      .where('u.role = :role', { role: 'owner' });
+
+    // 🔍 FILTRO POR ESTADO
+    if (status === 'active') {
+      qb.andWhere('u.is_active = true');
+    }
+    if (status === 'inactive') {
+      qb.andWhere('u.is_active = false');
+    }
+
+    qb.groupBy('u.user_id');
+
+    // TOTAL REAL ANTES DE PAGINAR
+    const total = await qb.getCount();
+
+    qb.offset((page - 1) * limit).limit(limit);
 
     const data = await qb.getRawMany();
-
-    const total = await this.usersRepo.count({
-      where: { role: 'owner' },
-    });
 
     return {
       data,
@@ -110,49 +135,72 @@ export class UsersService {
   }
 
   // =========================
-  // RESTAURANTES DE UN OWNER
+  // RESTAURANTES DE OWNER
   // =========================
   async findRestaurantsByOwner(userId: number) {
     return this.restaurantsService.findByOwner(userId);
   }
-  // ===============================
-// ADMIN - CAMBIAR ESTADO DEL OWNER
-// ===============================
-async setOwnerActive(userId: number, active: boolean) {
-  const user = await this.findById(userId);
 
-  if (!user) {
-    throw new NotFoundException('Usuario no encontrado');
+  // =========================
+  // ADMIN - ACTIVAR / DESACTIVAR OWNER
+  // =========================
+  async setOwnerActive(userId: number, active: boolean) {
+    const user = await this.findById(userId);
+
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
+    user.isActive = active;
+    return this.usersRepo.save(user);
   }
 
-  user.isActive = active;
-  return this.usersRepo.save(user);
-}
-async findClients(page: number, limit: number) {
-  const qb = this.usersRepo
-    .createQueryBuilder('u')
-    .select([
-      'u.user_id AS "userId"',
-      'u.email AS "email"',
-      'u.full_name AS "fullName"',
-      'u.role AS "role"',
-      'u.is_active AS "isActive"',
-    ])
-    .where('u.role = :role', { role: 'client' })
-    .offset((page - 1) * limit)
-    .limit(limit);
+  // =========================
+  // ADMIN - CLIENTES (FILTROS + PAGINACIÓN REAL)
+  // =========================
+  async findClients(
+    page: number,
+    limit: number,
+    status?: 'active' | 'inactive',
+    search?: string,
+  ) {
+    const qb = this.usersRepo
+      .createQueryBuilder('u')
+      .select([
+        'u.user_id AS "userId"',
+        'u.email AS "email"',
+        'u.full_name AS "fullName"',
+        'u.role AS "role"',
+        'u.is_active AS "isActive"',
+      ])
+      .where('u.role = :role', { role: 'client' });
 
-  const data = await qb.getRawMany();
+    // 🔍 FILTRO POR ESTADO
+    if (status === 'active') {
+      qb.andWhere('u.is_active = true');
+    }
+    if (status === 'inactive') {
+      qb.andWhere('u.is_active = false');
+    }
 
-  const total = await this.usersRepo.count({
-    where: { role: 'client' },
-  });
+    // 🔍 FILTRO POR TEXTO
+    if (search?.trim()) {
+      qb.andWhere(
+        '(LOWER(u.email) LIKE :term OR LOWER(u.full_name) LIKE :term)',
+        { term: `%${search.toLowerCase()}%` },
+      );
+    }
 
-  return {
-    data,
-    meta: { total, page, limit },
-  };
-}
+    // TOTAL REAL (ANTES DE OFFSET)
+    const total = await qb.getCount();
 
+    qb.offset((page - 1) * limit).limit(limit);
 
+    const data = await qb.getRawMany();
+
+    return {
+      data,
+      meta: { total, page, limit },
+    };
+  }
 }

@@ -1,77 +1,87 @@
-<h1 class="page-title">👤 Dueños de restaurantes</h1>
+<div class="admin-page">
 
+  <!-- HEADER IGUAL A USUARIOS -->
+  <div class="admin-header orange">
+    👤 Dueños de restaurantes
+  </div>
 
-<nz-table
-  nzBordered
-  [nzData]="owners"
-  [nzLoading]="loading"
->
-  <thead>
-    <tr>
-      <th>Nombre</th>
-      <th>Email</th>
-      <th>Estado</th>
-      <th>Total</th>
-      <th>Aprobados</th>
-      <th>Pendientes</th>
-      <th>Rechazados</th>
-      <th>Acciones</th>
-    </tr>
-  </thead>
+  <!-- CARD CONTENEDORA -->
+  <div class="admin-card">
 
-  <tbody>
-    <tr *ngFor="let o of owners">
-      <td>{{ o.fullName }}</td>
-      <td>{{ o.email }}</td>
+    <!-- TABLA DE OWNERS -->
+    <nz-table
+      nzBordered
+      [nzData]="owners"
+      [nzLoading]="loading"
+      [nzShowPagination]="false"
+    >
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Estado</th>
+          <th>Total</th>
+          <th>Aprobados</th>
+          <th>Pendientes</th>
+          <th>Rechazados</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
 
-      <td>
-        <nz-tag [nzColor]="o.isActive ? 'green' : 'red'">
-          {{ o.isActive ? 'Cuenta activa' : 'Cuenta desactivada' }}
-        </nz-tag>
-      </td>
+      <tbody>
+        <tr *ngFor="let o of owners">
+          <td>{{ o.fullName }}</td>
+          <td>{{ o.email }}</td>
 
-      <td>{{ o.totalrestaurants }}</td>
-      <td>{{ o.approved }}</td>
-      <td>{{ o.pending }}</td>
-      <td>{{ o.rejected }}</td>
+          <td>
+            <nz-tag [nzColor]="o.isActive ? 'green' : 'red'">
+              {{ o.isActive ? 'Cuenta activa' : 'Cuenta desactivada' }}
+            </nz-tag>
+          </td>
 
-      <td style="display:flex; gap:6px;">
-        <!-- VER RESTAURANTES -->
-        <button
-          nz-button
-          nzType="primary"
-          nzSize="small"
-          (click)="openRestaurants(o)"
-        >
-          Ver restaurantes
-        </button>
+          <td>{{ o.totalrestaurants }}</td>
+          <td>{{ o.approved }}</td>
+          <td>{{ o.pending }}</td>
+          <td>{{ o.rejected }}</td>
 
-        <!-- ACTIVAR / DESACTIVAR -->
-        <button
-          nz-button
-          nzSize="small"
-          nzDanger
-          [nzType]="o.isActive ? 'default' : 'primary'"
-          (click)="toggleOwner(o)"
-        >
-          {{ o.isActive ? 'Desactivar cuenta' : 'Activar cuenta' }}
-        </button>
-      </td>
-    </tr>
-  </tbody>
-</nz-table>
+          <td class="actions">
+            <button
+              nz-button
+              nzType="primary"
+              nzSize="small"
+              (click)="openRestaurants(o)"
+            >
+              Ver restaurantes
+            </button>
 
+            <button
+              nz-button
+              nzSize="small"
+              nzDanger
+              [nzType]="o.isActive ? 'default' : 'primary'"
+              (click)="toggleOwner(o)"
+            >
+              {{ o.isActive ? 'Desactivar cuenta' : 'Activar cuenta' }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
 
-<nz-pagination
-  style="margin-top:16px; text-align:right;"
-  [nzPageIndex]="page"
-  [nzTotal]="total"
-  [nzPageSize]="limit"
-  (nzPageIndexChange)="loadOwners($event)"
->
-</nz-pagination>
+    <!-- PAGINACIÓN -->
+    <nz-pagination
+      class="admin-pagination"
+      [nzPageIndex]="page"
+      [nzTotal]="total"
+      [nzPageSize]="limit"
+      (nzPageIndexChange)="loadOwners($event)"
+    >
+    </nz-pagination>
 
+  </div>
+</div>
 
+<!-- MODAL RESTAURANTES -->
 <ng-template #restaurantsTpl>
   <nz-table
     nzSize="small"
@@ -112,12 +122,11 @@
 
   <div
     *ngIf="!restaurantsLoading && restaurants.length === 0"
-    style="text-align:center; padding:16px; color:#999;"
+    class="empty"
   >
     Este dueño no tiene restaurantes registrados
   </div>
 </ng-template>
-
 
 <nz-modal
   [(nzVisible)]="restaurantsModalVisible"

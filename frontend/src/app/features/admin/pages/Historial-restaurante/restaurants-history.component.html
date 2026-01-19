@@ -1,20 +1,20 @@
-<div class="history-page">
+<div class="admin-page">
 
-  <!-- HERO -->
-  <div class="history-hero">
+  <!-- HERO HEADER (IGUAL A PENDIENTES) -->
+  <div class="admin-hero orange">
     <h1>📚 Historial de restaurantes</h1>
     <p>Restaurantes aprobados y rechazados</p>
   </div>
 
   <!-- CARD -->
-  <div class="history-card">
+  <div class="admin-card">
 
     <nz-table
+      nzBordered
       [nzData]="restaurants"
       [nzLoading]="loading"
       [nzShowPagination]="false"
-      nzBordered>
-
+    >
       <thead>
         <tr>
           <th>Restaurante</th>
@@ -36,7 +36,8 @@
                 r.onboardingStatus === 'Aprobado'
                   ? 'green'
                   : 'red'
-              ">
+              "
+            >
               {{ r.onboardingStatus }}
             </nz-tag>
           </td>
@@ -47,12 +48,14 @@
       </tbody>
     </nz-table>
 
+    <!-- PAGINACIÓN -->
     <nz-pagination
-      class="pagination"
+      class="admin-pagination"
       [nzPageIndex]="page"
       [nzTotal]="total"
       [nzPageSize]="limit"
-      (nzPageIndexChange)="load($event)">
+      (nzPageIndexChange)="load($event)"
+    >
     </nz-pagination>
 
   </div>
